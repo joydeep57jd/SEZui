@@ -1,0 +1,8 @@
+<div class="form-group mb-0 position-relative mt-3">
+  <!-- <input #searchInput (input)="search(searchInput.value)" placeholder="Search by Container No" type="text">
+  <span class="input_icon"><i class="fa fa-search" aria-hidden="true" onclick="SearchContainer()"></i></span> -->
+</div>
+<app-table [headers]="headers" [idKey]="idKey" [isFetching]="isFetching()" [records]="records()"></app-table>
+<app-paginator *ngIf="totalPage()" [currentPage]="(searchCriteria$ | async)?.page!" [totalPage]="totalPage()"
+  [size]="(searchCriteria$ | async)?.size!" (pageChange)="pageChange($event)" (pageSizeChange)="pageSizeChange($event)">
+</app-paginator>

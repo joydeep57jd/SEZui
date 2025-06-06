@@ -1,0 +1,172 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Reference No:</label>
+          <input formControlName="referenceNo" placeholder="Enter Reference No" type="text">
+          <ng-container *ngIf="hasError('referenceNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>* Operation Type:</label>
+          <select formControlName="operationType" class="dropdown" placeholder="Enter RMS">
+            <option value="">---Select---</option>
+            <option *ngFor="let operationType of operationTypes" [value]="operationType.value">{{operationType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('operationType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>* Delivery Type:</label>
+          <select formControlName="deliveryType" class="dropdown" placeholder="Enter RMS">
+            <option value="">---Select---</option>
+            <option *ngFor="let deliveryType of deliveryTypes" [value]="deliveryType.value">{{deliveryType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('deliveryType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 col-lg-6 col-sm-6">
+        <div class="form-group">
+          <label>Party:</label>
+          <input formControlName="party" placeholder="Enter party" type="text">
+          <ng-container *ngIf="hasError('party')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-6 col-sm-6">
+        <div class="form-group">
+          <label>Shipping Line:</label>
+          <input formControlName="shippingLine" placeholder="Enter Shipping Line" type="text">
+          <ng-container *ngIf="hasError('shippingLine')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container Type:</label>
+          <div>
+            <label *ngFor="let containerType of containerTypes" class="radio-container">
+              {{containerType.label}}
+              <input type="radio" formControlName="containerType" [value]="containerType.value">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container No:</label>
+          <input formControlName="containerNo" placeholder="Enter Container No" type="text">
+          <ng-container *ngIf="hasError('containerNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Size :</label>
+          <select formControlName="size" class="dropdown" placeholder="Enter RMS">
+            <option value="">---Select---</option>
+            <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('size')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>* Delivery Type:</label>
+          <select formControlName="materialType" class="dropdown" placeholder="Enter RMS">
+            <option value="">---Select---</option>
+            <option *ngFor="let materialType of materialTypes" [value]="materialType.value">{{materialType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('materialType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>* Vehicle No:</label>
+          <input formControlName="vehicleNo" placeholder="Enter Vehicle No" type="text">
+          <ng-container *ngIf="hasError('vehicleNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Driver Name:</label>
+          <input formControlName="driverName" placeholder="Enter Driver Name" type="text">
+          <ng-container *ngIf="hasError('driverName')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Driver License No:</label>
+          <input formControlName="driverLicenseNo" placeholder="Enter Driver License No" type="text">
+          <ng-container *ngIf="hasError('driverLicenseNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Remarks:</label>
+          <textarea formControlName="remarks" placeholder="Enter Remarks" rows="5"></textarea>
+          <ng-container *ngIf="hasError('remarks')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      <button type="button" class="btn btn-outline-primary form-btn">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <button type="button" class="btn btn-primary form-btn" (click)="submit()">Show List</button>
+    <app-data-table [headers]="headers" [url]="''"></app-data-table>
+  </div>
+</div>

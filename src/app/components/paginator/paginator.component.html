@@ -1,0 +1,21 @@
+<nav aria-label="navigation example"
+  class="d-flex justify-content-between align-items-center pagination-container flex-wrap gap-2">
+  <div class="d-flex align-items-center gap-1 paginator-page-size">
+    <label class="">Show</label>
+    <select #size (change)="changePageSize(size.value)" [value]="size" class="dropdown w-100" placeholder="Enter RMS">
+      <option *ngFor="let pageSize of pageSizes" [value]="pageSize">{{pageSize}}</option>
+    </select>
+    <label class="">entries</label>
+  </div>
+  <ul class="pagination">
+    <li class="page-item" [class.disabled]="currentPage === 1" (click)="gotoPage(currentPage - 1)">
+      <span class="page-link">Previous</span>
+    </li>
+    <li *ngFor="let page of pages()" [class.active]="page === currentPage" class="page-item" (click)="gotoPage(page)">
+      <span class="page-link" href="#">{{page}}</span>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage >= totalPage" (click)="gotoPage(currentPage + 1)">
+      <span class="page-link" href="#">Next</span>
+    </li>
+  </ul>
+</nav>

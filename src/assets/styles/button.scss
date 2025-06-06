@@ -1,0 +1,51 @@
+.btn-primary,
+.btn-primary:disabled,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus-visible {
+  @include btn($primary, white);
+}
+
+.btn-outline-primary,
+.btn-outline-primary:disabled,
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:focus-visible {
+  @include border-btn(white, $primary, $primary);
+}
+
+.btn-danger,
+.btn-danger:disabled,
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus-visible {
+  @include btn($danger, white);
+}
+
+.btn-outline-danger,
+.btn-outline-danger:disabled,
+.btn-outline-danger:hover,
+.btn-outline-danger:active,
+.btn-outline-danger:focus-visible {
+  @include border-btn(white, $danger, $danger);
+}
+
+.btn:not(.btn-check) + .btn:active,
+.btn:first-child:active {
+  &.btn-primary {
+    @include btn($primary, white);
+  }
+  &.btn-danger {
+    @include btn($danger, white);
+  }
+  &.btn-outline-primary {
+    @include border-btn(white, $primary, $primary);
+  }
+  &.btn-outline-danger {
+    @include border-btn(white, $danger, $danger);
+  }
+}
+
+.form-btn {
+  width: 100px;
+}

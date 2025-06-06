@@ -1,0 +1,115 @@
+$radio-size: 20px;
+$dot-size: 8px;
+$checked-bg: #2196f3;
+$dot-color: white;
+
+label {
+  font-size: 9.75px;
+  color: #556b82;
+  font-weight: bold;
+}
+input,
+select,
+textarea {
+  font-size: 0.75rem;
+  color: #1c1c1c;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  width: 100%;
+  &:hover,
+  &:focus {
+    outline: 0 !important;
+    border: 1px solid $primary;
+  }
+}
+.input_icon {
+  position: absolute;
+  right: 7px;
+  top: 0;
+  font-size: 16px;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+input[disabled],
+input[readonly],
+fieldset[disabled] input {
+  background-color: #ddd;
+  opacity: 1;
+}
+
+.radio-container {
+  display: inline-block;
+  position: relative;
+  padding-left: calc(#{$radio-size} + 8px); // space for radio + gap
+  margin-right: 2rem;
+  line-height: 20px;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    display: none;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: $radio-size;
+    height: $radio-size;
+    border: 2px solid $primary;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+
+    &::after {
+      content: "";
+      display: none;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: $dot-size;
+      height: $dot-size;
+      background-color: $dot-color;
+      border-radius: 50%;
+    }
+  }
+
+  input:checked + .checkmark {
+    background-color: $checked-bg;
+    &::after {
+      display: block;
+    }
+  }
+}
+
+.form-group {
+  position: relative;
+  bottom: 7px;
+  .ng-touched.ng-invalid {
+    border: 1px solid #dc3545;
+  }
+  .error {
+    color: #dc3545;
+    font-size: 10px;
+    position: relative;
+    bottom: 4px;
+    font-weight: 600;
+  }
+}
+
+.bordered-container {
+  margin-top: 6px;
+  border: 1px solid $primary;
+  padding: 10px;
+
+  p.title {
+    background: $primary;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+}

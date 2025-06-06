@@ -1,0 +1,138 @@
+@import "../../../assets/styles/variable.scss";
+
+.navbar {
+  height: $navbar-height;
+  position: fixed;
+  background: $bs-bg-color;
+  border: 1px solid #d3d3d3;
+  top: 0;
+  width: 100%;
+  z-index: 9;
+  .hamburger {
+    background: transparent;
+    border: none;
+    color: $primary;
+    padding: 0;
+    span {
+      font-size: 26px;
+    }
+  }
+  .logo-container {
+    bottom: 2px;
+    .title {
+      font-size: 12px;
+      margin: 0;
+    }
+    span {
+      font-size: 25px;
+      bottom: 2px;
+    }
+    .branch {
+      color: #54331a;
+      font-size: 12px;
+      margin: 0;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.body-container {
+  position: relative;
+  top: $navbar-height;
+  display: flex;
+  width: 100%;
+  overflow: auto;
+  .menu-container {
+    background: white;
+    position: fixed;
+    width: 0;
+    z-index: 9;
+    width: $sidenav-width;
+    transition: margin-left 0.3s ease-in-out;
+    height: calc(100vh - $navbar-height);
+    padding: 0.5rem 0;
+    margin: 0;
+    margin-left: -$sidenav-width;
+    &.expanded {
+      margin-left: 0;
+      transition: margin-left 0.3s ease-in-out;
+    }
+    .nav-item {
+      list-style: none;
+      position: relative;
+      .nav-link {
+        padding: 5px 15px 5px 22px;
+        font-size: 13px;
+        color: #767573;
+        font-weight: 600;
+        &.active,
+        &:not(.has-child):hover {
+          background: $primary;
+          color: white;
+        }
+        &.nested {
+          padding-left: 0.75rem !important;
+        }
+        i {
+          color: $primary;
+        }
+      }
+      .expanded {
+        background: $bs-bg-color;
+        margin: 0 15px 0 22px;
+        .nav-link {
+          padding: 5px 10px 5px 0;
+        }
+      }
+    }
+  }
+  .main-container {
+    overflow: auto;
+    width: 100vw;
+    transition: margin-left 0.3s ease-in-out;
+    &.expanded {
+      margin-left: $sidenav-width;
+      transition: margin-left 0.3s ease-in-out;
+    }
+    .page-heading {
+      background: white;
+      color: #212529;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      font-size: 11.75px;
+      box-shadow: -3px 0px 2px 2px #e3e3e3;
+      padding: 0.5rem 1rem;
+      margin: 0;
+    }
+    .main-content {
+      padding: 10px 1rem;
+    }
+  }
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0.5;
+  z-index: 5;
+}
+
+@media (max-width: 991px) {
+  .body-container {
+    .menu-container {
+      position: fixed;
+      left: 0;
+      z-index: 9;
+      background: white;
+    }
+    .main-container {
+      &.expanded {
+        margin-left: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<nav class="navbar d-flex justify-content-between align-items-center px-4 py-0">
+  <div class="d-flex gap-3">
+    <button (click)="toggleSideNav()" class="hamburger">
+      <span id="Menu_btn" class="fa fa-2x fa fa-bars"></span>
+    </button>
+    <div class="d-flex gap-2 align-items-center logo-container position-relative">
+      <img height="26" width="37" src="assets/images/CWCPDF.PNG">
+      <span class="position-relative">|</span>
+      <div class="d-flex flex-column">
+        <h6 class="title">Exim Management System</h6>
+        <h4 class="branch">Patparganj</h4>
+      </div>
+    </div>
+  </div>
+  <div>
+  </div>
+</nav>
+<div *ngIf="!isSideNavCollapsed() && isSmallDevice()" (click)="toggleSideNav()" class="menu-overlay"></div>
+<div class="body-container">
+  <ul [class.expanded]="!isSideNavCollapsed()" class="menu-container">
+    <li *ngFor="let menu of menus; let index = index" class="nav-item">
+      <ng-container *ngTemplateOutlet="menuTemplate; context: {  $implicit: menu, level: 1, index }"></ng-container>
+    </li>
+  </ul>
+  <div [class.expanded]="!isSideNavCollapsed()" class="main-container">
+    <p class="page-heading">{{breadCrumbService.title$ | async}}</p>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<ng-template #menuTemplate let-menu let-level="level" let-index="index">
+  <a [class.nested]="level > 1" class="nav-link d-flex justify-content-between align-items-center gap-2"
+    [class.active]="isActiveLink(menu.path)" [class.has-child]="menu.children?.length"
+    (click)="clickMenu($event, menu, index)" [href]="'/' + (menu.path ?? '')">
+    <span>{{ menu.label }}</span>
+    <i *ngIf="menu.children" [class]="expandedMenu().get(index) ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+  </a>
+  <div *ngIf="expandedMenu().get(index)" class="expanded">
+    <ng-container *ngFor="let subMenu of (menu.children ?? [])">
+      <ng-container *ngTemplateOutlet="menuTemplate; context: {  $implicit: subMenu, level: level + 1 }"></ng-container>
+    </ng-container>
+  </div>
+</ng-template>

@@ -1,0 +1,42 @@
+<div class="table-container">
+  <table class="table table-bordered nowrap dataTable no-footer" cellspacing="0">
+    <thead>
+      <tr role="row">
+        <th *ngFor="let header of headers" [class]="header.class"
+          [width]="header.width ?? (header.type === 'icon' ? '56px' : '')">
+          {{header.label}}
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <div *ngIf="isFetching" class="table-loader">
+        <img src="assets/gifs/loader.gif" />
+      </div>
+      <ng-container *ngIf="records?.length; else noRecords">
+        <tr *ngFor="let record of records" role="row" class="even">
+          <td *ngFor="let header of headers" [class]="header.valueClass"
+            [width]="header.width ?? (header.type === 'icon' ? '56px' : '')">
+            <ng-container *ngIf="header.type !== 'icon'">
+              {{getData(record, header)}}
+            </ng-container>
+            <ng-container *ngIf="header.type === 'icon'">
+              <div (click)="iconClick(record, header)" class="table_icon"><span><i [class]="header.icon"
+                    aria-hidden="true"></i></span></div>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-container>
+
+      <ng-template #noRecords>
+        <tr>
+          <td colspan="12">
+            <div class="col-md-2 w-100 d-flex flex-column align-items-center justify-content-center gap-4 no-records">
+              <img *ngIf="records" class="data-table-no-record-img" src="assets/images/noRecordFound.jpg">
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </table>
+</div>

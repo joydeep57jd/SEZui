@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title">Delete Confirmation</h4>
+  <button type="button" class="btn-close" aria-describedby="modal-title"
+    (click)="modal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+  <p>
+    Are you sure you want to delete <span class="text-primary">"{{data && data.name}}"</span>?
+  </p>
+  <p>
+    <span class="text-danger">This operation can not be undone.</span>
+  </p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-danger" (click)="modal.dismiss('cancel click')">Cancel</button>
+  <button type="button" [disabled]="isDeleting()" ngbAutofocus class="btn btn-danger" (click)="delete()">Delete</button>
+</div>
