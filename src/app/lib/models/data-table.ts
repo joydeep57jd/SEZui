@@ -19,7 +19,8 @@ export type IDataTableDataType =
   | 'date'
   | 'boolean'
   | 'price'
-  | 'icon';
+  | 'icon'
+  | 'sl';
 
 export type SearchCriteria = IPageCriteria & Record<string, string | number>
 
@@ -27,4 +28,5 @@ export interface IPageCriteria {
   page: number;
   size: number;
   search?: string;
+  reloadCount?: number;
 }

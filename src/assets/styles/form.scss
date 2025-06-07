@@ -34,6 +34,7 @@ textarea {
   align-items: center;
 }
 input[disabled],
+select[disabled],
 input[readonly],
 fieldset[disabled] input {
   background-color: #ddd;

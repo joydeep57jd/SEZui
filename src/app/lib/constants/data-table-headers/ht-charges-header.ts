@@ -4,7 +4,7 @@ export const HTChargesHeaders: IDataTableHeader[] = [
   {
     field: 'slNo',
     label: 'SL No',
-    type: 'string',
+    type: 'sl',
     width: '60px',
     valueClass: 'text-center',
     class: 'text-center',
@@ -26,11 +26,11 @@ export const HTChargesHeaders: IDataTableHeader[] = [
   },
   {
     label: 'Effective Date',
-    field: 'eEffectiveDate',
+    field: 'effectiveDate',
     type: 'date',
   },
   {
-    field: 'operationCode',
+    field: 'operationId',
     label: 'Operation Code',
     type: 'string',
   },
@@ -50,7 +50,7 @@ export const HTChargesHeaders: IDataTableHeader[] = [
     type: 'string',
   },
   {
-    field: 'cwcRate',
+    field: 'rateCWC',
     label: 'CWC Rate',
     type: 'string',
   },

@@ -23,7 +23,7 @@ export class DataTableComponent implements OnInit {
   @Input() idKey!: string;
   @Input() url!: string;
 
-  searchCriteria$ = new BehaviorSubject<SearchCriteria>({ page: 1, size: 10, });
+  searchCriteria$ = new BehaviorSubject<SearchCriteria>({ page: 1, size: 10, reloadCount: 0});
   records = signal<any[] | null>(null);
   totalPage = signal<number>(0);
   isFetching = signal<boolean>(false)
@@ -43,7 +43,7 @@ export class DataTableComponent implements OnInit {
       switchMap((params) => this.getListData(params))
     ).subscribe({
       next: (response: any) => {
-        this.records.set(response);
+        this.records.set(response.data);
         // this.totalPage.set(10)
         this.isFetching.set(false);
       },
@@ -72,10 +72,13 @@ export class DataTableComponent implements OnInit {
     this.searchCriteria$.next({ ...this.searchCriteria$.getValue(), page: 1, size, });
   }
 
+  reload() {
+    this.searchCriteria$.next({ ...this.searchCriteria$.getValue(), reloadCount: +this.searchCriteria$.getValue()["reloadCount"]! + 1 });
+  }
+
   deleteRecord({ record, header, name }: { record: any, header: IDataTableHeader, name: string }) {
     const modalRef = this.modalService.open(DeleteModalComponent, { centered: true, });
-    const data = { url: header.deleteApiUrl, record, idKey: this.idKey, name };
-    modalRef.componentInstance.data = data;
+    modalRef.componentInstance.data = { url: header.deleteApiUrl, record, idKey: this.idKey, name };
     modalRef.result.then((result) => result && this.fetchRecords());
   }
 }

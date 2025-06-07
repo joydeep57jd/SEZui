@@ -14,11 +14,11 @@
         <img src="assets/gifs/loader.gif" />
       </div>
       <ng-container *ngIf="records?.length; else noRecords">
-        <tr *ngFor="let record of records" role="row" class="even">
+        <tr *ngFor="let record of records; let index = index" role="row" class="even">
           <td *ngFor="let header of headers" [class]="header.valueClass"
             [width]="header.width ?? (header.type === 'icon' ? '56px' : '')">
             <ng-container *ngIf="header.type !== 'icon'">
-              {{getData(record, header)}}
+              {{getData(record, header, index)}}
             </ng-container>
             <ng-container *ngIf="header.type === 'icon'">
               <div (click)="iconClick(record, header)" class="table_icon"><span><i [class]="header.icon"

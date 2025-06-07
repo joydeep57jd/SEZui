@@ -24,7 +24,7 @@ export class TableComponent {
   @Output() redirect = new EventEmitter();
   @Output() deleteRecord = new EventEmitter();
 
-  getData(record: any, header: IDataTableHeader) {
+  getData(record: any, header: IDataTableHeader, index: number = 0) {
     if (header.valueGetter) {
       return header.valueGetter(record);
     }
@@ -40,6 +40,8 @@ export class TableComponent {
         return value;
       case 'string':
         return value;
+      case 'sl':
+        return  index + 1;
       default:
         return '';
     }

@@ -7,13 +7,14 @@ import {
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from 'src/app/services';
+import {environment} from "../../../environments/environment";
 
 export const apiInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
   next: HttpHandlerFn
 ) => {
   const toastService = inject(ToastService);
-  const baseUrl = 'https://your-api-domain.com/api';
+  const baseUrl = environment.apiBaseUrl;
 
   const updatedReq = req.clone({
     url: `${baseUrl}/${req.url}`,

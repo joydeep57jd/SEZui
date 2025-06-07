@@ -1,8 +1,8 @@
 export const operationTypes = [
-  { value: 1, label: "Import" },
-  { value: 2, label: "Import (RMS)" },
-  { value: 3, label: "Export" },
-  { value: 4, label: "General" },
+  { value: 6, label: "Import" },
+  { value: 6, label: "Import (RMS)" },
+  { value: 6, label: "Export" },
+  { value: 6, label: "General" },
 ];
 
 export const containerTypes = [
@@ -28,14 +28,15 @@ export const commodityTypes = [
 ];
 
 export const containerLoadTypes = [
-  { value: 1, label: "FCL" },
-  { value: 2, label: "LCL" },
-  { value: 3, label: "DD" },
+  { value: "FCL", label: "FCL" },
+  { value: "LCL", label: "LCL" },
+  { value: "DD", label: "DD" },
 ];
 
-export const transportForms = [
-  { value: 1, label: "LONI" },
-  { value: 2, label: "TKD" },
+export const transportFroms = [
+  { value: "LONI", label: "LONI" },
+  { value: "TKD", label: "TKD" },
+  { value: "Yard", label: "Yard" },
 ];
 
 export const eximTypes = [
