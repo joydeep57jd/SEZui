@@ -18,8 +18,8 @@ export const types = [
 ];
 
 export const sizes = [
-  { value: 1, label: 20 },
-  { value: 2, label: 40 },
+  { value: 20, label: 20 },
+  { value: 40, label: 40 },
 ];
 
 export const commodityTypes = [
@@ -40,7 +40,7 @@ export const transportFroms = [
 ];
 
 export const eximTypes = [
-  { value: 1, label: "Exim" },
-  { value: 2, label: "RMS Exim" },
-  { value: 3, label: "RMS Non Exim" },
+  { value: "Exim", label: "Exim" },
+  { value: "RMS Exim", label: "RMS Exim" },
+  { value: "RMS Non Exim", label: "RMS Non Exim" },
 ];

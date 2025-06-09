@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { operationTypes, containerTypes, types, sizes, commodityTypes, containerLoadTypes, transportFroms, eximTypes } from './ht-charges-data';
@@ -16,6 +16,10 @@ import {ApiService, ToastService, UtilService} from "../../../services";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HtChargesComponent {
+  apiService = inject(ApiService);
+  toasterService = inject(ToastService);
+  utilService = inject(UtilService);
+
   readonly operationTypes = operationTypes
   readonly containerTypes = containerTypes
   readonly types = types
@@ -27,11 +31,10 @@ export class HtChargesComponent {
   readonly headers = DATA_TABLE_HEADERS.MASTER.HT_CHARGES
   readonly apiUrls = API.MASTER.HT_CHARGES;
 
-  apiService = inject(ApiService);
-  toasterService = inject(ToastService);
-  utilService = inject(UtilService);
-
   form!: FormGroup;
+  isViewMode = signal(false);
+  isSaving = signal(false);
+
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
@@ -39,59 +42,73 @@ export class HtChargesComponent {
     this.makeForm();
   }
 
-  makeForm(details?: any) {
-    const effectiveDate = details?.effectiveDate ? this.utilService.getNgbDateObject(details.effectiveDate) : null;
+  makeForm() {
     this.form = new FormGroup({
-      HTChargesID: new FormControl(details?.htChargesID ?? 0, []),
-      EffectiveDate: new FormControl(details?.effectiveDate ? effectiveDate : null, []),
-      OperationId: new FormControl(details?.operationId ?? "", []),
-      operationCode: new FormControl(details?.operationCode ?? "", []),
-      ContainerType: new FormControl(details?.containerType ?? "", []),
-      Type: new FormControl(details?.type ?? "", []),
-      Size: new FormControl(details?.size ?? "", []),
-      MaxDistance: new FormControl(details?.maxDistance ?? "", []),
-      CommodityType: new FormControl(details?.commodityType ?? "", []),
-      ContainerLoadType: new FormControl(details?.containerLoadType ?? "", []),
-      TransportFrom: new FormControl(details?.transportFrom ?? "", []),
-      EximType: new FormControl(details?.eximType ?? "", []),
-      RateCWC: new FormControl(details?.rateCWC ?? "", []),
-      ContractorRate: new FormControl(details?.contractorRate ?? "", []),
+      htChargesID: new FormControl(0, []),
+      effectiveDate: new FormControl( null, []),
+      operationId: new FormControl("", []),
+      operationCode: new FormControl("", []),
+      containerType: new FormControl("", []),
+      type: new FormControl("", []),
+      size: new FormControl("", []),
+      maxDistance: new FormControl("", []),
+      commodityType: new FormControl("", []),
+      containerLoadType: new FormControl("", []),
+      transportFrom: new FormControl("", []),
+      eximType: new FormControl("", []),
+      rateCWC: new FormControl("", []),
+      contractorRate: new FormControl("", []),
     })
+  }
+
+  edit(record: any) {
+    this.patchForm({...record}, false);
+  }
+
+  view(record: any) {
+    this.patchForm({...record}, true);
+  }
+
+  patchForm(record: any, isViewMode: boolean) {
+    record.effectiveDate = record.effectiveDate ? this.utilService.getNgbDateObject(record.effectiveDate) : null;
+    this.form.reset();
+    this.form.patchValue(record);
+    this.isViewMode = signal(isViewMode);
+    isViewMode ? this.form.disable() : this.form.enable();
+  }
+
+  setEditMode(){
+    this.form.enable();
+    this.isViewMode = signal(false);
+  }
+
+  reset() {
+    this.form.reset();
+    this.makeForm();
   }
 
   submit() {
     this.form.markAllAsTouched();
     if (this.form.valid) {
+      this.isSaving.set(true);
       const data = this.makePayload();
-      this.apiService.post(this.apiUrls.CREATE, data).subscribe({
+      this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("H&T Charges saved successfully");
           this.table.reload();
           this.makeForm();
+          this.isSaving.set(false);
         }, error: () => {
           this.toasterService.showError("Error while saving H&T Charges");
+          this.isSaving.set(false);
         }
       })
     }
   }
 
-  edit(record: any) {
-    this.makeForm(record);
-  }
-
-  view(record: any) {
-    this.makeForm(record);
-    this.form.disable();
-  }
-
-  reset() {
-    this.makeForm();
-    this.form.enable();
-  }
-
   makePayload() {
     const value = {...this.form.value};
-    value.EffectiveDate = value.EffectiveDate ? this.utilService.getDateObject(value.EffectiveDate) : new Date();
+    value.effectiveDate = value.effectiveDate ? this.utilService.getDateObject(value.effectiveDate) : new Date();
     return value;
   }
 

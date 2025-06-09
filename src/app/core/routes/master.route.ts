@@ -39,7 +39,7 @@ export const MASTER_ROUTES: Route[] = [
   },
   {
     path: PATHS.MASTER.SAC,
-    loadComponent: () => import('../..').then((c) => c.PageNotFoundComponent),
+    loadComponent: () => import('../..').then((c) => c.SacComponent),
     data: { title: "GST Against SAC" }
   },
 ];

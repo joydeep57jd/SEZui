@@ -11,7 +11,7 @@
 
     <tbody>
       <div *ngIf="isFetching" class="table-loader">
-        <img src="assets/gifs/loader.gif" />
+        <img src="assets/gifs/loader.gif" alt="loader" />
       </div>
       <ng-container *ngIf="records?.length; else noRecords">
         <tr *ngFor="let record of records; let index = index" role="row" class="even">
@@ -32,7 +32,7 @@
         <tr>
           <td colspan="12">
             <div class="col-md-2 w-100 d-flex flex-column align-items-center justify-content-center gap-4 no-records">
-              <img *ngIf="records" class="data-table-no-record-img" src="assets/images/noRecordFound.jpg">
+              <img *ngIf="!isFetching && !records?.length" class="data-table-no-record-img" src="assets/images/noRecordFound.jpg" alt="no record found" />
             </div>
           </td>
         </tr>

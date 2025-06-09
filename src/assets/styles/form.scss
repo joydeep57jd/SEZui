@@ -36,6 +36,7 @@ textarea {
 input[disabled],
 select[disabled],
 input[readonly],
+textarea[disabled],
 fieldset[disabled] input {
   background-color: #ddd;
   opacity: 1;

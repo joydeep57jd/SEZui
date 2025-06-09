@@ -6,11 +6,11 @@
         <div class="form-group">
           <label>* Effective Date:</label>
           <div (click)="effectiveDatePicker.open()" class="position-relative">
-            <input formControlName="EffectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+            <input formControlName="effectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
               #effectiveDatePicker="ngbDatepicker" />
             <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
-          <ng-container *ngIf="hasError('EffectiveDate')">
+          <ng-container *ngIf="hasError('effectiveDate')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -19,12 +19,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Operation Type:</label>
-          <select formControlName="OperationId" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="operationId" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let operationType of operationTypes" [value]="operationType.value">{{operationType.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('OperationId')">
+          <ng-container *ngIf="hasError('operationId')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -43,12 +43,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Container Type:</label>
-          <select formControlName="ContainerType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="containerType" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let containerType of containerTypes" [value]="containerType.value">{{containerType.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('ContainerType')">
+          <ng-container *ngIf="hasError('containerType')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -57,12 +57,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Type:</label>
-          <select formControlName="Type" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="type" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let type of types" [value]="type.value">{{type.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('Type')">
+          <ng-container *ngIf="hasError('type')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -71,12 +71,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Size:</label>
-          <select formControlName="Size" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="size" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('Size')">
+          <ng-container *ngIf="hasError('size')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -85,8 +85,8 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Max Distance:</label>
-          <input formControlName="MaxDistance" placeholder="Enter Max Distance" type="number">
-          <ng-container *ngIf="hasError('MaxDistance')">
+          <input formControlName="maxDistance" placeholder="Enter Max Distance" type="number">
+          <ng-container *ngIf="hasError('maxDistance')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -95,12 +95,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Commodity Type:</label>
-          <select formControlName="CommodityType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="commodityType" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let commodityType of commodityTypes" [value]="commodityType.value">{{commodityType.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('CommodityType')">
+          <ng-container *ngIf="hasError('commodityType')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -109,13 +109,13 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Container Load Type:</label>
-          <select formControlName="ContainerLoadType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="containerLoadType" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let containerLoadType of containerLoadTypes" [value]="containerLoadType.value">
               {{containerLoadType.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('ContainerLoadType')">
+          <ng-container *ngIf="hasError('containerLoadType')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -124,12 +124,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Transport From:</label>
-          <select formControlName="TransportFrom" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="transportFrom" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let transportFrom of transportFromList" [value]="transportFrom.value">{{transportFrom.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('TransportFrom')">
+          <ng-container *ngIf="hasError('transportFrom')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -138,12 +138,12 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Exim Type:</label>
-          <select formControlName="EximType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="eximType" class="dropdown" placeholder="Enter RMS">
             <option value="">---Select---</option>
             <option *ngFor="let eximType of eximTypes" [value]="eximType.value">{{eximType.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('EximType')">
+          <ng-container *ngIf="hasError('eximType')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -160,8 +160,8 @@
         <div class="col-md-4 col-lg-3 col-sm-6">
           <div class="form-group">
             <label>CWC Rate:</label>
-            <input formControlName="RateCWC" placeholder="Enter CWC Rate" type="text">
-            <ng-container *ngIf="hasError('RateCWC')">
+            <input formControlName="rateCWC" placeholder="Enter CWC Rate" type="number">
+            <ng-container *ngIf="hasError('rateCWC')">
               <span class="error">Required field</span>
             </ng-container>
           </div>
@@ -169,8 +169,8 @@
         <div class="col-md-4 col-lg-3 col-sm-6">
           <div class="form-group">
             <label>* Contractor Rate:</label>
-            <input formControlName="ContractorRate" placeholder="Enter Contractor Rate" type="text">
-            <ng-container *ngIf="hasError('ContractorRate')">
+            <input formControlName="contractorRate" placeholder="Enter Contractor Rate" type="number">
+            <ng-container *ngIf="hasError('contractorRate')">
               <span class="error">Required field</span>
             </ng-container>
           </div>
@@ -181,8 +181,13 @@
 
     <hr />
     <div class="d-flex justify-content-left gap-2">
-      <button type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
-      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+        <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+      </ng-template>
     </div>
   </form>
 

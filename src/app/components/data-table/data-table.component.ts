@@ -26,7 +26,7 @@ export class DataTableComponent implements OnInit {
   searchCriteria$ = new BehaviorSubject<SearchCriteria>({ page: 1, size: 10, reloadCount: 0});
   records = signal<any[] | null>(null);
   totalPage = signal<number>(0);
-  isFetching = signal<boolean>(false)
+  isFetching = signal<boolean>(true)
 
   private modalService = inject(NgbModal);
 

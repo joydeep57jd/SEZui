@@ -14,7 +14,7 @@ export const apiInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ) => {
   const toastService = inject(ToastService);
-  const baseUrl = environment.apiBaseUrl;
+  const baseUrl = 'http://103.205.66.15:84' || environment.apiBaseUrl;
 
   const updatedReq = req.clone({
     url: `${baseUrl}/${req.url}`,
