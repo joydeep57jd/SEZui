@@ -1,6 +1,22 @@
 <div class="card">
   <form [formGroup]="form">
     <div class="row">
+
+      <div class="row">
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Operation Type</label>
+            <div>
+              <label *ngFor="let operationsName of operationsNames" class="radio-container">
+                {{operationsName.label}}
+                <input type="radio" formControlName="operationName" [value]="operationsName.value">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Reference No:</label>
@@ -14,7 +30,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Operation Type:</label>
-          <select formControlName="operationType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="operationType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let operationType of operationTypes" [value]="operationType.value">{{operationType.label}}
             </option>
@@ -28,7 +44,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Delivery Type:</label>
-          <select formControlName="deliveryType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="deliveryType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let deliveryType of deliveryTypes" [value]="deliveryType.value">{{deliveryType.label}}
             </option>
@@ -43,13 +59,7 @@
 
     <div class="row">
       <div class="col-md-6 col-lg-6 col-sm-6">
-        <div class="form-group">
-          <label>Party:</label>
-          <input formControlName="party" placeholder="Enter party" type="text">
-          <ng-container *ngIf="hasError('party')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Party:" placeholder="Select Party" formControlName="partyId" [options]="partyList()" />
       </div>
 
       <div class="col-md-6 col-lg-6 col-sm-6">
@@ -90,7 +100,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Size :</label>
-          <select formControlName="size" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="size" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
             </option>
@@ -104,7 +114,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Delivery Type:</label>
-          <select formControlName="materialType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="materialType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let materialType of materialTypes" [value]="materialType.value">{{materialType.label}}
             </option>
@@ -160,13 +170,17 @@
     </div>
 
     <div class="d-flex justify-content-left gap-2">
-      <button type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
-      <button type="button" class="btn btn-outline-primary form-btn">Reset</button>
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
     </div>
   </form>
 
   <div class="mt-2 d-flex flex-column gap-2">
-    <button type="button" class="btn btn-primary form-btn" (click)="submit()">Show List</button>
-    <app-data-table [headers]="headers" [url]="''"></app-data-table>
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
   </div>
 </div>

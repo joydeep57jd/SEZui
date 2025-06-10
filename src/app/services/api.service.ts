@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class ApiService {
   http = inject(HttpClient);
 
-  get(url: string, params: any) {
+  get(url: string, params: any = {}) {
     return this.http.get(url, { params });
   }
 

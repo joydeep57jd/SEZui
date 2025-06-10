@@ -2,13 +2,15 @@ import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@an
 import { CommonModule } from '@angular/common';
 import {ApiService, ToastService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
+import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
+import {OPERATION_DATA} from "./operations-data";
 
 @Component({
   selector: 'app-operations',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule, AutoCompleteComponent],
   templateUrl: './operations.component.html',
   styleUrls: ['./operations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,10 +19,12 @@ export class OperationsComponent {
   apiService = inject(ApiService);
   toasterService = inject(ToastService);
 
-  readonly headers = DATA_TABLE_HEADERS.MASTER.SAC
+  readonly headers = DATA_TABLE_HEADERS.MASTER.OPERATION
   readonly apiUrls = API.MASTER.OPERATION;
+  readonly types = OPERATION_DATA.types
 
   form!: FormGroup;
+  sacList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
 
@@ -29,15 +33,25 @@ export class OperationsComponent {
   constructor() {
     this.setEditCallback();
     this.makeForm();
+    this.getSacList()
+  }
+
+  getSacList() {
+    this.apiService.get(API.MASTER.SAC.LIST).subscribe({
+      next: (response: any) => {
+        this.sacList.set(response.data)
+      }
+    })
   }
 
   makeForm() {
     this.form = new FormGroup({
-      sacId: new FormControl(0, []),
-      sacCode: new FormControl( null, []),
-      gst: new FormControl("", []),
-      cess: new FormControl("", []),
-      description: new FormControl("", []),
+      operationId: new FormControl(0, []),
+      operationType: new FormControl("", []),
+      clauseOrder: new FormControl( null, []),
+      sacId: new FormControl("", []),
+      operationSDesc: new FormControl("", []),
+      operationDesc: new FormControl("", []),
     })
   }
 
@@ -73,12 +87,11 @@ export class OperationsComponent {
       const data = this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
-          this.toasterService.showSuccess("GST against SAC saved successfully");
+          this.toasterService.showSuccess("Operation Master saved successfully");
           this.table.reload();
           this.makeForm();
           this.isSaving.set(false);
         }, error: () => {
-          this.toasterService.showError("Error while saving GST against SAC");
           this.isSaving.set(false);
         }
       })
@@ -86,8 +99,7 @@ export class OperationsComponent {
   }
 
   makePayload() {
-    const value = {...this.form.value};
-    return value;
+    return {...this.form.value, branchId: 0, operationCode: "", pkgCount: ""};
   }
 
   hasError(formControlName: string) {

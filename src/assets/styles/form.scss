@@ -115,3 +115,37 @@ fieldset[disabled] input {
     padding: 5px 10px;
   }
 }
+
+.custom-auto-complete {
+  width: 100%;
+  position: relative;
+  .overlay{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+  }
+  .option-list {
+    background: white;
+    position: absolute;
+    width: 100%;
+    z-index: 10000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    li {
+      list-style: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      &:hover {
+        background: $primary;
+        color: white;
+      }
+      &.selected {
+        background: $primary;
+        color: white;
+      }
+    }
+  }
+}

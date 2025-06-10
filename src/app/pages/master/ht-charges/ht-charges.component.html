@@ -19,7 +19,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Operation Type:</label>
-          <select formControlName="operationId" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="operationId" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let operationType of operationTypes" [value]="operationType.value">{{operationType.label}}
             </option>
@@ -43,7 +43,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Container Type:</label>
-          <select formControlName="containerType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="containerType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let containerType of containerTypes" [value]="containerType.value">{{containerType.label}}
             </option>
@@ -57,7 +57,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Type:</label>
-          <select formControlName="type" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="type" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let type of types" [value]="type.value">{{type.label}}
             </option>
@@ -71,7 +71,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Size:</label>
-          <select formControlName="size" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="size" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
             </option>
@@ -95,7 +95,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>* Commodity Type:</label>
-          <select formControlName="commodityType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="commodityType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let commodityType of commodityTypes" [value]="commodityType.value">{{commodityType.label}}
             </option>
@@ -109,7 +109,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Container Load Type:</label>
-          <select formControlName="containerLoadType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="containerLoadType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let containerLoadType of containerLoadTypes" [value]="containerLoadType.value">
               {{containerLoadType.label}}
@@ -124,7 +124,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Transport From:</label>
-          <select formControlName="transportFrom" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="transportFrom" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let transportFrom of transportFromList" [value]="transportFrom.value">{{transportFrom.label}}
             </option>
@@ -138,7 +138,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Exim Type:</label>
-          <select formControlName="eximType" class="dropdown" placeholder="Enter RMS">
+          <select formControlName="eximType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let eximType of eximTypes" [value]="eximType.value">{{eximType.label}}
             </option>
@@ -186,8 +186,8 @@
       </ng-container>
       <ng-template #formActionButton>
         <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
-        <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
       </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
     </div>
   </form>
 

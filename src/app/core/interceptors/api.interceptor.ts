@@ -32,7 +32,7 @@ export const apiInterceptor: HttpInterceptorFn = (
       if (error.status === 401) {
         // redirectToLogin();
       } else {
-        toastService.showError('Something went wrong');
+        toastService.showError(error.error.title ?? 'Something went wrong');
       }
       return throwError(() => error);
     })

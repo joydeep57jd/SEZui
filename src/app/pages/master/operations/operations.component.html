@@ -1,1 +1,69 @@
-<p>operations works!</p>
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Type:</label>
+          <select formControlName="operationType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let type of types" [value]="type.value">{{type.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('operationType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Clause:</label>
+          <input formControlName="clauseOrder" placeholder="Enter Clause" type="number">
+          <ng-container *ngIf="hasError('clauseOrder')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="sacCode" keyValue="sacId" label="* SAC:" placeholder="Enter SAC" formControlName="sacId" [options]="sacList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Short Description:</label>
+          <input formControlName="operationSDesc" placeholder="Enter Short Description" type="text">
+          <ng-container *ngIf="hasError('operationSDesc')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Description:</label>
+          <textarea formControlName="operationDesc" placeholder="Enter Description" type="text" rows="3"></textarea>
+          <ng-container *ngIf="hasError('operationDesc')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

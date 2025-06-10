@@ -11,12 +11,15 @@ export const API = {
     OPERATION: {
       LIST: "Sez/GetMstOperation",
       SAVE: "Sez/AddEditMstOperation",
+    },
+    PARTY: {
+      LIST: "Sez/GetmstParty",
     }
   },
   GATE_OPERATION: {
     GATE_IN: {
-      LIST: "",
-      SAVE: "",
+      LIST: "Sez/GetAllEntries",
+      SAVE: "Sez/AddEditEntry",
     },
   },
 };

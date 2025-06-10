@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { operationTypes, containerTypes, types, sizes, commodityTypes, containerLoadTypes, transportFroms, eximTypes } from './ht-charges-data';
+import { HT_CHARGES_DATA } from './ht-charges-data';
 import { DataTableComponent } from 'src/app/components';
 import {API, DATA_TABLE_HEADERS} from 'src/app/lib';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
@@ -20,14 +20,14 @@ export class HtChargesComponent {
   toasterService = inject(ToastService);
   utilService = inject(UtilService);
 
-  readonly operationTypes = operationTypes
-  readonly containerTypes = containerTypes
-  readonly types = types
-  readonly sizes = sizes
-  readonly commodityTypes = commodityTypes
-  readonly containerLoadTypes = containerLoadTypes
-  readonly transportFromList = transportFroms
-  readonly eximTypes = eximTypes
+  readonly operationTypes = HT_CHARGES_DATA.operationTypes
+  readonly containerTypes = HT_CHARGES_DATA.containerTypes
+  readonly types = HT_CHARGES_DATA.types
+  readonly sizes = HT_CHARGES_DATA.sizes
+  readonly commodityTypes = HT_CHARGES_DATA.commodityTypes
+  readonly containerLoadTypes = HT_CHARGES_DATA.containerLoadTypes
+  readonly transportFromList = HT_CHARGES_DATA.transportFroms
+  readonly eximTypes = HT_CHARGES_DATA.eximTypes
   readonly headers = DATA_TABLE_HEADERS.MASTER.HT_CHARGES
   readonly apiUrls = API.MASTER.HT_CHARGES;
 
@@ -99,7 +99,6 @@ export class HtChargesComponent {
           this.makeForm();
           this.isSaving.set(false);
         }, error: () => {
-          this.toasterService.showError("Error while saving H&T Charges");
           this.isSaving.set(false);
         }
       })

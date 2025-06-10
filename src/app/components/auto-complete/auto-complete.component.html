@@ -1,0 +1,25 @@
+<div class="custom-auto-complete">
+  <div class="form-group">
+    <label>{{ label }}</label>
+    <div class="position-relative">
+      <input
+             [attr.placeholder]="placeholder"
+             [disabled]="isDisabled()"
+             type="text"
+             [ngModel]="inputValue()"
+             (ngModelChange)="onInput($event)"
+             (focus)="setShowOptions(true)"
+      >
+      <span class="input_icon"><i class="fa fa-search" aria-hidden="true"></i></span>
+    </div>
+  </div>
+  <ng-container *ngIf="showOptions()">
+    <ul class="option-list">
+      <li [class.selected]="getOptionValue(selectedOption()) === getOptionValue(option)" *ngFor="let option of filteredOptions()" (click)="selectOption(option)">
+        {{ getOptionLabel(option) }}
+      </li>
+      <li *ngIf="filteredOptions().length === 0">No results found</li>
+    </ul>
+    <div class="overlay" (click)="setShowOptions(false)"></div>
+  </ng-container>
+</div>

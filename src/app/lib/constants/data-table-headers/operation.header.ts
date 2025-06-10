@@ -1,6 +1,6 @@
 import { IDataTableHeader } from "../../models";
 
-export const GateInHeaders: IDataTableHeader[] = [
+export const OperationHeaders: IDataTableHeader[] = [
   {
     field: 'slNo',
     label: 'SL No',
@@ -9,7 +9,6 @@ export const GateInHeaders: IDataTableHeader[] = [
     valueClass: 'text-center',
     class: 'text-center',
   },
-
   {
     field: 'edit',
     label: 'Edit',
@@ -25,19 +24,23 @@ export const GateInHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
-    field: 'referenceNo',
-    label: 'Reference No	',
-    type: 'string',
-    isDeleteLabel: true,
-  },
-  {
-    field: 'vehicleNo',
-    label: 'Vehicle No',
+    field: 'operationType',
+    label: 'Type',
     type: 'string',
   },
   {
-    field: 'containerNo',
-    label: 'Container No',
+    field: 'clauseOrder',
+    label: 'Clause',
+    type: 'string',
+  },
+  {
+    field: 'operationSDesc',
+    label: 'Short Description',
+    type: 'string',
+  },
+  {
+    field: 'operationDesc',
+    label: 'Description',
     type: 'string',
   },
 ];

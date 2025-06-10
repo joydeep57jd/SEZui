@@ -76,7 +76,6 @@ export class SacComponent {
           this.makeForm();
           this.isSaving.set(false);
         }, error: () => {
-          this.toasterService.showError("Error while saving GST against SAC");
           this.isSaving.set(false);
         }
       })
@@ -84,8 +83,7 @@ export class SacComponent {
   }
 
   makePayload() {
-    const value = {...this.form.value};
-    return value;
+    return {...this.form.value};
   }
 
   hasError(formControlName: string) {

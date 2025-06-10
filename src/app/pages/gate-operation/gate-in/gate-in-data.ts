@@ -1,35 +1,33 @@
 export const GATE_IN_DATA = {
+  operationsNames: [
+    { value: "Import", label: "Import" },
+    { value: "Export", label: "Export" },
+    { value: "Empty Vehicle", label: "Empty Vehicle" },
+  ],
+
   operationTypes: [
-    { value: 1, label: "Open Yard" },
-    { value: 1, label: "RC-DC" },
-    { value: 1, label: "Precious Cargo" },
+    { value: "Open Yard", label: "Open Yard" },
+    { value: "RC-DC", label: "RC-DC" },
+    { value: "Precious Cargo", label: "Precious Cargo" },
   ],
 
   deliveryTypes: [
-    { value: 1, label: "Open Yard" },
-    { value: 1, label: "RC-DC" },
-    { value: 1, label: "Precious Cargo" },
+    { value: "Yard", label: "Yard" },
+    { value: "Godown", label: "Godown" },
   ],
 
   containerTypes: [
-    { value: 1, label: "Container" },
-    { value: 2, label: "CBT" },
+    { value: "Container", label: "Container" },
+    { value: "CBT", label: "CBT" },
   ],
 
   sizes: [
-    { value: 20, label: "20" },
-    { value: 40, label: "40" },
+    { value: "20", label: "20" },
+    { value: "40", label: "40" },
   ],
 
   materialTypes: [
-    { value: 1, label: "High Value" },
-    { value: 1, label: "Low Value" },
+    { value: "High Value", label: "High Value" },
+    { value: "Low Value", label: "Low Value" },
   ],
-
-  records: [
-    { slNo: 1, referenceNo: "xxx", vehicleNo: "xxxx", containerNo: "xxx" },
-    { slNo: 1, referenceNo: "xxx", vehicleNo: "xxxx", containerNo: "xxx" },
-    { slNo: 1, referenceNo: "xxx", vehicleNo: "xxxx", containerNo: "xxx" },
-    { slNo: 1, referenceNo: "xxx", vehicleNo: "xxxx", containerNo: "xxx" },
-  ]
 }

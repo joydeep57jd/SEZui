@@ -14,7 +14,7 @@ export const MASTER_ROUTES: Route[] = [
   },
   {
     path: PATHS.MASTER.EXIM_TRADER,
-    loadComponent: () => import('../..').then((c) => c.PageNotFoundComponent),
+    loadComponent: () => import('../..').then((c) => c.EximTraderComponent),
     data: { title: "Exim Trader Master" }
   },
   {
@@ -29,7 +29,7 @@ export const MASTER_ROUTES: Route[] = [
   },
   {
     path: PATHS.MASTER.OPERATION,
-    loadComponent: () => import('../..').then((c) => c.PageNotFoundComponent),
+    loadComponent: () => import('../..').then((c) => c.OperationsComponent),
     data: { title: "Operation Master" }
   },
   {
