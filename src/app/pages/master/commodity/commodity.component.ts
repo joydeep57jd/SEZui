@@ -1,30 +1,28 @@
 import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {DataTableComponent} from "../../../components";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ApiService, ToastService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {DataTableComponent} from "../../../components";
-import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
-import {OPERATION_DATA} from "./operations-data";
+import {COMMODITY_DATA} from "./commodity.data";
 
 @Component({
-  selector: 'app-operations',
+  selector: 'app-commodity',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule, AutoCompleteComponent],
-  templateUrl: './operations.component.html',
-  styleUrls: ['./operations.component.scss'],
+  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule],
+  templateUrl: './commodity.component.html',
+  styleUrls: ['./commodity.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OperationsComponent {
+export class CommodityComponent {
   apiService = inject(ApiService);
   toasterService = inject(ToastService);
 
-  readonly headers = DATA_TABLE_HEADERS.MASTER.OPERATION
-  readonly apiUrls = API.MASTER.OPERATION;
-  readonly types = OPERATION_DATA.types
+  readonly headers = DATA_TABLE_HEADERS.MASTER.COMMODITY
+  readonly apiUrls = API.MASTER.COMMODITY;
+  readonly commodityTypes = COMMODITY_DATA.commodityTypes;
 
   form!: FormGroup;
-  sacList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
 
@@ -33,25 +31,16 @@ export class OperationsComponent {
   constructor() {
     this.setEditCallback();
     this.makeForm();
-    this.getSacList()
-  }
-
-  getSacList() {
-    this.apiService.get(API.MASTER.SAC.LIST).subscribe({
-      next: (response: any) => {
-        this.sacList.set(response.data)
-      }
-    })
   }
 
   makeForm() {
     this.form = new FormGroup({
-      operationId: new FormControl(0, []),
-      operationType: new FormControl("", []),
-      clauseOrder: new FormControl(null, []),
-      sacId: new FormControl("", []),
-      operationSDesc: new FormControl("", []),
-      operationDesc: new FormControl("", []),
+      commodityId: new FormControl(0, []),
+      commodityName: new FormControl("", []),
+      commodityType: new FormControl(this.commodityTypes[0].value, []),
+      alias: new FormControl("", []),
+      isTaxExempted: new FormControl(false, []),
+      isFumigationChemical: new FormControl(false, []),
     })
   }
 
@@ -87,7 +76,7 @@ export class OperationsComponent {
       const data = this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
-          this.toasterService.showSuccess("Operation saved successfully");
+          this.toasterService.showSuccess("Commodity saved successfully");
           this.table.reload();
           this.makeForm();
           this.isSaving.set(false);
@@ -99,7 +88,7 @@ export class OperationsComponent {
   }
 
   makePayload() {
-    return {...this.form.value, branchId: 0, operationCode: "", pkgCount: ""};
+    return {...this.form.value};
   }
 
   hasError(formControlName: string) {

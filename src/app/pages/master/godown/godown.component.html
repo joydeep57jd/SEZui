@@ -3,9 +3,9 @@
     <div class="row">
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>* SAC:</label>
-          <input formControlName="sacCode" placeholder="Enter SAC" type="text">
-          <ng-container *ngIf="hasError('sacCode')">
+          <label>* Godown Name:</label>
+          <input formControlName="godownName" placeholder="Enter Godown Name" type="text">
+          <ng-container *ngIf="hasError('godownName')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -13,34 +13,14 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>* GST %</label>
-          <input formControlName="gst" placeholder="Enter GST %" type="number">
-          <ng-container *ngIf="hasError('gst')">
+          <label>* Location Alias:</label>
+          <input formControlName="locationAlias" placeholder="Enter Location Alias" type="text">
+          <ng-container *ngIf="hasError('locationAlias')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
       </div>
 
-      <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>* CESS %:</label>
-          <input formControlName="cess" placeholder="Enter CESS %" type="number">
-          <ng-container *ngIf="hasError('cess')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Description:</label>
-          <textarea formControlName="description" placeholder="Enter Description" rows="5"></textarea>
-          <ng-container *ngIf="hasError('description')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
-      </div>
     </div>
 
     <hr />

@@ -4,7 +4,7 @@ import { PATHS } from 'src/app';
 export const MASTER_ROUTES: Route[] = [
   {
     path: PATHS.MASTER.COMMODITY,
-    loadComponent: () => import('../..').then((c) => c.PageNotFoundComponent),
+    loadComponent: () => import('../..').then((c) => c.CommodityComponent),
     data: { title: "Commodity Master" }
   },
   {
@@ -19,7 +19,7 @@ export const MASTER_ROUTES: Route[] = [
   },
   {
     path: PATHS.MASTER.GODOWN,
-    loadComponent: () => import('../..').then((c) => c.PageNotFoundComponent),
+    loadComponent: () => import('../..').then((c) => c.GodownComponent),
     data: { title: "Godown Master" }
   },
   {
@@ -34,7 +34,7 @@ export const MASTER_ROUTES: Route[] = [
   },
   {
     path: PATHS.MASTER.PORT,
-    loadComponent: () => import('../..').then((c) => c.PageNotFoundComponent),
+    loadComponent: () => import('../..').then((c) => c.PortComponent),
     data: { title: "Port Master" }
   },
   {

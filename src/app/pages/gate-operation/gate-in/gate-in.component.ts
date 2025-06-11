@@ -99,7 +99,7 @@ export class GateInComponent {
       const data = this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next: () => {
-          this.toasterService.showSuccess("GST against SAC saved successfully");
+          this.toasterService.showSuccess("Entry saved successfully");
           this.table.reload();
           this.makeForm();
           this.isSaving.set(false);

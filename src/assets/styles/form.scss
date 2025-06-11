@@ -2,6 +2,7 @@ $radio-size: 20px;
 $dot-size: 8px;
 $checked-bg: #2196f3;
 $dot-color: white;
+$disabled-color: #ddd;
 
 label {
   font-size: 9.75px;
@@ -10,10 +11,11 @@ label {
 }
 input,
 select,
-textarea {
+textarea,
+{
   font-size: 0.75rem;
   color: #1c1c1c;
-  border: 1px solid #ddd;
+  border: 1px solid $disabled-color;
   border-radius: 4px;
   padding: 6px 8px;
   width: 100%;
@@ -33,13 +35,63 @@ textarea {
   display: flex;
   align-items: center;
 }
+
 input[disabled],
 select[disabled],
 input[readonly],
 textarea[disabled],
 fieldset[disabled] input {
-  background-color: #ddd;
+  background-color: $disabled-color;
   opacity: 1;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-top: 14px;
+
+  label{
+    cursor: pointer;
+    user-select: none;
+  }
+
+  i {
+    font-style: normal;
+    font-family: 'FontAwesome';
+    font-size: 16px !important;
+  }
+
+  span {
+    margin: 0 5px;
+    position: relative;
+    bottom: 2.5px;
+  }
+
+  input[type="checkbox"] {
+    &:focus ~ label i {
+      color: $primary;
+    }
+
+    ~ label i.square:before {
+      content: '\f096';
+      color: $primary;
+    }
+
+    &:checked ~ label i.square:before {
+      content: '\f046';
+      color: $primary;
+    }
+
+    &:disabled ~ label {
+      cursor: not-allowed;
+
+      i.square:before {
+        color: $disabled-color;
+      }
+    }
+  }
 }
 
 .radio-container {
@@ -83,6 +135,22 @@ fieldset[disabled] input {
     &::after {
       display: block;
     }
+  }
+
+  input:disabled + .checkmark {
+    border-color: $disabled-color;
+    opacity: 0.6;
+
+    &::after {
+      background-color: $disabled-color;
+      opacity: 0.6;
+    }
+  }
+
+  input:disabled ~ * {
+    cursor: not-allowed;
+    color: $disabled-color;
+    opacity: 0.6;
   }
 }
 

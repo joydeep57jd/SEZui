@@ -4,27 +4,23 @@ import {ApiService, ToastService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
-import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
-import {OPERATION_DATA} from "./operations-data";
 
 @Component({
-  selector: 'app-operations',
+  selector: 'app-godown',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule, AutoCompleteComponent],
-  templateUrl: './operations.component.html',
-  styleUrls: ['./operations.component.scss'],
+  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule],
+  templateUrl: './godown.component.html',
+  styleUrls: ['./godown.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OperationsComponent {
+export class GodownComponent {
   apiService = inject(ApiService);
   toasterService = inject(ToastService);
 
-  readonly headers = DATA_TABLE_HEADERS.MASTER.OPERATION
-  readonly apiUrls = API.MASTER.OPERATION;
-  readonly types = OPERATION_DATA.types
+  readonly headers = DATA_TABLE_HEADERS.MASTER.GODOWN
+  readonly apiUrls = API.MASTER.GODOWN;
 
   form!: FormGroup;
-  sacList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
 
@@ -33,25 +29,13 @@ export class OperationsComponent {
   constructor() {
     this.setEditCallback();
     this.makeForm();
-    this.getSacList()
-  }
-
-  getSacList() {
-    this.apiService.get(API.MASTER.SAC.LIST).subscribe({
-      next: (response: any) => {
-        this.sacList.set(response.data)
-      }
-    })
   }
 
   makeForm() {
     this.form = new FormGroup({
-      operationId: new FormControl(0, []),
-      operationType: new FormControl("", []),
-      clauseOrder: new FormControl(null, []),
-      sacId: new FormControl("", []),
-      operationSDesc: new FormControl("", []),
-      operationDesc: new FormControl("", []),
+      godownId: new FormControl(0, []),
+      godownName: new FormControl("", []),
+      locationAlias: new FormControl("", []),
     })
   }
 
@@ -87,7 +71,7 @@ export class OperationsComponent {
       const data = this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
-          this.toasterService.showSuccess("Operation saved successfully");
+          this.toasterService.showSuccess("Godown saved successfully");
           this.table.reload();
           this.makeForm();
           this.isSaving.set(false);
@@ -99,7 +83,7 @@ export class OperationsComponent {
   }
 
   makePayload() {
-    return {...this.form.value, branchId: 0, operationCode: "", pkgCount: ""};
+    return {...this.form.value};
   }
 
   hasError(formControlName: string) {

@@ -1,0 +1,81 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>* Commodity:</label>
+          <input formControlName="commodityName" placeholder="Enter Commodity" type="text">
+          <ng-container *ngIf="hasError('commodityName')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Commodity Type:</label>
+          <div>
+            <label *ngFor="let commodityType of commodityTypes" class="radio-container">
+              {{commodityType.label}}
+              <input type="radio" formControlName="commodityType" [value]="commodityType.value">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Alias:</label>
+          <input formControlName="alias" placeholder="Enter Alias" type="text">
+          <ng-container *ngIf="hasError('alias')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6"></div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <div class="checkbox-container">
+            <input id="isTaxExempted" formControlName="isTaxExempted" hidden type="checkbox">
+            <label for="isTaxExempted">
+              <i class="square"></i>
+              <span>Tax Exempted</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <div class="checkbox-container">
+            <input id="isFumigationChemical" formControlName="isFumigationChemical" hidden type="checkbox">
+            <label for="isFumigationChemical">
+              <i class="square"></i>
+              <span>Tax Exempted</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

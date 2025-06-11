@@ -1,57 +1,77 @@
 import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {DataTableComponent} from "../../../components";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ApiService, ToastService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {DataTableComponent} from "../../../components";
-import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
-import {OPERATION_DATA} from "./operations-data";
 
 @Component({
-  selector: 'app-operations',
+  selector: 'app-port',
   standalone: true,
-  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule, AutoCompleteComponent],
-  templateUrl: './operations.component.html',
-  styleUrls: ['./operations.component.scss'],
+  imports: [CommonModule, DataTableComponent, FormsModule, ReactiveFormsModule],
+  templateUrl: './port.component.html',
+  styleUrls: ['./port.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OperationsComponent {
+export class PortComponent {
   apiService = inject(ApiService);
   toasterService = inject(ToastService);
 
-  readonly headers = DATA_TABLE_HEADERS.MASTER.OPERATION
-  readonly apiUrls = API.MASTER.OPERATION;
-  readonly types = OPERATION_DATA.types
+  readonly headers = DATA_TABLE_HEADERS.MASTER.PORT
+  readonly apiUrls = API.MASTER.PORT;
 
   form!: FormGroup;
-  sacList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
+  countryList = signal<any[]>([]);
+  stateList = signal<any[]>([]);
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
+    this.getCountryList()
     this.setEditCallback();
     this.makeForm();
-    this.getSacList()
+    this.onCountryChange();
   }
 
-  getSacList() {
-    this.apiService.get(API.MASTER.SAC.LIST).subscribe({
-      next: (response: any) => {
-        this.sacList.set(response.data)
+  onCountryChange() {
+    this.form.get("country")?.valueChanges.subscribe(countryId => {
+      if(countryId) {
+        this.getStateList(countryId);
+        this.form.get("state")?.enable()
+      } else {
+        this.stateList.set([])
+        this.form.get("state")?.disable()
       }
+      this.form.get("state")?.setValue("")
+    })
+  }
+
+  getCountryList(){
+    this.apiService.get(API.MASTER.COUNTRY).subscribe({
+      next: (response: any) => {
+        this.countryList.set(response.data)
+      },
+    })
+  }
+
+  getStateList(countryId: number){
+    this.apiService.get(API.MASTER.STATE, {id: countryId}).subscribe({
+      next: (response: any) => {
+        this.stateList.set(response.data)
+      },
     })
   }
 
   makeForm() {
     this.form = new FormGroup({
-      operationId: new FormControl(0, []),
-      operationType: new FormControl("", []),
-      clauseOrder: new FormControl(null, []),
-      sacId: new FormControl("", []),
-      operationSDesc: new FormControl("", []),
-      operationDesc: new FormControl("", []),
+      portId: new FormControl(0, []),
+      portName: new FormControl("", []),
+      portAlias: new FormControl("", []),
+      pod: new FormControl(false, []),
+      country: new FormControl("", []),
+      state: new FormControl({value: "", disabled: true}, []),
     })
   }
 
@@ -87,7 +107,7 @@ export class OperationsComponent {
       const data = this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
-          this.toasterService.showSuccess("Operation saved successfully");
+          this.toasterService.showSuccess("Port saved successfully");
           this.table.reload();
           this.makeForm();
           this.isSaving.set(false);
@@ -99,7 +119,7 @@ export class OperationsComponent {
   }
 
   makePayload() {
-    return {...this.form.value, branchId: 0, operationCode: "", pkgCount: ""};
+    return {...this.form.value};
   }
 
   hasError(formControlName: string) {

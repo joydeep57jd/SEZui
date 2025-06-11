@@ -45,7 +45,7 @@ export class HtChargesComponent {
   makeForm() {
     this.form = new FormGroup({
       htChargesID: new FormControl(0, []),
-      effectiveDate: new FormControl( null, []),
+      effectiveDate: new FormControl(null, []),
       operationId: new FormControl("", []),
       operationCode: new FormControl("", []),
       containerType: new FormControl("", []),

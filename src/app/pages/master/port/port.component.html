@@ -3,9 +3,9 @@
     <div class="row">
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>* SAC:</label>
-          <input formControlName="sacCode" placeholder="Enter SAC" type="text">
-          <ng-container *ngIf="hasError('sacCode')">
+          <label>* Port Name:</label>
+          <input formControlName="portName" placeholder="Enter Port Name" type="text">
+          <ng-container *ngIf="hasError('portName')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -13,9 +13,9 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>* GST %</label>
-          <input formControlName="gst" placeholder="Enter GST %" type="number">
-          <ng-container *ngIf="hasError('gst')">
+          <label>* Port Alias:</label>
+          <input formControlName="portAlias" placeholder="Enter Port Alias" type="text">
+          <ng-container *ngIf="hasError('portAlias')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -23,22 +23,41 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>* CESS %:</label>
-          <input formControlName="cess" placeholder="Enter CESS %" type="number">
-          <ng-container *ngIf="hasError('cess')">
+          <label>*Country Name:</label>
+          <select formControlName="country" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let country of countryList()" [value]="country.id">{{country.name}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('country')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Description:</label>
-          <textarea formControlName="description" placeholder="Enter Description" rows="5"></textarea>
-          <ng-container *ngIf="hasError('description')">
+          <label>*State Name:</label>
+          <select formControlName="state" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let state of stateList()" [value]="state.id">{{state.name}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('state')">
             <span class="error">Required field</span>
           </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6 d-flex align-items-center">
+        <div class="form-group">
+          <div class="checkbox-container">
+            <input id="pod" formControlName="pod" hidden type="checkbox">
+            <label for="pod">
+              <i class="square"></i>
+              <span>* POD/POA</span>
+            </label>
+          </div>
         </div>
       </div>
     </div>

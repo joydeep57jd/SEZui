@@ -14,7 +14,24 @@ export const API = {
     },
     PARTY: {
       LIST: "Sez/GetmstParty",
-    }
+    },
+    EXIM_TRADER: {
+      LIST: "Sez/GetMstEximTraderMaster",
+    },
+    COMMODITY: {
+      LIST: "Sez/GetMstCommodity",
+      SAVE: "Sez/AddEditMstCommodity",
+    },
+    GODOWN: {
+      LIST: "Sez/GetMstGoDown",
+      SAVE: "Sez/AddEditGoDown",
+    },
+    PORT: {
+      LIST: "Sez/GetPort",
+      SAVE: "Sez/AddEditPort",
+    },
+    COUNTRY: "Sez/GetCountry",
+    STATE: "Sez/GetState",
   },
   GATE_OPERATION: {
     GATE_IN: {

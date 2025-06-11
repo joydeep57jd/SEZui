@@ -32,9 +32,9 @@ export class SacComponent {
   makeForm() {
     this.form = new FormGroup({
       sacId: new FormControl(0, []),
-      sacCode: new FormControl( null, []),
-      gst: new FormControl("", []),
-      cess: new FormControl("", []),
+      sacCode: new FormControl("", []),
+      gst: new FormControl(null, []),
+      cess: new FormControl(null, []),
       description: new FormControl("", []),
     })
   }
