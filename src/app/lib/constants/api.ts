@@ -41,8 +41,9 @@ export const API = {
   },
   IMPORT: {
     OBL_ENTRY: {
-      LIST: "Sez/GetAllOblEntries",
-      SAVE: "Sez/AddEditOblEntry",
+      LIST: "Sez/GetOblEntry",
+      SAVE: "Sez/AddOblEntry",
+      ADDITIONAL_INFO: "Sez/GetOblEntryAdditionalDetails",
     },
   },
 };

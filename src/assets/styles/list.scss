@@ -55,6 +55,11 @@ table.table-bordered td {
     margin: auto;
     line-height: 16px;
 
+    &.disabled {
+      background: $disabled-color;
+      cursor: not-allowed;
+    }
+
     span {
       color: #556bb2;
     }

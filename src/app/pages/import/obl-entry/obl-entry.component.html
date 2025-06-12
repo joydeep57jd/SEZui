@@ -151,15 +151,15 @@
           </tr>
         </thead>
         <tbody formArrayName="requestOblEntryAddDtls">
-          <tr *ngFor="let request of getRequestOblEntryAddDtlsFormGroup().controls; let index = index" [formGroupName]="index" role="row">
+          <tr *ngFor="let request of getRequestOblEntryAddDtlsFormGroupAsArray(); let index = index" [formGroupName]="index" role="row">
             <td>{{index + 1}}</td>
             <td>
-              <div (click)="removeRequestOblEntryAddDtls(index)" class="table_icon"><span>
+              <div (click)="removeRequestOblEntryAddDtls(index)" [class.disabled]="isViewMode()" class="table_icon"><span>
                 <i class="fa fa-trash-o" aria-hidden="true"></i></span>
               </div>
             </td>
             <td>
-              <div [attr.obl]="request.value['obL_HBL_No']" class="form-group bottom-0">
+              <div [attr.index]="request" class="form-group bottom-0">
                 <input formControlName="obL_HBL_No" placeholder="Enter OBL/HBL No" type="text">
                 <ng-container *ngIf="hasError('obL_HBL_No')">
                   <span class="error">Required field</span>
@@ -207,7 +207,7 @@
               </div>
             </td>
             <td>
-              <app-auto-complete class="bottom-0" keyName="commodityName" keyValue="commodityId" label="" placeholder="Select Commodity" formControlName="commodity" [options]="commodityList()" />
+              <app-auto-complete class="bottom-0" keyName="commodityName" keyValue="commodityName" label="" placeholder="Select Commodity" formControlName="commodity" [options]="commodityList()" />
             </td>
             <td>
               <div class="form-group bottom-0">
@@ -254,7 +254,8 @@
       </table>
     </div>
     <hr />
-    <div class="d-flex justify-content-left gap-2">
+
+    <div *ngIf="!isViewMode()" class="d-flex justify-content-left gap-2">
       <button type="button" class="btn btn-primary form-btn" (click)="addRequestOblEntryAddDtls()">Add</button>
       <button type="button" class="btn btn-outline-primary form-btn" (click)="resetRequestOblEntryAddDtls()">Clear</button>
     </div>

@@ -24,28 +24,28 @@ export const OblEntryHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
-    field: 'portName',
+    field: 'containerCBTNo',
     label: 'Container / CBT No',
     type: 'string',
   },
   {
-    field: 'portAlias',
+    field: 'containerCBTSize',
     label: 'Container / CBT Size',
     type: 'string',
   },
   {
-    field: 'countryName',
+    field: 'igmNo',
     label: 'IGM No',
     type: 'string',
   },
   {
-    field: 'stateName',
+    field: 'igmDate',
     label: 'IGM Date',
     type: 'date',
   },
   {
-    field: 'stateName',
-    label: 'OBL/HBL Date',
+    field: 'tpDate',
+    label: 'TP Date',
     type: 'date',
   },
 ];

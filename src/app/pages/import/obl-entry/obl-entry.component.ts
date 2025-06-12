@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
@@ -37,7 +37,7 @@ export class OblEntryComponent {
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.getPortList();
     this.getCountryList();
     this.getCommodityList();
@@ -69,6 +69,22 @@ export class OblEntryComponent {
     })
   }
 
+  getAdditionalInfo(oblEntryId: number) {
+    this.apiService.get(API.IMPORT.OBL_ENTRY.ADDITIONAL_INFO, {oblEntryId}).subscribe({
+      next: (response: any) => {
+        response.data.forEach((item: any) => {
+          this.addRequestOblEntryAddDtls(item)
+        })
+        this.cdr.detectChanges();
+        if (this.isViewMode()) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      }
+    })
+  }
+
   makeForm() {
     this.form = new FormGroup({
       id: new FormControl(0, []),
@@ -87,41 +103,53 @@ export class OblEntryComponent {
     })
   }
 
-  addRequestOblEntryAddDtls() {
-    const control = this.getRequestOblEntryAddDtlsFormGroup();
-    control.push(new FormGroup({
-      id: new FormControl(0, []),
-      addId: new FormControl(0, []),
-      icesContId: new FormControl(0, []),
-      obL_HBL_No: new FormControl("", []),
-      obL_HBL_Date: new FormControl(null, []),
-      smtP_No: new FormControl("", []),
-      smtP_Date: new FormControl(null, []),
-      cargo_Desc: new FormControl("", []),
-      commodity: new FormControl("", []),
-      cargo_Type: new FormControl(0, []),
-      no_of_PKG: new FormControl(0, []),
-      pkG_Type: new FormControl("", []),
-      gR_WT_Kg: new FormControl(0, []),
-      importer_Name: new FormControl("", []),
-      igM_Importer_Name: new FormControl("", []),
-      isProcessed: new FormControl(false, []),
-      oblEntryId: new FormControl(0, []),
-    }))
+  addRequestOblEntryAddDtls(detail?: any) {
+    this.getRequestOblEntryAddDtlsFormGroup().push(this.createOblEntryAddDtlGroup(detail));
+  }
+
+  createOblEntryAddDtlGroup(detail?: any) {
+    return new FormGroup({
+      id: new FormControl(detail?.id ?? 0, []),
+      addId: new FormControl(detail?.addId ?? 0, []),
+      icesContId: new FormControl(detail?.icesContId ?? 0, []),
+      obL_HBL_No: new FormControl(detail?.obL_HBL_No ?? "", []),
+      obL_HBL_Date: new FormControl(detail?.obL_HBL_Date ? this.utilService.getNgbDateObject(detail?.obL_HBL_Date) : null, []),
+      smtP_No: new FormControl(detail?.smtP_No ?? "", []),
+      smtP_Date: new FormControl(detail?.smtP_Date ? this.utilService.getNgbDateObject(detail?.smtP_Date) : null, []),
+      cargo_Desc: new FormControl(detail?.cargo_Desc ?? "", []),
+      commodity: new FormControl(detail?.commodity ?? "", []),
+      cargo_Type: new FormControl(detail?.cargo_Type ?? "", []),
+      no_of_PKG: new FormControl(detail?.no_of_PKG ?? 0, []),
+      pkG_Type: new FormControl(detail?.pkG_Type ?? "", []),
+      gR_WT_Kg: new FormControl(detail?.gR_WT_Kg ?? 0, []),
+      importer_Name: new FormControl(detail?.importer_Name ?? "", []),
+      igM_Importer_Name: new FormControl(detail?.igM_Importer_Name ?? "", []),
+      isProcessed: new FormControl(detail?.isProcessed ?? false, []),
+      oblEntryId: new FormControl(detail?.oblEntryId ?? 0, []),
+    })
   }
 
   removeRequestOblEntryAddDtls(index: number) {
-    const control = this.getRequestOblEntryAddDtlsFormGroup();
-    control.removeAt(index);
+    if(!this.isViewMode()) {
+      const control = this.getRequestOblEntryAddDtlsFormGroup();
+      control.removeAt(index);
+    }
   }
 
   resetRequestOblEntryAddDtls(){
-    const control = this.getRequestOblEntryAddDtlsFormGroup();
-    control.clear();
+    this.getRequestOblEntryAddDtlsFormGroup().clear();
   }
 
   getRequestOblEntryAddDtlsFormGroup() {
     return this.form.get('requestOblEntryAddDtls') as FormArray;
+  }
+
+  getRequestOblEntryAddDtlsFormGroupAsArray() {
+    let arr: number[] = [];
+    this.getRequestOblEntryAddDtlsFormGroup().controls.forEach((control: any, index: number) => {
+      arr.push(index);
+    })
+    return arr;
   }
 
   edit(record: any) {
@@ -133,10 +161,14 @@ export class OblEntryComponent {
   }
 
   patchForm(record: any, isViewMode: boolean) {
+    record.igmDate = record.igmDate ? this.utilService.getNgbDateObject(record.igmDate) : null;
+    record.tpDate = record.tpDate ? this.utilService.getNgbDateObject(record.tpDate) : null;
+    this.resetRequestOblEntryAddDtls();
     this.form.reset();
     this.form.patchValue(record);
     this.isViewMode = signal(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
+    this.getAdditionalInfo(record.id);
   }
 
   setEditMode(){
