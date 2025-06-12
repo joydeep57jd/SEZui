@@ -1,0 +1,277 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container / CBT:</label>
+          <select formControlName="containerCBTType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let containerCBT of containerCBTs" [value]="containerCBT.value">{{containerCBT.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('containerCBTType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container / CBT No:</label>
+          <input formControlName="containerCBTNo" placeholder="Enter Container / CBT No" type="text">
+          <ng-container *ngIf="hasError('containerCBTNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container / CBT Size:</label>
+          <select formControlName="containerCBTSize" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let containerCBTSize of containerCBTSizes" [value]="containerCBTSize.value">{{containerCBTSize.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('containerCBTSize')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>IGM No:</label>
+          <input formControlName="igmNo" placeholder="Enter IGM No" type="text">
+          <ng-container *ngIf="hasError('igmNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>IGM Date:</label>
+          <div (click)="igmDatePicker.open()" class="position-relative">
+            <input formControlName="igmDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                   #igmDatePicker="ngbDatepicker" />
+            <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('igmDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>TP No:</label>
+          <input formControlName="tpNo" placeholder="Enter TP No" type="text">
+          <ng-container *ngIf="hasError('tpNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>TP Date:</label>
+          <div (click)="tpDatePicker.open()" class="position-relative">
+            <input formControlName="tpDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                   #tpDatePicker="ngbDatepicker" />
+            <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('tpDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Movement Type: </label>
+          <select formControlName="movementType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let movementType of movementTypes" [value]="movementType.value">{{movementType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('movementType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="portName" keyValue="portId" label="Port:" placeholder="Select Port" formControlName="port" [options]="portList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Country:</label>
+          <select formControlName="country" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let country of countryList()" [value]="country.id">{{country.name}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('country')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Shipping Line:</label>
+          <input formControlName="shippingLine" placeholder="Enter Shipping Line" type="text">
+          <ng-container *ngIf="hasError('shippingLine')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="table table-bordered nowrap dataTable no-footer mt-2">
+        <thead>
+          <tr role="row">
+            <th>Sl No</th>
+            <th>Action</th>
+            <th>OBL / HBL No</th>
+            <th>OBL / HBL Date</th>
+            <th>SMTP No.</th>
+            <th>SMTP Date</th>
+            <th>Cargo Desc</th>
+            <th>Commodity</th>
+            <th>No. of PKG</th>
+            <th>PKG Type</th>
+            <th>GR WT(Kg)</th>
+            <th>Importer Name</th>
+            <th>IGM Importer Name</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="requestOblEntryAddDtls">
+          <tr *ngFor="let request of getRequestOblEntryAddDtlsFormGroup().controls; let index = index" [formGroupName]="index" role="row">
+            <td>{{index + 1}}</td>
+            <td>
+              <div (click)="removeRequestOblEntryAddDtls(index)" class="table_icon"><span>
+                <i class="fa fa-trash-o" aria-hidden="true"></i></span>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="obL_HBL_No" placeholder="Enter OBL/HBL No" type="text">
+                <ng-container *ngIf="hasError('obL_HBL_No')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <div (click)="oblHblDatePicker.open()" class="position-relative">
+                  <input formControlName="obL_HBL_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker [container]="'body'"
+                         #oblHblDatePicker="ngbDatepicker" />
+                  <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                </div>
+                <ng-container *ngIf="hasError('obL_HBL_Date')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="smtP_No" placeholder="Enter SMTP No" type="text">
+                <ng-container *ngIf="hasError('smtP_No')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <div (click)="smtpDatePicker.open()" class="position-relative">
+                  <input formControlName="smtP_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker [container]="'body'"
+                         #smtpDatePicker="ngbDatepicker" />
+                  <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                </div>
+                <ng-container *ngIf="hasError('smtP_Date')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <textarea formControlName="cargo_Desc" placeholder="Enter Cargo Description" rows="1"></textarea>
+                <ng-container *ngIf="hasError('cargo_Desc')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <app-auto-complete class="bottom-0" keyName="commodityName" keyValue="commodityId" label="" placeholder="Select Commodity" formControlName="commodity" [options]="commodityList()" />
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="no_of_PKG" placeholder="Enter No. of PKG" type="number">
+                <ng-container *ngIf="hasError('no_of_PKG')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="pkG_Type" placeholder="Enter PKG Type" type="text">
+                <ng-container *ngIf="hasError('pkG_Type')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="gR_WT_Kg" placeholder="Enter GR WT(Kg)" type="number">
+                <ng-container *ngIf="hasError('gR_WT_Kg')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="importer_Name" placeholder="Enter Importer Name" type="text">
+                <ng-container *ngIf="hasError('importer_Name')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="igM_Importer_Name" placeholder="Enter IGM Importer Name" type="text">
+                <ng-container *ngIf="hasError('igM_Importer_Name')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="addRequestOblEntryAddDtls()">Add</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="resetRequestOblEntryAddDtls()">Clear</button>
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+    <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>
