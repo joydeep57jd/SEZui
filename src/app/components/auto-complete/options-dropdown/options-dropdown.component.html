@@ -1,0 +1,10 @@
+<ul class="custom-auto-complete option-list">
+  <li *ngFor="let option of options()"
+      [class.selected]="getOptionValue(selected) === getOptionValue(option)"
+      (click)="select.emit(option)">
+    {{ getOptionLabel(option) }}
+  </li>
+  <li *ngIf="options().length === 0">No results found</li>
+</ul>
+<div class="custom-auto-complete overlay" (click)="close.emit()"></div>
+

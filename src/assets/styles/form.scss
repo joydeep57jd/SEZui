@@ -187,33 +187,46 @@ fieldset[disabled] input {
 .custom-auto-complete {
   width: 100%;
   position: relative;
-  .overlay{
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 9999;
+}
+.custom-auto-complete.overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+.custom-auto-complete.option-list {
+  background: white;
+  position: absolute;
+  width: 100%;
+  z-index: 10000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  li {
+    list-style: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    &:hover {
+      background: $primary;
+      color: white;
+    }
+    &.selected {
+      background: $primary;
+      color: white;
+    }
   }
-  .option-list {
-    background: white;
-    position: absolute;
-    width: 100%;
-    z-index: 10000;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 0;
-    li {
-      list-style: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      &:hover {
-        background: $primary;
-        color: white;
-      }
-      &.selected {
-        background: $primary;
-        color: white;
-      }
+}
+
+form table {
+  th, td {
+    min-width: 60px;
+  }
+  .form-group {
+    min-width: 200px;
+    textarea {
+      top: 3px;
+      position: relative;
     }
   }
 }

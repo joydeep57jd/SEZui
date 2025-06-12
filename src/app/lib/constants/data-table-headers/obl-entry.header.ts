@@ -1,6 +1,6 @@
 import { IDataTableHeader } from "../../models";
 
-export const PortHeaders: IDataTableHeader[] = [
+export const OblEntryHeaders: IDataTableHeader[] = [
   {
     field: 'slNo',
     label: 'SL No',
@@ -25,22 +25,27 @@ export const PortHeaders: IDataTableHeader[] = [
   },
   {
     field: 'portName',
-    label: 'Port Name',
+    label: 'Container / CBT No',
     type: 'string',
   },
   {
     field: 'portAlias',
-    label: 'Port Alias',
+    label: 'Container / CBT Size',
     type: 'string',
   },
   {
     field: 'countryName',
-    label: 'Country',
+    label: 'IGM No',
     type: 'string',
   },
   {
     field: 'stateName',
-    label: 'State',
-    type: 'string',
+    label: 'IGM Date',
+    type: 'date',
+  },
+  {
+    field: 'stateName',
+    label: 'OBL/HBL Date',
+    type: 'date',
   },
 ];

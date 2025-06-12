@@ -35,14 +35,14 @@ export const MENU = [
   {
     label: 'Import',
     children: [
-      { label: 'Custom Appraisement', path: PATHS.UNDER_DEVELOPMENT, },
+      { label: 'Custom Appraisement', path: PATHS.IMPORT.CUSTOM_APPRAISEMENT, },
       { label: 'Delivery Application', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Delivery Invoice', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Destuffing Entry', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Godown Invoice', path: PATHS.UNDER_DEVELOPMENT },
-      { label: 'OBL Entry', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'OBL Entry', path: PATHS.IMPORT.OBL_ENTRY },
       { label: 'Godown Invoice', path: PATHS.UNDER_DEVELOPMENT },
-      { label: 'Yard Invoice', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'Yard Invoice', path: PATHS.IMPORT.YARD_INVOICE },
     ],
   },
   {

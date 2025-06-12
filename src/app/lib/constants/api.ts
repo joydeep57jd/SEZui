@@ -39,4 +39,10 @@ export const API = {
       SAVE: "Sez/AddEditEntry",
     },
   },
+  IMPORT: {
+    OBL_ENTRY: {
+      LIST: "Sez/GetAllOblEntries",
+      SAVE: "Sez/AddEditOblEntry",
+    },
+  },
 };

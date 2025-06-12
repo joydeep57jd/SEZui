@@ -1,9 +1,10 @@
-import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {DataTableComponent} from "../../../components";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ApiService, ToastService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-port',
@@ -13,12 +14,14 @@ import {API, DATA_TABLE_HEADERS} from "../../../lib";
   styleUrls: ['./port.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PortComponent {
+export class PortComponent implements OnDestroy {
   apiService = inject(ApiService);
   toasterService = inject(ToastService);
 
   readonly headers = DATA_TABLE_HEADERS.MASTER.PORT
   readonly apiUrls = API.MASTER.PORT;
+
+  private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
   isViewMode = signal(false);
@@ -32,20 +35,6 @@ export class PortComponent {
     this.getCountryList()
     this.setEditCallback();
     this.makeForm();
-    this.onCountryChange();
-  }
-
-  onCountryChange() {
-    this.form.get("country")?.valueChanges.subscribe(countryId => {
-      if(countryId) {
-        this.getStateList(countryId);
-        this.form.get("state")?.enable()
-      } else {
-        this.stateList.set([])
-        this.form.get("state")?.disable()
-      }
-      this.form.get("state")?.setValue("")
-    })
   }
 
   getCountryList(){
@@ -60,6 +49,10 @@ export class PortComponent {
     this.apiService.get(API.MASTER.STATE, {id: countryId}).subscribe({
       next: (response: any) => {
         this.stateList.set(response.data)
+        const selectedState = response.data.find((state: any) => state.id == this.form.get("state")?.value)
+        if(!selectedState) {
+          this.form.get("state")?.setValue("")
+        }
       },
     })
   }
@@ -73,6 +66,21 @@ export class PortComponent {
       country: new FormControl("", []),
       state: new FormControl({value: "", disabled: true}, []),
     })
+    this.form.get("country")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe(countryId => {
+        if(countryId) {
+          this.getStateList(countryId);
+          this.form.get("state")?.enable()
+        } else {
+          this.stateList.set([])
+          this.form.get("state")?.disable()
+        }
+     })
   }
 
   edit(record: any) {
@@ -119,7 +127,10 @@ export class PortComponent {
   }
 
   makePayload() {
-    return {...this.form.value};
+    const value = {...this.form.value, createdBy: 0, updatedBy: 0};
+    value.country = +value.country;
+    value.state = +value.state;
+    return value;
   }
 
   hasError(formControlName: string) {
@@ -136,5 +147,10 @@ export class PortComponent {
         header.callback = this.view.bind(this);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

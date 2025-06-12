@@ -14,7 +14,9 @@ export class UtilService {
     return { year, month, day };
   }
 
-  getDateObject({year, month, day}: { year: number, month: number, day: number }) {
+  getDateObject(data: { year: number, month: number, day: number } | null) {
+    if(!data) return null;
+    const { year, month, day } = data;
     return new Date(year, month, day).toISOString()
   }
 }

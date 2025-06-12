@@ -6,6 +6,7 @@ import {EximTreaderHeaders} from "./exim-trader.header";
 import {CommodityHeaders} from "./commodity.header";
 import {GodownHeaders} from "./godown.header";
 import {PortHeaders} from "./port.header";
+import {OblEntryHeaders} from "./obl-entry.header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -19,5 +20,8 @@ export const DATA_TABLE_HEADERS = {
     COMMODITY: CommodityHeaders,
     GODOWN: GodownHeaders,
     PORT: PortHeaders
+  },
+  IMPORT: {
+    OBL_ENTRY: OblEntryHeaders,
   }
 }

@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ApiService, ToastService} from "../../../services";
+import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
@@ -18,6 +18,7 @@ import {AutoCompleteComponent} from "../../../components/auto-complete/auto-comp
 })
 export class OblEntryComponent {
   apiService = inject(ApiService);
+  utilService = inject(UtilService);
   toasterService = inject(ToastService);
 
   readonly headers = DATA_TABLE_HEADERS.IMPORT.OBL_ENTRY
@@ -167,7 +168,16 @@ export class OblEntryComponent {
   }
 
   makePayload() {
-    return {...this.form.value, branchId: 0, operationCode: "", pkgCount: ""};
+    const value = {...this.form.value};
+    value.igmDate = this.utilService.getDateObject(value.igmDate)
+    value.tpDate = this.utilService.getDateObject(value.tpDate)
+    value.requestOblEntryAddDtls = value.requestOblEntryAddDtls.map((item: any) => ({
+      ...item,
+      obL_HBL_Date: this.utilService.getDateObject(item.obL_HBL_Date),
+      smtP_Date: this.utilService.getDateObject(item.smtP_Date),
+    }));
+
+    return value;
   }
 
   hasError(formControlName: string) {

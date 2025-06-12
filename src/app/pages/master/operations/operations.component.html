@@ -10,7 +10,7 @@
             <option *ngFor="let type of types" [value]="type.value">{{type.label}}
             </option>
           </select>
-          <ng-container *ngIf="hasError('operationType')">
+          <ng-container *ngIf="hasError('type')">
             <span class="error">Required field</span>
           </ng-container>
         </div>

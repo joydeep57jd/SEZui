@@ -159,7 +159,7 @@
               </div>
             </td>
             <td>
-              <div class="form-group bottom-0">
+              <div [attr.obl]="request.value['obL_HBL_No']" class="form-group bottom-0">
                 <input formControlName="obL_HBL_No" placeholder="Enter OBL/HBL No" type="text">
                 <ng-container *ngIf="hasError('obL_HBL_No')">
                   <span class="error">Required field</span>
