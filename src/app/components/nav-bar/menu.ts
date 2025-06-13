@@ -5,10 +5,10 @@ export const MENU = [
     label: 'Master',
     children: [
       { label: 'Commodity', path: PATHS.MASTER.COMMODITY },
-      { label: 'CWC Charges', path: PATHS.MASTER.CWC_CHARGES },
+      { label: 'CWC Charges', path: PATHS.MASTER.CWC_CHARGES.ROOT },
       { label: 'Exim Trader', path: PATHS.MASTER.EXIM_TRADER },
       { label: 'Godown', path: PATHS.MASTER.GODOWN },
-      { label: 'H&T Charges', path: PATHS.MASTER.HT_CHARGES },
+      { label: 'H&T Charges', path: PATHS.MASTER.HT_CHARGES.ROOT },
       { label: 'Operation', path: PATHS.MASTER.OPERATION },
       { label: 'Port', path: PATHS.MASTER.PORT },
       { label: 'GST Against SAC', path: PATHS.MASTER.SAC },

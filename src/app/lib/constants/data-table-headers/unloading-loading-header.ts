@@ -1,6 +1,6 @@
 import { IDataTableHeader } from "../../models";
 
-export const HTChargesHeaders: IDataTableHeader[] = [
+export const UnloadingLoadingHeaders: IDataTableHeader[] = [
   {
     field: 'slNo',
     label: 'SL No',
@@ -30,33 +30,18 @@ export const HTChargesHeaders: IDataTableHeader[] = [
     type: 'date',
   },
   {
-    field: 'operationId',
-    label: 'Operation Code',
+    field: 'sacCode',
+    label: 'Sac Code',
     type: 'string',
   },
   {
-    field: 'commodityType',
-    label: 'Commodity Type',
+    field: 'operationType',
+    label: 'Operation Type',
     type: 'string',
   },
   {
-    field: 'transportFrom',
-    label: 'Transport From',
-    type: 'string',
-  },
-  {
-    field: 'containerLoadType',
-    label: 'FCL/LCL',
-    type: 'string',
-  },
-  {
-    field: 'rateCWC',
-    label: 'CWC Rate',
-    type: 'string',
-  },
-  {
-    field: 'size',
-    label: 'Size',
-    type: 'string',
-  },
+    field: 'rateperPacket',
+    label: 'Rate Per Packet',
+    type: 'price',
+  }
 ];

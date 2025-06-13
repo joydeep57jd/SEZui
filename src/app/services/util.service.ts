@@ -6,7 +6,8 @@ import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 })
 export class UtilService {
 
-  getNgbDateObject(date: Date | string): NgbDateStruct {
+  getNgbDateObject(date: Date | string): NgbDateStruct | null {
+    if(!date) return null
     date = new Date(date);
     const day = date.getDate();
     const month = date.getMonth();

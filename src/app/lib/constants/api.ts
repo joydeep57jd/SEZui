@@ -1,8 +1,10 @@
 export const API = {
   MASTER: {
     HT_CHARGES: {
-      LIST: "Sez/GetAllHTEntries",
-      SAVE: "Sez/AddEditHTCharges",
+      UNLOADING_LOADING: {
+        LIST: "Sez/GetAllHTCharges",
+        SAVE: "Sez/AddEditHTCharges",
+      },
     },
     SAC: {
       LIST: "Sez/GetMstSac",
@@ -29,6 +31,12 @@ export const API = {
     PORT: {
       LIST: "Sez/GetPort",
       SAVE: "Sez/AddEditPort",
+    },
+    CWC_CHARGES: {
+      ENTRY_FEES: {
+        LIST: "Sez/GetMstEntryFee",
+        SAVE: "Sez/AddEditMstEntryFee",
+      },
     },
     COUNTRY: "Sez/GetCountry",
     STATE: "Sez/GetState",

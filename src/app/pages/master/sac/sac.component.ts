@@ -56,7 +56,7 @@ export class SacComponent {
 
   setEditMode(){
     this.form.enable();
-    this.isViewMode = signal(false);
+    this.isViewMode.set(false);
   }
 
   reset() {

@@ -48,3 +48,36 @@ body {
 .toast-container > :not(:last-child) {
   margin-bottom: 8px;
 }
+
+.custom-tab-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 3px 3px;
+  .custom-tabs{
+    display: flex;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    .custom-tab {
+      padding: 4px;
+      border-radius: 3px;
+      cursor: pointer;
+      color: #154165;
+      list-style: none;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      &.active, &:hover{
+        background: #154165;
+        color: white;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+        font-size: 10px;
+        font-weight: 700;
+      }
+    }
+  }
+}

@@ -44,7 +44,9 @@ export class DataTableComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {
         this.records.set(response.data);
-        // this.totalPage.set(10)
+        if(response.totalCount) {
+          this.totalPage.set(Math.ceil(response.totalCount / this.searchCriteria$.value.size));
+        }
         this.isFetching.set(false);
       },
     });

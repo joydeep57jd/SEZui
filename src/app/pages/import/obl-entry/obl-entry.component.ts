@@ -113,9 +113,9 @@ export class OblEntryComponent {
       addId: new FormControl(detail?.addId ?? 0, []),
       icesContId: new FormControl(detail?.icesContId ?? 0, []),
       obL_HBL_No: new FormControl(detail?.obL_HBL_No ?? "", []),
-      obL_HBL_Date: new FormControl(detail?.obL_HBL_Date ? this.utilService.getNgbDateObject(detail?.obL_HBL_Date) : null, []),
+      obL_HBL_Date: new FormControl(this.utilService.getNgbDateObject(detail?.obL_HBL_Date), []),
       smtP_No: new FormControl(detail?.smtP_No ?? "", []),
-      smtP_Date: new FormControl(detail?.smtP_Date ? this.utilService.getNgbDateObject(detail?.smtP_Date) : null, []),
+      smtP_Date: new FormControl(this.utilService.getNgbDateObject(detail?.smtP_Date), []),
       cargo_Desc: new FormControl(detail?.cargo_Desc ?? "", []),
       commodity: new FormControl(detail?.commodity ?? "", []),
       cargo_Type: new FormControl(detail?.cargo_Type ?? "", []),
@@ -161,8 +161,8 @@ export class OblEntryComponent {
   }
 
   patchForm(record: any, isViewMode: boolean) {
-    record.igmDate = record.igmDate ? this.utilService.getNgbDateObject(record.igmDate) : null;
-    record.tpDate = record.tpDate ? this.utilService.getNgbDateObject(record.tpDate) : null;
+    record.igmDate = this.utilService.getNgbDateObject(record.igmDate);
+    record.tpDate = this.utilService.getNgbDateObject(record.tpDate);
     this.resetRequestOblEntryAddDtls();
     this.form.reset();
     this.form.patchValue(record);
@@ -173,7 +173,7 @@ export class OblEntryComponent {
 
   setEditMode(){
     this.form.enable();
-    this.isViewMode = signal(false);
+    this.isViewMode.set(false);
   }
 
   reset() {
