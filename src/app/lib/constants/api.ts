@@ -53,5 +53,8 @@ export const API = {
       SAVE: "Sez/AddOblEntry",
       ADDITIONAL_INFO: "Sez/GetOblEntryAdditionalDetails",
     },
+    YARD_INVOICE: {
+      SAVE: "Sez/AddEditYardInvoice",
+    }
   },
 };
