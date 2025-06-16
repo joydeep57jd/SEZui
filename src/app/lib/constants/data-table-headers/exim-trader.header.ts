@@ -20,7 +20,7 @@ export const EximTreaderHeaders: IDataTableHeader[] = [
     type: 'string',
   },
   {
-    field: 'contactPerson',
+    field: 'eximTraderName',
     label: 'Name',
     type: 'string',
   },

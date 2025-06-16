@@ -4,7 +4,7 @@
 
       <div class="col-12">
         <div class="form-group">
-          <label>Operation Type</label>
+          <label>Operation Type:</label>
           <div>
             <label *ngFor="let operationsName of operationsNames" class="radio-container">
               {{operationsName.label}}
@@ -58,13 +58,7 @@
       </div>
 
       <div class="col-md-6 col-lg-6 col-sm-6">
-        <div class="form-group">
-          <label>Shipping Line:</label>
-          <input formControlName="shippingLine" placeholder="Enter Shipping Line" type="text">
-          <ng-container *ngIf="hasError('shippingLine')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" placeholder="Select Shipping Line" formControlName="shippingLine" [options]="shippingLineList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">

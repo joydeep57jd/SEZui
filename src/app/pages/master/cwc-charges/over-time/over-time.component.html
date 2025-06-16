@@ -1,1 +1,95 @@
-<p>over-time works!</p>
+<form [formGroup]="form">
+  <div class="row">
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Effective Date:</label>
+        <div (click)="effectiveDatePicker.open()" class="position-relative">
+          <input formControlName="effectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                 #effectiveDatePicker="ngbDatepicker" />
+          <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+        </div>
+        <ng-container *ngIf="hasError('effectiveDate')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <app-auto-complete keyName="sacCode" keyValue="sacId" label="* SAC Code:" placeholder="Enter SAC" formControlName="sacCodeId" [options]="sacList()" />
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Operation Type:</label>
+        <select formControlName="operationType" class="dropdown">
+          <option value="">---Select---</option>
+          <option *ngFor="let operationType of operationTypes" [value]="operationType.value">{{operationType.label}}
+          </option>
+        </select>
+        <ng-container *ngIf="hasError('operationType')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>Holiday:</label>
+        <div class="checkbox-container mt-2">
+          <input id="holiday" formControlName="holiday" hidden type="checkbox">
+          <label for="holiday">
+            <i class="square"></i>
+            <span></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>Time:</label>
+        <input formControlName="time" type="time">
+        <ng-container *ngIf="hasError('time')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Rate:</label>
+        <input formControlName="rate" placeholder="Enter Rate" type="number">
+        <ng-container *ngIf="hasError('rate')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Max / Min Hours:</label>
+        <input formControlName="maxMinHours" placeholder="Enter Max / Min Hours" type="text">
+        <ng-container *ngIf="hasError('maxMinHours')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+
+  <hr />
+  <div class="d-flex justify-content-left gap-2">
+    <ng-container *ngIf="isViewMode(); else formActionButton">
+      <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+    </ng-container>
+    <ng-template #formActionButton>
+      <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+    </ng-template>
+    <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+  </div>
+</form>
+
+<div class="mt-2 d-flex flex-column gap-2">
+  <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+</div>

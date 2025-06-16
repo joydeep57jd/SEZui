@@ -5,6 +5,14 @@ export const API = {
         LIST: "Sez/GetAllHTCharges",
         SAVE: "Sez/AddEditHTCharges",
       },
+      HANDLING: {
+        LIST: "Sez/GetAllHandlingCharges",
+        SAVE: "Sez/AddEditHandlingCharges",
+      },
+      TRANSPORTATION: {
+        LIST: "Sez/GetAllTransportationCharges",
+        SAVE: "Sez/AddEditTransportationCharges",
+      },
     },
     SAC: {
       LIST: "Sez/GetMstSac",
@@ -36,6 +44,18 @@ export const API = {
       ENTRY_FEES: {
         LIST: "Sez/GetMstEntryFee",
         SAVE: "Sez/AddEditMstEntryFee",
+      },
+      INSURANCE_CHARGE: {
+        LIST: "Sez/GetMstInsurance",
+        SAVE: "Sez/AddEditMstInsurance",
+      },
+      OVER_TIME: {
+        LIST: "Sez/GetOverTimeCharge",
+        SAVE: "Sez/AddEditOverTimeCharge",
+      },
+      EXAMINATION: {
+        LIST: "Sez/GetExaminationCharge",
+        SAVE: "Sez/AddEditExaminationCharge",
       },
     },
     COUNTRY: "Sez/GetCountry",

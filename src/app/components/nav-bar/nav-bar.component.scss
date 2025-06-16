@@ -45,12 +45,12 @@
   .menu-container {
     background: white;
     position: fixed;
-    width: 0;
     z-index: 9;
     width: $sidenav-width;
     transition: margin-left 0.3s ease-in-out;
     height: calc(100vh - $navbar-height);
     padding: 0.5rem 0;
+    overflow: auto;
     margin: 0;
     margin-left: -$sidenav-width;
     &.expanded {

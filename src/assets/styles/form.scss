@@ -203,6 +203,8 @@ fieldset[disabled] input {
   z-index: 10000;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 0;
+  max-height: 340px;
+  overflow: auto;
   li {
     list-style: none;
     padding: 5px 10px;

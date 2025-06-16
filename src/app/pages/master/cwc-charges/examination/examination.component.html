@@ -1,1 +1,102 @@
-<p>examination works!</p>
+<form [formGroup]="form">
+  <div class="row">
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Effective Date:</label>
+        <div (click)="effectiveDatePicker.open()" class="position-relative">
+          <input formControlName="effectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                 #effectiveDatePicker="ngbDatepicker" />
+          <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+        </div>
+        <ng-container *ngIf="hasError('effectiveDate')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <app-auto-complete keyName="sacCode" keyValue="sacId" label="* SAC Code:" placeholder="Enter SAC" formControlName="sacCodeId" [options]="sacList()" />
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Examination For:</label>
+        <select formControlName="examinationFor" class="dropdown">
+          <option value="">---Select---</option>
+          <option *ngFor="let examinationFor of examinationForOptions" [value]="examinationFor.value">{{examinationFor.label}}
+          </option>
+        </select>
+        <ng-container *ngIf="hasError('examinationFor')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Examination %:</label>
+        <input formControlName="examinationPercent" placeholder="Enter Examination %" type="number">
+        <ng-container *ngIf="hasError('examinationPercent')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Rate per Packet:</label>
+        <input formControlName="ratePerPacket" placeholder="Enter Rate Per Packet" type="number">
+        <ng-container *ngIf="hasError('ratePerPacket')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Minimum Charges:</label>
+        <input formControlName="minimumCharges" placeholder="Enter Minimum Charges" type="number">
+        <ng-container *ngIf="hasError('minimumCharges')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Weight For Additional Charges:</label>
+        <input formControlName="weightForAdditionalCharges" placeholder="Enter Weight For Additional Charges" type="number">
+        <ng-container *ngIf="hasError('weightForAdditionalCharges')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Rate For Additional Charges:</label>
+        <input formControlName="rateForAdditionalCharges" placeholder="Enter Rate For Additional Charges" type="number">
+        <ng-container *ngIf="hasError('rateForAdditionalCharges')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
+
+  <hr />
+  <div class="d-flex justify-content-left gap-2">
+    <ng-container *ngIf="isViewMode(); else formActionButton">
+      <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+    </ng-container>
+    <ng-template #formActionButton>
+      <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+    </ng-template>
+    <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+  </div>
+</form>
+
+<div class="mt-2 d-flex flex-column gap-2">
+  <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+</div>

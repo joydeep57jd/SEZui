@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GATE_IN_DATA } from './gate-in-data';
 import {DataTableComponent, DATA_TABLE_HEADERS, ApiService, ToastService, API} from 'src/app';
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
+import {PARTY_TYPE} from "../../../lib";
 
 @Component({
   selector: 'app-gate-in',
@@ -28,6 +29,7 @@ export class GateInComponent {
 
   form!: FormGroup;
   partyList = signal<any[]>([]);
+  shippingLineList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
 
@@ -35,6 +37,7 @@ export class GateInComponent {
 
   constructor() {
     this.getPartyList();
+    this.getShippingLine();
     this.setEditCallback();
     this.makeForm();
   }
@@ -47,6 +50,14 @@ export class GateInComponent {
     })
   }
 
+  getShippingLine() {
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.SHIPPING_LINE}).subscribe({
+      next: (response: any) => {
+        this.shippingLineList.set(response.data)
+      }
+    })
+  }
+
   makeForm() {
     this.form = new FormGroup({
       entryId: new FormControl(0, []),
@@ -54,8 +65,8 @@ export class GateInComponent {
       referenceNo: new FormControl("", []),
       operationType: new FormControl("", []),
       deliveryType: new FormControl("", []),
-      partyId: new FormControl("", []),
-      shippingLine: new FormControl("", []),
+      partyId: new FormControl(null, []),
+      shippingLine: new FormControl(null, []),
       containerType: new FormControl(this.containerTypes[0].value, []),
       containerNo: new FormControl("", []),
       size: new FormControl("", []),
