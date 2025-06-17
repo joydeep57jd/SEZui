@@ -4,15 +4,11 @@
     <div class="position-relative">
       <input
              [attr.placeholder]="placeholder"
-             [disabled]="isDisabled()"
+             readonly
              type="text"
-             [ngModel]="inputValue()"
-             (ngModelChange)="onInput($event)"
-             (focus)="setShowOptions(true)"
+             [ngModel]="selectedOption() ? getOptionLabel(selectedOption()) : ''"
       >
-      <span class="input_icon"><i class="fa fa-search" aria-hidden="true"></i></span>
+      <span (click)="openOptionsModal()" class="input_icon"><i class="fa fa-search" aria-hidden="true"></i></span>
     </div>
   </div>
-  <ng-container *ngIf="showOptions()">
-  </ng-container>
 </div>

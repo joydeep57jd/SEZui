@@ -27,10 +27,11 @@
       <div class="col-md-6 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Delivery Date:</label>
-          <div (click)="deliveryDatePicker.open()" class="position-relative">
-            <input formControlName="deliveryDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                   #deliveryDatePicker="ngbDatepicker" />
-            <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          <div class="position-relative">
+            <input formControlName="deliveryDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #deliveryDatePicker="ngbDatepicker"
+                   (click)="deliveryDatePicker.open()" (dateSelect)="deliveryDatePicker.close()"/>
+            <span (click)="deliveryDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
           <ng-container *ngIf="hasError('deliveryDate')">
             <span class="error">Required field</span>
@@ -51,10 +52,11 @@
       <div class="col-md-6 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Date:</label>
-          <div (click)="invoiceDatePicker.open()" class="position-relative">
-            <input formControlName="invoiceDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                   #invoiceDatePicker="ngbDatepicker" />
-            <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          <div class="position-relative">
+            <input formControlName="invoiceDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #invoiceDatePicker="ngbDatepicker"
+                   (click)="invoiceDatePicker.open()" (dateSelect)="invoiceDatePicker.close()"/>
+            <span (click)="invoiceDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
           <ng-container *ngIf="hasError('invoiceDate')">
             <span class="error">Required field</span>
@@ -63,17 +65,11 @@
       </div>
 
       <div class="col-sm-6">
-        <app-auto-complete keyName="partyName" keyValue="partyId" label="Party Name:" placeholder="Select Party" formControlName="partyId" [options]="partyList()" />
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Party Name:" title="List of Party" placeholder="Select Party Name" formControlName="partyId" [options]="partyList()" />
       </div>
 
       <div class="col-sm-6">
-        <div class="form-group">
-          <label>Payee Name:</label>
-          <input formControlName="payeeName" placeholder="Enter Payee Name" type="text">
-          <ng-container *ngIf="hasError('payeeName')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Payee Name:" title="List of Payee" placeholder="Select Payee Name" formControlName="payeeId" [options]="partyList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">

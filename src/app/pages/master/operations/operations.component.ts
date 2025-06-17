@@ -31,7 +31,7 @@ export class OperationsComponent {
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
-    this.setEditCallback();
+    this.setHeaderCallbacks();
     this.makeForm();
     this.getSacList()
   }
@@ -107,7 +107,7 @@ export class OperationsComponent {
     return control?.touched && control.invalid;
   }
 
-  setEditCallback() {
+  setHeaderCallbacks() {
     this.headers.forEach(header => {
       if(header.field === "edit") {
         header.callback = this.edit.bind(this);

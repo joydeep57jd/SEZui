@@ -10,6 +10,13 @@ export const EximTreaderHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
+    field: 'view',
+    label: 'View',
+    type: 'icon',
+    icon: 'fa fa-eye',
+    class: 'text-center',
+  },
+  {
     field: 'operationType',
     label: 'Type',
     type: 'string',

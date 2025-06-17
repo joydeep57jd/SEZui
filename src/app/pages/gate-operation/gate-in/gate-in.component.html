@@ -54,11 +54,11 @@
       </div>
 
       <div class="col-md-6 col-lg-6 col-sm-6">
-        <app-auto-complete keyName="partyName" keyValue="partyId" label="Party:" placeholder="Select Party" formControlName="partyId" [options]="partyList()" />
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Party:" placeholder="Select Party" title="List of Party" formControlName="partyId" [options]="partyList()" />
       </div>
 
       <div class="col-md-6 col-lg-6 col-sm-6">
-        <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" placeholder="Select Shipping Line" formControlName="shippingLine" [options]="shippingLineList()" />
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" title="List of Shipping Line" placeholder="Select Shipping Line" formControlName="shippingLine" [options]="shippingLineList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
@@ -100,7 +100,7 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>* Delivery Type:</label>
+          <label>* Material Type:</label>
           <select formControlName="materialType" class="dropdown">
             <option value="">---Select---</option>
             <option *ngFor="let materialType of materialTypes" [value]="materialType.value">{{materialType.label}}

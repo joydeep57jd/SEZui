@@ -4,10 +4,11 @@
     <div class="col-md-4 col-lg-3 col-sm-6">
       <div class="form-group">
         <label>* Effective Date:</label>
-        <div (click)="effectiveDatePicker.open()" class="position-relative">
-          <input formControlName="effectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                 #effectiveDatePicker="ngbDatepicker" />
-          <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+        <div class="position-relative">
+          <input formControlName="effectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                 #effectiveDatePicker="ngbDatepicker"
+                 (click)="effectiveDatePicker.open()"  (dateSelect)="effectiveDatePicker.close()" />
+          <span (click)="effectiveDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
         </div>
         <ng-container *ngIf="hasError('effectiveDate')">
           <span class="error">Required field</span>
@@ -16,7 +17,7 @@
     </div>
 
     <div class="col-md-4 col-lg-3 col-sm-6">
-      <app-auto-complete keyName="sacCode" keyValue="sacId" label="* SAC Code:" placeholder="Enter SAC" formControlName="sacCodeId" [options]="sacList()" />
+      <app-auto-complete keyName="sacCode" keyValue="sacId" label="* SAC Code:" title="List of SAC Code" placeholder="Enter SAC" formControlName="sacCodeId" [options]="sacList()" />
     </div>
 
     <div class="col-md-4 col-lg-3 col-sm-6">

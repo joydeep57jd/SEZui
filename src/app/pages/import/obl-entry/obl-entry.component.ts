@@ -41,7 +41,7 @@ export class OblEntryComponent {
     this.getPortList();
     this.getCountryList();
     this.getCommodityList();
-    this.setEditCallback();
+    this.setHeaderCallbacks();
     this.makeForm();
   }
 
@@ -217,7 +217,7 @@ export class OblEntryComponent {
     return control?.touched && control.invalid;
   }
 
-  setEditCallback() {
+  setHeaderCallbacks() {
     this.headers.forEach(header => {
       if(header.field === "edit") {
         header.callback = this.edit.bind(this);

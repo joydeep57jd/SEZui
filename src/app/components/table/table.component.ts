@@ -20,6 +20,7 @@ export class TableComponent {
   @Input() records!: any[] | null;
   @Input() isFetching!: boolean;
   @Input() idKey!: string;
+  @Input() slNumberStart: number = 0;
 
   @Output() redirect = new EventEmitter();
   @Output() deleteRecord = new EventEmitter();
@@ -41,7 +42,7 @@ export class TableComponent {
       case 'string':
         return value;
       case 'sl':
-        return  index + 1;
+        return  this.slNumberStart + index + 1;
       default:
         return '';
     }

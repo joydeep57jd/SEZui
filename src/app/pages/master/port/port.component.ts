@@ -33,7 +33,7 @@ export class PortComponent implements OnDestroy {
 
   constructor() {
     this.getCountryList()
-    this.setEditCallback();
+    this.setHeaderCallbacks();
     this.makeForm();
   }
 
@@ -138,7 +138,7 @@ export class PortComponent implements OnDestroy {
     return control?.touched && control.invalid;
   }
 
-  setEditCallback() {
+  setHeaderCallbacks() {
     this.headers.forEach(header => {
       if(header.field === "edit") {
         header.callback = this.edit.bind(this);

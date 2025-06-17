@@ -35,7 +35,7 @@ export class ExaminationComponent {
 
   constructor() {
     this.getSacList()
-    this.setEditCallback();
+    this.setHeaderCallbacks();
     this.makeForm();
   }
 
@@ -119,7 +119,7 @@ export class ExaminationComponent {
     return control?.touched && control.invalid;
   }
 
-  setEditCallback() {
+  setHeaderCallbacks() {
     this.headers.forEach(header => {
       if(header.field === "edit") {
         header.callback = this.edit.bind(this);

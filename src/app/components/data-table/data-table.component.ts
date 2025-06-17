@@ -17,6 +17,7 @@ import { TableComponent } from "../table/table.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataTableComponent implements OnInit {
+  private modalService = inject(NgbModal);
   private apiService = inject(ApiService);
 
   @Input() headers!: IDataTableHeader[];
@@ -28,7 +29,6 @@ export class DataTableComponent implements OnInit {
   totalPage = signal<number>(0);
   isFetching = signal<boolean>(true)
 
-  private modalService = inject(NgbModal);
 
   ngOnInit(): void {
     this.fetchRecords();
@@ -79,7 +79,7 @@ export class DataTableComponent implements OnInit {
   }
 
   deleteRecord({ record, header, name }: { record: any, header: IDataTableHeader, name: string }) {
-    const modalRef = this.modalService.open(DeleteModalComponent, { centered: true, });
+    const modalRef = this.modalService.open(DeleteModalComponent);
     modalRef.componentInstance.data = { url: header.deleteApiUrl, record, idKey: this.idKey, name };
     modalRef.result.then((result) => result && this.fetchRecords());
   }

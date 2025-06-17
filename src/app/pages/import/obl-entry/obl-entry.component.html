@@ -53,10 +53,11 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>IGM Date:</label>
-          <div (click)="igmDatePicker.open()" class="position-relative">
-            <input formControlName="igmDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                   #igmDatePicker="ngbDatepicker" />
-            <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          <div class="position-relative">
+            <input formControlName="igmDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #igmDatePicker="ngbDatepicker"
+                   (click)="igmDatePicker.open()" (dateSelect)="igmDatePicker.close()" />
+            <span (click)="igmDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
           <ng-container *ngIf="hasError('igmDate')">
             <span class="error">Required field</span>
@@ -77,10 +78,11 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>TP Date:</label>
-          <div (click)="tpDatePicker.open()" class="position-relative">
-            <input formControlName="tpDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                   #tpDatePicker="ngbDatepicker" />
-            <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          <div class="position-relative">
+            <input formControlName="tpDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #tpDatePicker="ngbDatepicker"
+                   (click)="tpDatePicker.open()" (dateSelect)="tpDatePicker.close()" />
+            <span (click)="tpDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
           <ng-container *ngIf="hasError('tpDate')">
             <span class="error">Required field</span>
@@ -103,7 +105,7 @@
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
-        <app-auto-complete keyName="portName" keyValue="portId" label="Port:" placeholder="Select Port" formControlName="port" [options]="portList()" />
+        <app-auto-complete keyName="portName" keyValue="portId" label="Port:" placeholder="Select Port" title="List of Port" formControlName="port" [options]="portList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
@@ -168,10 +170,11 @@
             </td>
             <td>
               <div class="form-group bottom-0">
-                <div (click)="oblHblDatePicker.open()" class="position-relative">
-                  <input formControlName="obL_HBL_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker [container]="'body'"
-                         #oblHblDatePicker="ngbDatepicker" />
-                  <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                <div class="position-relative">
+                  <input formControlName="obL_HBL_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                         #oblHblDatePicker="ngbDatepicker"
+                         (click)="oblHblDatePicker.open()" (dateSelect)="oblHblDatePicker.close()" />
+                  <span (click)="oblHblDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                 </div>
                 <ng-container *ngIf="hasError('obL_HBL_Date')">
                   <span class="error">Required field</span>
@@ -188,10 +191,11 @@
             </td>
             <td>
               <div class="form-group bottom-0">
-                <div (click)="smtpDatePicker.open()" class="position-relative">
-                  <input formControlName="smtP_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker [container]="'body'"
-                         #smtpDatePicker="ngbDatepicker" />
-                  <span class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                <div class="position-relative">
+                  <input formControlName="smtP_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                         #smtpDatePicker="ngbDatepicker"
+                         (click)="smtpDatePicker.open()" (dateSelect)="smtpDatePicker.close()" />
+                  <span (click)="smtpDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                 </div>
                 <ng-container *ngIf="hasError('smtP_Date')">
                   <span class="error">Required field</span>
@@ -207,7 +211,7 @@
               </div>
             </td>
             <td>
-              <app-auto-complete class="bottom-0" keyName="commodityName" keyValue="commodityName" label="" placeholder="Select Commodity" formControlName="commodity" [options]="commodityList()" />
+              <app-auto-complete class="bottom-0" keyName="commodityName" keyValue="commodityName" label="" title="List of Commodity" placeholder="Select Commodity" formControlName="commodity" [options]="commodityList()" />
             </td>
             <td>
               <div class="form-group bottom-0">

@@ -1,0 +1,26 @@
+  <div class="modal-content popup_modal">
+    <div class="modal-header popup_header">
+      <h4 class="modal-title">{{ title() }}</h4>
+      <i (click)="modal.close()" class="fa fa-times close" aria-hidden="true"></i>
+    </div>
+    <div class="modal-body popup_body">
+      <input #searchValue placeholder="Search Me"
+             type="text"
+             [ngModel]="inputValue()"
+             (input)="search.emit(searchValue.value)"
+      >
+      <ul class="option-list">
+        <li *ngFor="let option of options()"
+            [class.selected]="getOptionValue(selectedOption()) === getOptionValue(option)"
+            (click)="select.emit(option); modal.close()">
+          {{getOptionLabel(option)}}
+        </li>
+        <li *ngIf="options().length === 0">No results found</li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <div class="d-flex justify-content-end p-0">
+        <button (click)="modal.close()" type="button" class="btn btn-outline-primary close-btn" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>

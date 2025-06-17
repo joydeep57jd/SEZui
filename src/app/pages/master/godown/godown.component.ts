@@ -27,7 +27,7 @@ export class GodownComponent {
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
-    this.setEditCallback();
+    this.setHeaderCallbacks();
     this.makeForm();
   }
 
@@ -91,7 +91,7 @@ export class GodownComponent {
     return control?.touched && control.invalid;
   }
 
-  setEditCallback() {
+  setHeaderCallbacks() {
     this.headers.forEach(header => {
       if(header.field === "edit") {
         header.callback = this.edit.bind(this);
