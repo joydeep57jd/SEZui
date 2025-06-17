@@ -75,7 +75,6 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
       this.onSelectOption(result ?? null);
     })
     this.modalRef.closed.subscribe(() => {
-      console.log("ji")
       this.modalRef = null;
       this.inputValue.set("");
       this.filterOptions();

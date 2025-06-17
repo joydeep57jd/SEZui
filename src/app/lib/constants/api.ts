@@ -75,6 +75,10 @@ export const API = {
     },
     YARD_INVOICE: {
       SAVE: "Sez/AddEditYardInvoice",
-    }
+    },
+    CUSTOM_APPRAISEMENT: {
+      LIST: "Sez/GetCustomAppraisement",
+      SAVE: "Sez/AddEditCustomAppraisement",
+    },
   },
 };

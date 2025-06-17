@@ -5,9 +5,10 @@ import {ApiService, ToastService, UtilService} from "../../../services";
 import {API} from "../../../lib";
 import {DataTableComponent} from "../../../components";
 import {YARD_INVOICE_DATA} from "./yard-invoice-data";
-import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
+import {NgbInputDatepicker, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
+import {SelectContainersComponent} from "./select-containers/select-containers.component";
 
 @Component({
   selector: 'app-yard-invoice',
@@ -21,6 +22,7 @@ export class YardInvoiceComponent implements OnDestroy {
   apiService = inject(ApiService);
   utilService = inject(UtilService)
   toasterService = inject(ToastService);
+  modalService = inject(NgbModal);
 
   readonly apiUrls = API.IMPORT.YARD_INVOICE;
   readonly invoiceTypes = YARD_INVOICE_DATA.invoiceTypes;
@@ -132,6 +134,16 @@ export class YardInvoiceComponent implements OnDestroy {
   hasError(formControlName: string) {
     const control = this.form.get(formControlName);
     return control?.touched && control.invalid;
+  }
+
+  openSelectContainersModal() {
+    const modalRef = this.modalService.open(SelectContainersComponent, {modalDialogClass: 'list-container-modal', backdrop : 'static', keyboard : false});
+    // modalRef.componentInstance.getOptionLabel = this.getOptionLabel.bind(this);
+    // modalRef.componentInstance.getOptionValue = this.getOptionValue.bind(this);
+    // modalRef.componentInstance.title.set(this.title);
+    modalRef.result.then(data => {
+      console.log(data)
+    })
   }
 
   ngOnDestroy(): void {
