@@ -92,9 +92,10 @@
       </div>
     </div>
 
-    <app-container-details />
+    <app-container-details [records]="containerDetails()" [isViewMode]="isViewMode()" [chaList]="chaList" [importerList]="importerList"
+                           [containerList]="containerList" [oblList]="oblList" (changeContainerDetails)="changeContainerDetails($event)" />
 
-    <app-issuer-details />
+    <app-issuer-details [records]="issuerDetails()" [isViewMode]="isViewMode()" (changeIssuerDetails)="changeIssuerDetails($event)" />
 
     <div class="mt-3">
       <div class="form-group">

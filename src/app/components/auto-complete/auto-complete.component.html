@@ -1,10 +1,11 @@
-<div class="custom-auto-complete" #ref>
+<div class="custom-auto-complete">
   <div [class]="class + ' form-group'">
     <label *ngIf="!!label">{{ label }}</label>
     <div class="position-relative">
       <input
              [attr.placeholder]="placeholder"
              readonly
+             [disabled]="isDisabled()"
              type="text"
              [ngModel]="selectedOption() ? getOptionLabel(selectedOption()) : ''"
       >

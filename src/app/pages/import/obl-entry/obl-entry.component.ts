@@ -166,7 +166,7 @@ export class OblEntryComponent {
     this.resetRequestOblEntryAddDtls();
     this.form.reset();
     this.form.patchValue(record);
-    this.isViewMode = signal(isViewMode);
+    this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
     this.getAdditionalInfo(record.id);
   }

@@ -1,3 +1,216 @@
 <div class="secondary-form-container">
+  <form [formGroup]="form">
+    <div class="row">
 
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="containerCBTNo" keyValue="containerCBTNo" label="Container / CBT No:" title="List of Container / CBT No." formControlName="containerCBTNo" [options]="containerList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>ICD Code:</label>
+          <input readonly formControlName="icdCode" placeholder="Enter ICD Code" type="text">
+          <ng-container *ngIf="hasError('icdCode')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Size:</label>
+          <select formControlName="size" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('size')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>FCL / LCL:</label>
+          <select formControlName="fcL_LCL" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let fclLcl of fclLclList" [value]="fclLcl.value">{{fclLcl.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('fcL_LCL')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container / CBT Type:</label>
+          <select formControlName="containerCBTType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let containerCBTType of containerCBTs" [value]="containerCBTType.value">{{containerCBTType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('containerCBTType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Cargo Type:</label>
+          <input formControlName="cargoType" placeholder="Enter Cargo Type" type="text">
+          <ng-container *ngIf="hasError('cargoType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>RMS:</label>
+          <select formControlName="rms" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let rms of rmsList" [value]="rms.value">{{rms.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('rms')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Line No:</label>
+          <input formControlName="lineNo" placeholder="Enter BOE No" type="text">
+          <ng-container *ngIf="hasError('lineNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="obL_HBL_No" keyValue="id" label="OBL No:" title="List of OBL No" formControlName="oblNoId" [options]="oblList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>OBL Date:</label>
+          <div class="position-relative">
+            <input formControlName="oblDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #oblDatePicker="ngbDatepicker"
+                   (click)="oblDatePicker.open()" (dateSelect)="oblDatePicker.close()"/>
+            <span (click)="oblDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('oblDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>BOE No:</label>
+          <input formControlName="boeNo" placeholder="Enter BOE No" type="text">
+          <ng-container *ngIf="hasError('boeNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>BOE Date:</label>
+          <div class="position-relative">
+            <input formControlName="boeDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #boeDatePicker="ngbDatepicker"
+                   (click)="boeDatePicker.open()" (dateSelect)="boeDatePicker.close()"/>
+            <span (click)="boeDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('boeDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="CHA Name And Address:" title="List of CHA" formControlName="chaId" [options]="chaList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Importer Name And Address:" title="List of Importer" formControlName="importerId" [options]="importerList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Cargo Description:</label>
+          <textarea formControlName="cargoDescription" placeholder="Enter Cargo Description" rows="2"></textarea>
+          <ng-container *ngIf="hasError('cargoDescription')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>No of Packages:</label>
+          <input formControlName="noOfPackages" placeholder="Enter No of Packages" type="number">
+          <ng-container *ngIf="hasError('noOfPackages')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Gross Weight(Kg):</label>
+          <input formControlName="grossWeightKg" placeholder="Enter Gross Weight(Kg)" type="number">
+          <ng-container *ngIf="hasError('grossWeightKg')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CIF Value:</label>
+          <input formControlName="cifValue" placeholder="Enter CIF Value" type="number">
+          <ng-container *ngIf="hasError('cifValue')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Without Duty:</label>
+          <input formControlName="duty" placeholder="Enter Without Duty" type="number">
+          <ng-container *ngIf="hasError('duty')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Without DO Seal No:</label>
+          <input formControlName="withoutDOSealNo" placeholder="Enter Without DO Seal No" type="text">
+          <ng-container *ngIf="hasError('withoutDOSealNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div *ngIf="!isViewMode" class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="submit()">{{ editIndex !== null ? 'Save' : 'Add' }}</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-table [headers]="headers" [records]="records"></app-table>
+  </div>
 </div>

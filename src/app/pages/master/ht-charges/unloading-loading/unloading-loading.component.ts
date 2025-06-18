@@ -77,7 +77,7 @@ export class UnloadingLoadingComponent {
     record.effectiveDate = this.utilService.getNgbDateObject(record.effectiveDate);
     this.form.reset();
     this.form.patchValue(record);
-    this.isViewMode = signal(isViewMode);
+    this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
   }
 

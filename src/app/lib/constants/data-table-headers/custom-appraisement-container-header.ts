@@ -1,6 +1,6 @@
 import { IDataTableHeader } from "../../models";
 
-export const CustomAppraisementIssuerHeaders: IDataTableHeader[] = [
+export const CustomAppraisementContainerHeaders: IDataTableHeader[] = [
   {
     field: 'slNo',
     label: 'SL No',
@@ -25,13 +25,18 @@ export const CustomAppraisementIssuerHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
-    label: 'Issued By',
-    field: 'doIssuedBy',
+    label: 'Container CBT No',
+    field: 'containerCBTNo',
     type: 'string',
   },
   {
-    field: 'doValidDate',
-    label: 'Do Valid Date',
-    type: 'date',
+    field: 'cifValue',
+    label: 'CIF Value',
+    type: 'price',
+  },
+  {
+    field: 'grossWeightKg',
+    label: 'Gross Weight (Kg)',
+    type: 'number',
   },
 ];

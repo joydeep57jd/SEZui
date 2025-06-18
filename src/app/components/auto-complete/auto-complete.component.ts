@@ -61,6 +61,7 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
   }
 
   openOptionsModal() {
+    if(this.isDisabled()) return;
     this.modalRef = this.modalService.open(AutoCompleteModalComponent, {modalDialogClass: 'auto-complete-modal', backdrop : 'static', keyboard : false});
     this.modalRef.componentInstance.getOptionLabel = this.getOptionLabel.bind(this);
     this.modalRef.componentInstance.getOptionValue = this.getOptionValue.bind(this);
@@ -97,7 +98,7 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
 
   filterOptions() {
     const filterValue = this.inputValue().toLowerCase();
-    this.filteredOptions.set(this.options.filter(option => this.getOptionLabel(option).toLowerCase().includes(filterValue)));
+    this.filteredOptions.set(this.options.filter(option => this.getOptionLabel(option)?.toLowerCase().includes(filterValue)));
     if (this.modalRef) {
       this.modalRef!.componentInstance.options.set(this.filteredOptions());
     }

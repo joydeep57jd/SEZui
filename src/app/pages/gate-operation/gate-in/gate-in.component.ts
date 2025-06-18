@@ -1,21 +1,24 @@
-import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GATE_IN_DATA } from './gate-in-data';
-import {DataTableComponent, DATA_TABLE_HEADERS, ApiService, ToastService, API} from 'src/app';
+import {DataTableComponent, DATA_TABLE_HEADERS, ApiService, ToastService, API, UtilService} from 'src/app';
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 import {PARTY_TYPE} from "../../../lib";
+import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-gate-in',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, AutoCompleteComponent],
+  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, AutoCompleteComponent, NgbInputDatepicker],
   templateUrl: './gate-in.component.html',
   styleUrls: ['./gate-in.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GateInComponent {
+export class GateInComponent implements OnDestroy {
   apiService = inject(ApiService);
+  utilService = inject(UtilService);
   toasterService = inject(ToastService);
 
   readonly operationsNames = GATE_IN_DATA.operationsNames
@@ -24,8 +27,11 @@ export class GateInComponent {
   readonly containerTypes = GATE_IN_DATA.containerTypes;
   readonly sizes = GATE_IN_DATA.sizes;
   readonly materialTypes = GATE_IN_DATA.materialTypes;
+  readonly icdCodePrefix = GATE_IN_DATA.icdCodePrefix as any;
   readonly headers = DATA_TABLE_HEADERS.GATE_OPERATION.GATE_IN
   readonly apiUrls = API.GATE_OPERATION.GATE_IN;
+
+  private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
   partyList = signal<any[]>([]);
@@ -40,6 +46,7 @@ export class GateInComponent {
     this.getShippingLine();
     this.setHeaderCallbacks();
     this.makeForm();
+    this.updateCfsNo()
   }
 
   getPartyList() {
@@ -75,7 +82,26 @@ export class GateInComponent {
       driverName: new FormControl("", []),
       driverLicenseNo: new FormControl("", []),
       remarks: new FormControl("", []),
+      cfsNo: new FormControl("", []),
+      gateinDate: new FormControl(null, []),
+      gateinTime: new FormControl("", []),
+      reefer: new FormControl(false, []),
     })
+
+    this.form.get("operationName")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.updateCfsNo()
+      })
+  }
+
+  updateCfsNo() {
+    const operationType = this.form.get("operationName")?.value;
+    this.form.get("cfsNo")?.setValue(this.icdCodePrefix[operationType]+this.utilService.generateUniqueCode());
   }
 
   edit(record: any) {
@@ -87,9 +113,15 @@ export class GateInComponent {
   }
 
   patchForm(record: any, isViewMode: boolean) {
+    const dateTime = this.utilService.getNgbDateObject(record.gateinDate);
+    record.gateinDate = {day: dateTime?.day, month: dateTime?.month, year: dateTime?.year};
+    record.gateinTime = `${dateTime?.hour.toString().padStart(2, "0")}:${dateTime?.minute.toString().padStart(2, "0")}`
     this.form.reset();
     this.form.patchValue(record);
-    this.isViewMode = signal(isViewMode);
+    setTimeout(() => {
+      this.form.get("cfsNo")?.setValue(record.cfsNo);
+    }, 2)
+    this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
   }
 
@@ -122,7 +154,10 @@ export class GateInComponent {
   }
 
   makePayload() {
-    return {...this.form.value};
+    const value = {...this.form.value};
+    const [hour, minute] = value.gateinTime.split(":");
+    value.gateinDate = this.utilService.getDateObject(value.gateinDate, hour, minute);
+    return value;
   }
 
   hasError(formControlName: string) {
@@ -139,5 +174,10 @@ export class GateInComponent {
         header.callback = this.view.bind(this);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

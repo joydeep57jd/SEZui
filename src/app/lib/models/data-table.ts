@@ -9,7 +9,7 @@ export interface IDataTableHeader {
   deleteApiUrl?: string;
   isDeleteLabel?: boolean;
   valueGetter?: (record: any) => string;
-  callback?: (record: any) => void;
+  callback?: (record: any, index?: number) => void;
   redirectCallback?: (id: string) => string;
 }
 

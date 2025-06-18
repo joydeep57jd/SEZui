@@ -30,4 +30,10 @@ export const GATE_IN_DATA = {
     { value: "High Value", label: "High Value" },
     { value: "Low Value", label: "Low Value" },
   ],
+
+  icdCodePrefix: {
+    Import: "IMP",
+    Export: "EXP",
+    "Empty Vehicle": "EMV",
+  }
 }

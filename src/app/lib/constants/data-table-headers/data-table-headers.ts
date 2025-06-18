@@ -14,6 +14,7 @@ import {OverTimeHeaders} from "./over-time-header";
 import {ExaminationHeaders} from "./examination-header";
 import {CustomAppraisementHeaders} from "./custom-appraisement-header";
 import {CustomAppraisementIssuerHeaders} from "./custom-appraisement-issuer-header";
+import {CustomAppraisementContainerHeaders} from "./custom-appraisement-container-header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -41,7 +42,8 @@ export const DATA_TABLE_HEADERS = {
     OBL_ENTRY: OblEntryHeaders,
     CUSTOM_APPRAISEMENT: {
       MAIN: CustomAppraisementHeaders,
-      ISSUER: CustomAppraisementIssuerHeaders
+      ISSUER: CustomAppraisementIssuerHeaders,
+      CONTAINER: CustomAppraisementContainerHeaders,
     },
   }
 }

@@ -75,10 +75,15 @@ export const API = {
     },
     YARD_INVOICE: {
       SAVE: "Sez/AddEditYardInvoice",
+      OBL_CONTAINER_LIST: "Sez/GetOBLContainerList",
     },
     CUSTOM_APPRAISEMENT: {
-      LIST: "Sez/GetCustomAppraisement",
-      SAVE: "Sez/AddEditCustomAppraisement",
+      LIST: "Sez/GetCustomAppraisementApplicationHeader",
+      SAVE: "Sez/AddEditCustomAppraisementApplicationHeader",
+      ISSUER_DETAILS: "Sez/GetAppraisementDoDetails",
+      CONTAINER_DETAILS: "Sez/GetAppraisementContainerDetails",
+      OBL_LIST: "Sez/GetOBLEntriesWithDetails",
+      CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
     },
   },
 };

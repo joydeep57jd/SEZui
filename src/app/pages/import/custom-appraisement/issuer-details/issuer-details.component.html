@@ -14,9 +14,9 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Cargs. Delivered To:</label>
-          <input formControlName="cargsDeliveredTo" placeholder="Enter Cargs. Delivered To" type="text">
-          <ng-container *ngIf="hasError('cargsDeliveredTo')">
+          <label>Cargos. Delivered To:</label>
+          <input formControlName="cargosDeliveredTo" placeholder="Enter Cargos. Delivered To" type="text">
+          <ng-container *ngIf="hasError('cargosDeliveredTo')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -51,8 +51,14 @@
         </div>
       </div>
     </div>
+
+    <hr />
+    <div *ngIf="!isViewMode" class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="submit()">{{ editIndex !== null ? 'Save' : 'Add' }}</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
   </form>
   <div class="mt-2 d-flex flex-column gap-2">
-    <app-table [headers]="headers" [records]="records()"></app-table>
+    <app-table [headers]="headers" [records]="records"></app-table>
   </div>
 </div>

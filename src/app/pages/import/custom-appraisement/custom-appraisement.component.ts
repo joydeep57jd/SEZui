@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@an
 import { CommonModule } from '@angular/common';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
-import {ApiService, ToastService} from "../../../services";
+import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
 import {NgbDatepickerModule} from "@ng-bootstrap/ng-bootstrap";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
@@ -20,7 +20,7 @@ import {IssuerDetailsComponent} from "./issuer-details/issuer-details.component"
 })
 export class CustomAppraisementComponent {
   apiService = inject(ApiService);
-  utilService = inject(ApiService);
+  utilService = inject(UtilService);
   toasterService = inject(ToastService);
 
   readonly headers = DATA_TABLE_HEADERS.IMPORT.CUSTOM_APPRAISEMENT.MAIN
@@ -34,14 +34,38 @@ export class CustomAppraisementComponent {
   isSaving = signal(false);
   shippingLineList = signal<any[]>([])
   chaList = signal<any[]>([])
+  importerList = signal<any[]>([])
+  issuerDetails = signal<any[]>([])
+  containerDetails = signal<any[]>([])
+  oblList = signal<any[]>([]);
+  containerList = signal<any[]>([]);
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
+    this.getOblList()
+    this.getContainerList()
     this.getShippingLineList()
     this.getChaList()
+    this.getImporterList()
     this.setHeaderCallbacks();
     this.makeForm();
+  }
+
+  getOblList() {
+    this.apiService.get(this.apiUrls.OBL_LIST).subscribe({
+      next: (response: any) => {
+        this.oblList.set(response.data)
+      }
+    })
+  }
+
+  getContainerList() {
+    this.apiService.get(this.apiUrls.CONTAINER_LIST).subscribe({
+      next: (response: any) => {
+        this.containerList.set(response.data)
+      }
+    })
   }
 
   getShippingLineList() {
@@ -53,9 +77,33 @@ export class CustomAppraisementComponent {
   }
 
   getChaList() {
-    this.apiService.get(API.MASTER.PORT.LIST, {partyType: PARTY_TYPE.CHA}).subscribe({
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.CHA}).subscribe({
       next: (response: any) => {
         this.chaList.set(response.data)
+      }
+    })
+  }
+
+  getImporterList() {
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.IMPORTER}).subscribe({
+      next: (response: any) => {
+        this.importerList.set(response.data)
+      }
+    })
+  }
+
+  getIssuerDetails(customAppraisementId: number) {
+    this.apiService.get(this.apiUrls.ISSUER_DETAILS, {CustAppId: customAppraisementId}).subscribe({
+      next: (response: any) => {
+        this.issuerDetails.set(response.data);
+      }
+    })
+  }
+
+  getContainerDetails(customAppraisementId: number) {
+    this.apiService.get(this.apiUrls.CONTAINER_DETAILS, {CustAppId: customAppraisementId}).subscribe({
+      next: (response: any) => {
+        this.containerDetails.set(response.data);
       }
     })
   }
@@ -86,8 +134,10 @@ export class CustomAppraisementComponent {
   patchForm(record: any, isViewMode: boolean) {
     this.form.reset();
     this.form.patchValue(record);
-    this.isViewMode = signal(isViewMode);
+    this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
+    this.getIssuerDetails(record.id)
+    this.getContainerDetails(record.id)
   }
 
   setEditMode(){
@@ -107,8 +157,10 @@ export class CustomAppraisementComponent {
       const data = this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
-          this.toasterService.showSuccess("Obl entry saved successfully");
+          this.toasterService.showSuccess("Custom appraisement saved successfully");
           this.table.reload();
+          this.issuerDetails.set([])
+          this.containerDetails.set([])
           this.makeForm();
           this.isSaving.set(false);
         }, error: () => {
@@ -119,7 +171,7 @@ export class CustomAppraisementComponent {
   }
 
   makePayload() {
-    return  {...this.form.value};;
+    return  {...this.form.value, appraisementDate: this.utilService.getDateObject(this.form.value.appraisementDate), appraisementContainerDetailsList: this.containerDetails(), appraisementDoDetailsList: this.issuerDetails()};
   }
 
   hasError(formControlName: string) {
@@ -136,5 +188,13 @@ export class CustomAppraisementComponent {
         header.callback = this.view.bind(this);
       }
     });
+  }
+
+  changeIssuerDetails(records: any[]) {
+    this.issuerDetails.set(records);
+  }
+
+  changeContainerDetails(records: any[]) {
+    this.containerDetails.set(records);
   }
 }

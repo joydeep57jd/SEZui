@@ -66,7 +66,7 @@ export class OperationsComponent {
   patchForm(record: any, isViewMode: boolean) {
     this.form.reset();
     this.form.patchValue(record);
-    this.isViewMode = signal(isViewMode);
+    this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
   }
 

@@ -25,6 +25,10 @@ textarea,
     border: 1px solid $primary;
   }
 }
+
+input[disabled] ~ .input_icon {
+  cursor: default;
+}
 .input_icon {
   position: absolute;
   right: 7px;
@@ -181,42 +185,6 @@ fieldset[disabled] input {
     letter-spacing: 0.5px;
     font-size: 14px;
     padding: 5px 10px;
-  }
-}
-
-.custom-auto-complete {
-  width: 100%;
-  position: relative;
-}
-.custom-auto-complete.overlay {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-}
-.custom-auto-complete.option-list {
-  background: white;
-  position: absolute;
-  width: 100%;
-  z-index: 10000;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 0;
-  max-height: 340px;
-  overflow: auto;
-  li {
-    list-style: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    &:hover {
-      background: $primary;
-      color: white;
-    }
-    &.selected {
-      background: $primary;
-      color: white;
-    }
   }
 }
 

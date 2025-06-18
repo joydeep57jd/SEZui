@@ -48,9 +48,9 @@ export class TableComponent {
     }
   }
 
-  iconClick(record: any, header: IDataTableHeader) {
+  iconClick(record: any, header: IDataTableHeader, index: number) {
     if (header.callback) {
-      header.callback(record);
+      header.callback(record, index);
     } else if (header.redirectCallback) {
       this.router.navigate([header.redirectCallback(record[this.idKey])]);
     } else if (header.deleteApiUrl) {
