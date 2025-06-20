@@ -48,7 +48,7 @@ export const MENU = [
   {
     label: 'Cash Management',
     children: [
-      { label: 'Payment Receipt', path: PATHS.UNDER_DEVELOPMENT, },
+      { label: 'Payment Receipt', path: PATHS.CASH_MANAGEMENT.PAYMENT_RECEIPT, },
     ],
   },
 ]

@@ -1,65 +1,65 @@
 import {ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {ApiService, ToastService, UtilService} from "../../../services";
-import {API} from "../../../lib";
+import {ToastService} from "../../../services";
+import {DATA_TABLE_HEADERS} from "../../../lib";
 import {DataTableComponent} from "../../../components";
 import {YARD_INVOICE_DATA} from "./yard-invoice-data";
 import {NgbInputDatepicker, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 import {SelectContainersComponent} from "./select-containers/select-containers.component";
+import {TableComponent} from "../../../components/table/table.component";
+import {YardInvoiceHelper} from "./yard-invoice-helper";
 
 @Component({
   selector: 'app-yard-invoice',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgbInputDatepicker, AutoCompleteComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgbInputDatepicker, AutoCompleteComponent, TableComponent, DataTableComponent],
   templateUrl: './yard-invoice.component.html',
   styleUrls: ['./yard-invoice.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class YardInvoiceComponent implements OnDestroy {
-  apiService = inject(ApiService);
-  utilService = inject(UtilService)
+export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy {
   toasterService = inject(ToastService);
   modalService = inject(NgbModal);
 
-  readonly apiUrls = API.IMPORT.YARD_INVOICE;
   readonly invoiceTypes = YARD_INVOICE_DATA.invoiceTypes;
   readonly destuffingTypes = YARD_INVOICE_DATA.destuffingTypes;
+  readonly examinationTypes = YARD_INVOICE_DATA.examinationTypes;
+  readonly yardInvoicePreviewHeaders = DATA_TABLE_HEADERS.IMPORT.YARD_INVOICE.YARD_INVOICE_PREVIEW
+  readonly headers = DATA_TABLE_HEADERS.IMPORT.YARD_INVOICE.MAIN
 
   private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
-  partyList = signal<any[]>([]);
-  eximTraderMap = signal<Map<number, any>>(new Map());
+  selectedContainerSet = signal<Set<string>>(new Set());
+  insuredContainerSet = signal<Set<string>>(new Set());
+  selectedContainerList = signal<any[]>([]);
+  chargeDetails = signal<any>({});
   isViewMode = signal(false);
   isSaving = signal(false);
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
+    super();
+    this.getChargeTypeList()
+    this.getContainerList()
     this.getPartyList();
     this.getEximTraderList();
     this.makeForm();
   }
 
-  getPartyList() {
-    this.apiService.get(API.MASTER.PARTY.LIST).subscribe({
+  fetchCharges() {
+    const body = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
+    if(!body) {
+      this.chargeDetails.set([]);
+      return;
+    }
+    this.apiService.post(this.apiUrls.CHARGE_DETAILS, body).subscribe({
       next: (response: any) => {
-        this.partyList.set(response.data)
-      }
-    })
-  }
-
-  getEximTraderList() {
-    this.apiService.get(API.MASTER.EXIM_TRADER.LIST).subscribe({
-      next: (response: any) => {
-        const eximTraderMap = new Map<number, any>();
-        response.data.forEach((eximTrader: any) => {
-          eximTraderMap.set(eximTrader.traderId, eximTrader);
-        })
-        this.eximTraderMap.set(eximTraderMap)
+        this.chargeDetails.set(this.formatChargeDetails(response.data[0]))
       }
     })
   }
@@ -70,16 +70,19 @@ export class YardInvoiceComponent implements OnDestroy {
       invoiceType: new FormControl(this.invoiceTypes[0].value, []),
       invoiceNo: new FormControl("", []),
       deliveryDate: new FormControl(null, []),
-      applicationNo: new FormControl("", []),
+      applicationId: new FormControl(null, []),
       invoiceDate: new FormControl(null, []),
       partyId: new FormControl("", []),
       payeeId: new FormControl("", []),
       gstNo: new FormControl("", []),
       paymentMode: new FormControl("", []),
       destuffingType: new FormControl(this.destuffingTypes[0].value, []),
+      examinationType: new FormControl("", []),
       placeOfSupply: new FormControl("", []),
-      sez: new FormControl("", []),
+      sezId: new FormControl("", []),
       otHours: new FormControl("", []),
+      container: new FormControl("", []),
+      remarks: new FormControl("", []),
     })
     this.form.get("partyId")?.valueChanges
       .pipe(
@@ -91,6 +94,7 @@ export class YardInvoiceComponent implements OnDestroy {
         const eximTrader = this.eximTraderMap().get(partyId);
         this.form.get("payeeId")?.setValue(partyId);
         this.form.get("gstNo")?.setValue(eximTrader?.gstNo ?? "");
+        this.fetchCharges()
       })
   }
 
@@ -103,12 +107,16 @@ export class YardInvoiceComponent implements OnDestroy {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload();
+      const data = this.makePayload(this.form.value, this.chargeDetails(), this.selectedContainerList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Yard invoice saved successfully");
           this.table.reload();
           this.makeForm();
+          this.chargeDetails.set({})
+          this.selectedContainerSet().clear();
+          this.insuredContainerSet().clear();
+          this.selectedContainerList.set([]);
           this.isSaving.set(false);
         }, error: () => {
           this.isSaving.set(false);
@@ -117,32 +125,47 @@ export class YardInvoiceComponent implements OnDestroy {
     }
   }
 
-  makePayload() {
-    const isTaxInvoice = this.form.get("invoiceType")?.value;
-    const isFactoryDestuffing = this.form.get("destuffingType")?.value;
-    return {
-      ...this.form.value,
-      taxInvoice: isTaxInvoice,
-      billOfSupply: !isTaxInvoice,
-      factoryDestuffing: isFactoryDestuffing,
-      directDestuffing: !isFactoryDestuffing,
-      deliveryDate: this.utilService.getDateObject(this.form.value.deliveryDate),
-      invoiceDate: this.utilService.getDateObject(this.form.value.invoiceDate),
-    };
-  }
-
   hasError(formControlName: string) {
     const control = this.form.get(formControlName);
     return control?.touched && control.invalid;
   }
 
+  updateSelectedContainerList(isFetchChargeRequired = true) {
+    const selectedContainerList: any[] = [];
+    this.containerList().forEach((container: any) => {
+      if(this.selectedContainerSet().has(this.getContainerOblNo(container))) {
+        selectedContainerList.push({...container, isInsured: this.insuredContainerSet().has(this.getContainerOblNo(container))});
+      }
+    })
+    this.selectedContainerList.set(selectedContainerList);
+    if (isFetchChargeRequired) {
+      this.fetchCharges()
+    }
+  }
+
   openSelectContainersModal() {
     const modalRef = this.modalService.open(SelectContainersComponent, {modalDialogClass: 'list-container-modal', backdrop : 'static', keyboard : false});
-    // modalRef.componentInstance.getOptionLabel = this.getOptionLabel.bind(this);
-    // modalRef.componentInstance.getOptionValue = this.getOptionValue.bind(this);
-    // modalRef.componentInstance.title.set(this.title);
-    modalRef.result.then(data => {
-      console.log(data)
+    modalRef.componentInstance.records.set(this.containerList());
+    modalRef.componentInstance.getContainerOblNo = this.getContainerOblNo;
+    modalRef.componentInstance.selectedContainerSet.set(this.selectedContainerSet());
+    modalRef.componentInstance.insuredContainerSet.set(this.insuredContainerSet());
+    modalRef.componentInstance.selectionChange.subscribe((container: any) => {
+      const containerOblNo = this.getContainerOblNo(container);
+      if(this.selectedContainerSet().has(containerOblNo)) {
+        this.selectedContainerSet().delete(containerOblNo);
+      } else {
+        this.selectedContainerSet().add(containerOblNo);
+      }
+      this.updateSelectedContainerList()
+    })
+    modalRef.componentInstance.updateInsured.subscribe((container: any) => {
+      const containerOblNo = this.getContainerOblNo(container);
+      if(this.insuredContainerSet().has(containerOblNo)) {
+        this.insuredContainerSet().delete(containerOblNo);
+      } else {
+        this.insuredContainerSet().add(containerOblNo);
+      }
+      this.updateSelectedContainerList(false)
     })
   }
 

@@ -62,6 +62,8 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
 
   openOptionsModal() {
     if(this.isDisabled()) return;
+    this.inputValue.set((this.selectedOption() ? this.getOptionLabel(this.selectedOption()) : '') ?? "")
+    this.filterOptions();
     this.modalRef = this.modalService.open(AutoCompleteModalComponent, {modalDialogClass: 'auto-complete-modal', backdrop : 'static', keyboard : false});
     this.modalRef.componentInstance.getOptionLabel = this.getOptionLabel.bind(this);
     this.modalRef.componentInstance.getOptionValue = this.getOptionValue.bind(this);
@@ -85,8 +87,6 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
   onSearch(value: string): void {
     this.inputValue.set(value);
     this.filterOptions();
-    this.selectedOption.set(null);
-    this.onChange(null);
   }
 
   onSelectOption(option: any): void {

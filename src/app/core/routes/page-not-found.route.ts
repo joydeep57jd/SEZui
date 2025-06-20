@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { PATHS } from '../../lib/paths';
+import { PATHS } from '../../lib';
 
 export const PAGE_NOT_FOUND_ROUTES: Route[] = [
   {

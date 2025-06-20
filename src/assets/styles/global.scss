@@ -114,3 +114,16 @@ ngb-modal-window{
     }
   }
 }
+
+.primary-heading-container{
+  background: $primary;
+  padding: 4px;
+  padding-left: 10px;
+  color: white;
+  p {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 700;
+  }
+}

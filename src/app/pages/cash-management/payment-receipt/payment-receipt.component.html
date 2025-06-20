@@ -1,0 +1,177 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Receipt No:</label>
+          <input formControlName="receiptNo" placeholder="Enter Receipt No" type="text">
+          <ng-container *ngIf="hasError('receiptNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Receipt Date:</label>
+          <div class="position-relative">
+            <input formControlName="receiptDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #receiptDatePicker="ngbDatepicker"
+                   (click)="receiptDatePicker.open()" (dateSelect)="receiptDatePicker.close()" />
+            <span (click)="receiptDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('igmDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Payee Name:" title="List of Payee" placeholder="Select Payee Name" formControlName="partyId" [options]="payeeList()" />
+      </div>
+
+      <div class="form-group mt-3">
+        <div class="secondary-form-container px-2">
+          <div class="primary-heading-container">
+            <p>Invoice Details</p>
+          </div>
+          <div class="p-2 pb-0">
+            <app-table [headers]="invoiceHeaders" [records]="invoiceList()"></app-table>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center row">
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>TDS Amount:</label>
+          <input (input)="updateTotalPayableAmount()" formControlName="tdsAmount" placeholder="Enter TDS Amount" type="number">
+          <ng-container *ngIf="hasError('tdsAmount')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6 d-flex flex-column">
+        <div class="form-group">
+          <label>Total Value:</label>
+          <input class="text-right" readonly [value]="form.get('invoiceValue')?.value ?? 0" type="number">
+        </div>
+
+        <div class="form-group">
+          <label>Total Payable Amount:</label>
+          <input class="text-right" readonly [value]="form.get('totalPaymentReceipt')?.value ?? 0" type="number">
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="table table-bordered nowrap dataTable no-footer mt-2">
+        <thead>
+        <tr role="row">
+          <th>Action</th>
+          <th>Mode</th>
+          <th>Drawee Bank</th>
+          <th>Instrument No</th>
+          <th>Date</th>
+          <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody formArrayName="paymentDetails">
+        <tr *ngFor="let request of getPaymentDetailsFormGroupAsArray(); let index = index" [formGroupName]="index" [attr.accesskey]="request" role="row">
+          <td>
+            <div (click)="removePaymentDetails(index)" class="table_icon"><span>
+                <i class="fa fa-trash-o" aria-hidden="true"></i></span>
+            </div>
+          </td>
+          <td>
+            <div class="form-group bottom-0">
+              <select formControlName="payMode" class="dropdown">
+                <option value="">---Select---</option>
+                <option *ngFor="let paymentMode of paymentModes" [value]="paymentMode.value">{{paymentMode.label}}
+                </option>
+              </select>
+              <ng-container *ngIf="hasError('payMode')">
+                <span class="error">Required field</span>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <div class="form-group bottom-0">
+              <input formControlName="draweeBank" placeholder="Enter Drawee Bank" type="text">
+              <ng-container *ngIf="hasError('draweeBank')">
+                <span class="error">Required field</span>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <div class="form-group bottom-0">
+              <input formControlName="instrumentNo" placeholder="Enter Instrument No" type="text">
+              <ng-container *ngIf="hasError('instrumentNo')">
+                <span class="error">Required field</span>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <div class="form-group bottom-0">
+              <div class="position-relative">
+                <input formControlName="date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                       #datePicker="ngbDatepicker"
+                       (click)="datePicker.open()" (dateSelect)="datePicker.close()" />
+                <span (click)="datePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+              </div>
+              <ng-container *ngIf="hasError('date')">
+                <span class="error">Required field</span>
+              </ng-container>
+            </div>
+          </td>
+          <td>
+            <div class="form-group bottom-0">
+              <input (input)="updateTotalPaymentReceipt()" class="text-right" formControlName="amount" placeholder="Enter Amount" type="number">
+              <ng-container *ngIf="hasError('amount')">
+                <span class="error">Required field</span>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="addPaymentDetails()">Add</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="resetPaymentDetails()">Clear</button>
+    </div>
+
+    <div class="row d-flex justify-content-end">
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Total Payment Receipt:</label>
+          <input class="text-right" readonly [value]="totalPaymentReceipt()" type="number">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Remarks:</label>
+        <textarea formControlName="remarks" placeholder="Enter Remarks" rows="4"></textarea>
+      </div>
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <button [disabled]="isSaving() || form.get('totalPaymentReceipt')?.value !== totalPaymentReceipt()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>
+
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-payment-receipt-invoice />
+</div>

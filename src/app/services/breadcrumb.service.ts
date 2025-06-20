@@ -9,5 +9,6 @@ export class BreadcrumbService {
 
   updateBreadCrumbTitle(title: string) {
     this.title$.next(title)
+    document.title = title;
   }
 }

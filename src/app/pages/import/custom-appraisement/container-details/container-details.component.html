@@ -9,7 +9,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>ICD Code:</label>
-          <input readonly formControlName="icdCode" placeholder="Enter ICD Code" type="text">
+          <input formControlName="icdCode" placeholder="Enter ICD Code" type="text">
           <ng-container *ngIf="hasError('icdCode')">
             <span class="error">Required field</span>
           </ng-container>
@@ -85,7 +85,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Line No:</label>
-          <input formControlName="lineNo" placeholder="Enter BOE No" type="text">
+          <input formControlName="lineNo" placeholder="Enter Line No" type="text">
           <ng-container *ngIf="hasError('lineNo')">
             <span class="error">Required field</span>
           </ng-container>

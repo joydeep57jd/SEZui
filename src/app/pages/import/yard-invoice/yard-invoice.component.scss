@@ -1,0 +1,12 @@
+.calculation-table{
+  td, th{
+    text-align: right;
+    padding: 4px;
+    &.text-left{
+      text-align: left;
+    }
+  }
+}
+.text-left{
+  text-align: left;
+}

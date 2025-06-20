@@ -1,7 +1,7 @@
 export const CUSTOM_APPRAISEMENT_DATA = {
   deliveryTypes: [
     { value: "Cargo Delivery", label: "Cargo Delivery" },
-    { value: "Container / CBT Delivery", label: "Container / CBT Delivery" },
+    { value: "Container / CBT", label: "Container / CBT Delivery" },
   ],
 
   doTypes: [

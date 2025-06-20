@@ -110,6 +110,7 @@ export class CustomAppraisementComponent {
 
   makeForm() {
     this.form = new FormGroup({
+      id: new FormControl(0, []),
       appraisementNo: new FormControl("", []),
       appraisementDate: new FormControl(null, []),
       shippingLineId: new FormControl(null, []),
@@ -118,7 +119,7 @@ export class CustomAppraisementComponent {
       voyage: new FormControl("", []),
       rotation: new FormControl("", []),
       deliveryType: new FormControl(this.deliveryTypes[0].value, []),
-      doType: new FormControl(this.doTypes[0].value, []),
+      doStatus: new FormControl(this.doTypes[0].value, []),
       appraisementStatus: new FormControl(this.appraisementStatuses[0].value, []),
     })
   }
@@ -132,6 +133,7 @@ export class CustomAppraisementComponent {
   }
 
   patchForm(record: any, isViewMode: boolean) {
+    record.appraisementDate = this.utilService.getNgbDateObject(record.appraisementDate);
     this.form.reset();
     this.form.patchValue(record);
     this.isViewMode.set(isViewMode);

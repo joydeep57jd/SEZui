@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable({
@@ -40,5 +40,19 @@ export class UtilService {
     }
 
     return code;
+  }
+
+  formatCurrency(
+    value: number,
+    locale: string = 'en-IN',
+    currency: string = 'INR'
+  ): string {
+    if(isNaN(value) || value === null) return '';
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
   }
 }

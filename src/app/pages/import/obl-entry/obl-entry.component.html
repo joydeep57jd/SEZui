@@ -17,13 +17,7 @@
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>Container / CBT No:</label>
-          <input formControlName="containerCBTNo" placeholder="Enter Container / CBT No" type="text">
-          <ng-container *ngIf="hasError('containerCBTNo')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
+        <app-auto-complete keyName="containerCBTNo" keyValue="containerCBTNo" label="Container / CBT No:" title="List of Container / CBT No." formControlName="containerCBTNo" [options]="containerList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
@@ -161,7 +155,7 @@
               </div>
             </td>
             <td>
-              <div [attr.index]="request" class="form-group bottom-0">
+              <div [attr.accesskey]="request" class="form-group bottom-0">
                 <input formControlName="obL_HBL_No" placeholder="Enter OBL/HBL No" type="text">
                 <ng-container *ngIf="hasError('obL_HBL_No')">
                   <span class="error">Required field</span>
@@ -277,6 +271,6 @@
   </form>
 
     <div class="mt-2 d-flex flex-column gap-2">
-    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+      <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
   </div>
 </div>

@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output
 import { CommonModule, DatePipe } from '@angular/common';
 import { IDataTableHeader } from 'src/app/lib';
 import { Router } from '@angular/router';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [DatePipe],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
@@ -34,7 +35,7 @@ export class TableComponent {
       case 'boolean':
         return record[header.field] ? 'Yes' : 'No';
       case 'date':
-        return value ? this.datePipe.transform(new Date(value), 'MMMM d, y, h:mm a') : '';
+        return value ? this.datePipe.transform(new Date(value), 'MMMM d, y') : '';
       case 'number':
         return value;
       case 'price':

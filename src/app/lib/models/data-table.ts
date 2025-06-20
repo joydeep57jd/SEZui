@@ -20,7 +20,8 @@ export type IDataTableDataType =
   | 'boolean'
   | 'price'
   | 'icon'
-  | 'sl';
+  | 'sl'
+  | 'select';
 
 export type SearchCriteria = IPageCriteria & Record<string, string | number>
 

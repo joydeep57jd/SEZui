@@ -3,3 +3,12 @@ export enum PARTY_TYPE {
   CHA="CHA",
   IMPORTER = "Importer",
 }
+
+export enum CHARGE_TYPE {
+  IMPORT = 1,
+}
+
+export enum CHARGE_CODE {
+  ENTRY = "ENT",
+  EXAMINATION = "EXM",
+}

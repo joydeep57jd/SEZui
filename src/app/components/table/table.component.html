@@ -3,7 +3,7 @@
     <thead>
       <tr role="row">
         <th *ngFor="let header of headers" [class]="header.class"
-          [width]="header.width ?? (header.type === 'icon' ? '56px' : '')">
+          [width]="header.width ?? (['icon', 'select'].includes(header.type) ? '56px' : '')">
           {{header.label}}
         </th>
       </tr>
@@ -16,13 +16,24 @@
       <ng-container *ngIf="records?.length; else noRecords">
         <tr *ngFor="let record of records; let index = index" role="row" class="even">
           <td *ngFor="let header of headers" [class]="header.valueClass"
-            [width]="header.width ?? (header.type === 'icon' ? '56px' : '')">
-            <ng-container *ngIf="header.type !== 'icon'">
+            [width]="header.width ?? (['icon', 'select'].includes(header.type) ? '56px' : '')">
+            <ng-container *ngIf="!['icon', 'select'].includes(header.type)">
               {{getData(record, header, index)}}
             </ng-container>
             <ng-container *ngIf="header.type === 'icon'">
               <div (click)="iconClick(record, header, index)" class="table_icon"><span><i [class]="header.icon"
                     aria-hidden="true"></i></span></div>
+            </ng-container>
+            <ng-container *ngIf="header.type === 'select'">
+              <div class="selection">
+                <div  class="checkbox-container mt-2">
+                  <input (change)="iconClick(record, header, index)" [id]="'select-'+index" hidden type="checkbox">
+                  <label [for]="'select-'+index">
+                    <i class="square"></i>
+                    <span></span>
+                  </label>
+                </div>
+              </div>
             </ng-container>
           </td>
         </tr>

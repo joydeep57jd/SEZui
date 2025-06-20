@@ -168,6 +168,7 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
     this.form.reset();
     this.form.patchValue(record);
     isViewMode ? this.form.disable() : this.form.enable();
+    this.makeFormControlsDisabled()
   }
 
   reset() {
@@ -221,8 +222,6 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
         if(!header.callback) {
           header.callback = this.view.bind(this);
         }
-        header.class = this.isViewMode ? "d-none" : "";
-        header.valueClass = this.isViewMode ? "d-none" : "";
       }
       return header;
     });

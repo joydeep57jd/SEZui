@@ -72,10 +72,14 @@ export const API = {
       LIST: "Sez/GetOblEntry",
       SAVE: "Sez/AddOblEntry",
       ADDITIONAL_INFO: "Sez/GetOblEntryAdditionalDetails",
+      CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
     },
     YARD_INVOICE: {
       SAVE: "Sez/AddEditYardInvoice",
       OBL_CONTAINER_LIST: "Sez/GetOBLContainerList",
+      CHARGE_DETAILS: "Sez/GetImportCharges",
+      CHARGE_TYPE: "Sez/GetAllChargesTypes",
+      LIST: "Sez/GetYardInvoice",
     },
     CUSTOM_APPRAISEMENT: {
       LIST: "Sez/GetCustomAppraisementApplicationHeader",
@@ -84,6 +88,13 @@ export const API = {
       CONTAINER_DETAILS: "Sez/GetAppraisementContainerDetails",
       OBL_LIST: "Sez/GetOBLEntriesWithDetails",
       CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
+    },
+  },
+  CASH_MANAGEMENT: {
+    PAYMENT_RECEIPT: {
+      LIST: "Sez/GetPaymentReceiptHeader",
+      SAVE: "Sez/AddEditPaymentReceipt",
+      INVOICE_LIST: "Sez/GetPaymentReceiptInvoiceDetails",
     },
   },
 };

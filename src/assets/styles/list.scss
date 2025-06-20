@@ -42,6 +42,19 @@ table.table-bordered td {
     margin: 20px 0;
   }
 
+  .selection{
+    position: relative;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+      .checkbox-container{
+        top: -9px;
+        left: 4px;
+        position: absolute;
+        justify-content: center;
+      }
+  }
+
   .table_icon {
     background: #eff4f9;
     padding: 4px 5px;

@@ -15,6 +15,10 @@ import {ExaminationHeaders} from "./examination-header";
 import {CustomAppraisementHeaders} from "./custom-appraisement-header";
 import {CustomAppraisementIssuerHeaders} from "./custom-appraisement-issuer-header";
 import {CustomAppraisementContainerHeaders} from "./custom-appraisement-container-header";
+import {YardInvoicePreviewHeaders} from "./yard-invoice-preview.header";
+import {PaymentReceiptInvoiceHeaders} from "./payment-receipt-invoice.header";
+import {YardInvoiceHeaders} from "./yard-invoice.header";
+import {PaymentReceiptHeaders} from "./payment-receipt.header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -45,5 +49,13 @@ export const DATA_TABLE_HEADERS = {
       ISSUER: CustomAppraisementIssuerHeaders,
       CONTAINER: CustomAppraisementContainerHeaders,
     },
+    YARD_INVOICE: {
+      YARD_INVOICE_PREVIEW: YardInvoicePreviewHeaders,
+      MAIN: YardInvoiceHeaders
+    }
+  },
+  CASH_MANAGEMENT: {
+    PAYMENT_RECEIPT_INVOICE: PaymentReceiptInvoiceHeaders,
+    PAYMENT_RECEIPT: PaymentReceiptHeaders,
   }
 }

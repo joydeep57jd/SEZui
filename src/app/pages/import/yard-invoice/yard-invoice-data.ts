@@ -7,5 +7,10 @@ export const YARD_INVOICE_DATA = {
   destuffingTypes: [
     { value: true, label: "Factory Destuffing" },
     { value: false, label: "Direct Destuffing" },
+  ],
+
+  examinationTypes: [
+    { value: 1, label: "Less than 100%" },
+    { value: 2, label: "100%" },
   ]
 }
