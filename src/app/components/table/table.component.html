@@ -21,8 +21,12 @@
               {{getData(record, header, index)}}
             </ng-container>
             <ng-container *ngIf="header.type === 'icon'">
-              <div (click)="iconClick(record, header, index)" class="table_icon"><span><i [class]="header.icon"
-                    aria-hidden="true"></i></span></div>
+              <div (click)="iconClick(record, header, index)" class="table_icon"><span>
+                <ng-template #icon>
+                  <i  [class]="header.icon" aria-hidden="true"></i>
+                </ng-template>
+                <img *ngIf="isLoading(header, record); else icon" src="assets/gifs/loader.gif" alt="loader" class="action-icon-loader" />
+              </span></div>
             </ng-container>
             <ng-container *ngIf="header.type === 'select'">
               <div class="selection">

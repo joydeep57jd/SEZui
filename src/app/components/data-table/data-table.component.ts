@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  Input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, map, of, switchMap, tap, } from 'rxjs';
@@ -23,12 +30,12 @@ export class DataTableComponent implements OnInit {
   @Input() headers!: IDataTableHeader[];
   @Input() idKey!: string;
   @Input() url!: string;
+  @Input() actionLoaders: Record<string, Record<string,boolean>> = {};
 
   searchCriteria$ = new BehaviorSubject<SearchCriteria>({ page: 1, size: 10, reloadCount: 0});
   records = signal<any[] | null>(null);
   totalPage = signal<number>(0);
   isFetching = signal<boolean>(true)
-
 
   ngOnInit(): void {
     this.fetchRecords();

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, signal, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
@@ -18,10 +18,12 @@ import {PaymentReceiptInvoiceComponent} from "./payment-receipt-invoice/payment-
   imports: [CommonModule, ReactiveFormsModule, NgbDatepickerModule, AutoCompleteComponent, TableComponent, DataTableComponent, PaymentReceiptInvoiceComponent],
   templateUrl: './payment-receipt.component.html',
   styleUrls: ['./payment-receipt.component.scss'],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentReceiptComponent implements OnDestroy{
   apiService = inject(ApiService);
+  datePipe = inject(DatePipe);
   printService = inject(PrintService);
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
@@ -269,7 +271,7 @@ export class PaymentReceiptComponent implements OnDestroy{
   }
 
   print(record: any) {
-    this.printService.printOrDownload("print", this.invoiceSection, "test")
+    this.printService.print(this.invoiceSection, "test")
   }
 
   select(record: any, index?: number) {
@@ -297,6 +299,10 @@ export class PaymentReceiptComponent implements OnDestroy{
         header.callback = this.print.bind(this);
       }
     });
+  }
+
+  get timeStamp() {
+    return  this.datePipe.transform(new Date(), 'MMMM d, y hh:mm:ss a');
   }
 
   ngOnDestroy() {

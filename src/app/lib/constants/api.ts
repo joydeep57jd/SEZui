@@ -80,6 +80,7 @@ export const API = {
       CHARGE_DETAILS: "Sez/GetImportCharges",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
       LIST: "Sez/GetYardInvoice",
+      INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
     },
     CUSTOM_APPRAISEMENT: {
       LIST: "Sez/GetCustomAppraisementApplicationHeader",

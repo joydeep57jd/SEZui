@@ -12,8 +12,8 @@ export const PaymentReceiptInvoiceHeaders: IDataTableHeader[] = [
     type: 'date',
   },
   {
-    field: 'roundedTotal',
-    label: 'All Total Amount',
+    field: 'total',
+    label: 'Invoice Amount',
     type: 'number',
   },
   {
@@ -22,8 +22,8 @@ export const PaymentReceiptInvoiceHeaders: IDataTableHeader[] = [
     type: 'number',
   },
   {
-    field: 'total',
-    label: 'Invoice Amount',
+    field: 'roundedTotal',
+    label: 'All Total Amount',
     type: 'number',
   },
   {

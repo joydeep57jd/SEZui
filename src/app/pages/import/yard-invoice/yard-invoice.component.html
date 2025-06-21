@@ -249,6 +249,14 @@
   </form>
 
   <div class="mt-2 d-flex flex-column gap-2">
-    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+    <app-data-table idKey="yardInvId"  [headers]="headers" [url]="apiUrls.LIST" [actionLoaders]="actionLoaders"></app-data-table>
   </div>
 </div>
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-yard-invoice-voucher [data]="pdfData" />
+  <div class="print-footer" id="custom-footer">
+    <div>Printed By: CWC Admin</div>
+    <div id="timestamp">{{timeStamp}}</div>
+  </div>
+</div>
+

@@ -1,5 +1,14 @@
-import {ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  signal,
+  ViewChild
+} from '@angular/core';
+import {CommonModule, DatePipe} from '@angular/common';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ToastService} from "../../../services";
 import {DATA_TABLE_HEADERS} from "../../../lib";
@@ -11,18 +20,26 @@ import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 import {SelectContainersComponent} from "./select-containers/select-containers.component";
 import {TableComponent} from "../../../components/table/table.component";
 import {YardInvoiceHelper} from "./yard-invoice-helper";
+import {PrintService} from "../../../services/print.service";
+import {
+  PaymentReceiptInvoiceComponent
+} from "../../cash-management/payment-receipt/payment-receipt-invoice/payment-receipt-invoice.component";
+import {YardInvoiceVoucherComponent} from "./yard-invoice-voucher/yard-invoice-voucher.component";
 
 @Component({
   selector: 'app-yard-invoice',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgbInputDatepicker, AutoCompleteComponent, TableComponent, DataTableComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgbInputDatepicker, AutoCompleteComponent, TableComponent, DataTableComponent, PaymentReceiptInvoiceComponent, YardInvoiceVoucherComponent],
   templateUrl: './yard-invoice.component.html',
   styleUrls: ['./yard-invoice.component.scss'],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy {
   toasterService = inject(ToastService);
+  datePipe = inject(DatePipe);
   modalService = inject(NgbModal);
+  printService = inject(PrintService);
 
   readonly invoiceTypes = YARD_INVOICE_DATA.invoiceTypes;
   readonly destuffingTypes = YARD_INVOICE_DATA.destuffingTypes;
@@ -37,18 +54,24 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
   insuredContainerSet = signal<Set<string>>(new Set());
   selectedContainerList = signal<any[]>([]);
   chargeDetails = signal<any>({});
+  pdfData = signal<any>({});
   isViewMode = signal(false);
   isSaving = signal(false);
+  printInProgress: Record<string,boolean> = {};
+  actionLoaders: Record<string, Record<string,boolean>> = {}
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
+  @ViewChild('invoiceSection') invoiceSection!: ElementRef;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     super();
+    this.setHeaderCallbacks()
     this.getChargeTypeList()
     this.getContainerList()
     this.getPartyList();
     this.getEximTraderList();
     this.makeForm();
+    this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
   }
 
   fetchCharges() {
@@ -169,8 +192,41 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     })
   }
 
+  print(record: any) {
+    if(this.printInProgress[record.yardInvId]) return;
+    this.printInProgress[record.yardInvId] = true;
+    this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+    this.apiService.get(this.apiUrls.INVOICE_DETAILS, {InvoiceNo: record.invoiceNo}).subscribe({
+      next: (response: any) => {
+        this.pdfData.set(response.data);
+        setTimeout(() => {
+          this.printInProgress[record.yardInvId] = false;
+          this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+          this.cdr.detectChanges()
+          this.printService.print(this.invoiceSection, record.invoiceNo);
+        }, 10)
+      }, error: () => {
+        this.printInProgress[record.yardInvId] = false;
+        this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+        this.cdr.detectChanges()
+      }
+    });
+  }
+
+  setHeaderCallbacks() {
+    this.headers.forEach(header => {
+      if(header.field === "print") {
+        header.callback = this.print.bind(this);
+      }
+    });
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  get timeStamp() {
+    return  this.datePipe.transform(new Date(), 'MMMM d, y hh:mm:ss a');
   }
 }

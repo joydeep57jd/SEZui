@@ -22,6 +22,7 @@ export class TableComponent {
   @Input() isFetching!: boolean;
   @Input() idKey!: string;
   @Input() slNumberStart: number = 0;
+  @Input() actionLoaders:  Record<string, Record<string,boolean>> = {};
 
   @Output() redirect = new EventEmitter();
   @Output() deleteRecord = new EventEmitter();
@@ -47,6 +48,10 @@ export class TableComponent {
       default:
         return '';
     }
+  }
+
+  isLoading(header: IDataTableHeader, row: any) {
+    return this.actionLoaders[header.field] && this.actionLoaders[header.field][row[this.idKey]];
   }
 
   iconClick(record: any, header: IDataTableHeader, index: number) {
