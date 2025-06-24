@@ -2,6 +2,7 @@ export enum PARTY_TYPE {
   SHIPPING_LINE = "Shippingline",
   CHA="CHA",
   IMPORTER = "Importer",
+  EXPORTER = "Exporter",
 }
 
 export enum CHARGE_TYPE {

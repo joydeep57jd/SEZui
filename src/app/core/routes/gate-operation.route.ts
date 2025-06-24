@@ -12,4 +12,9 @@ export const GATE_OPERATION_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.GateExitComponent),
     data: { title: "Exit Through Gate" }
   },
+  {
+    path: PATHS.GATE_OPERATION.GATE_PASS,
+    loadComponent: () => import('../..').then((c) => c.GatePassComponent),
+    data: { title: "Gate Pass" }
+  },
 ];

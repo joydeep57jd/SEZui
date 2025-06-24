@@ -1,0 +1,204 @@
+import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
+import {CommonModule, DatePipe} from '@angular/common';
+import {ApiService, ToastService, UtilService} from "../../../services";
+import {PrintService} from "../../../services/print.service";
+import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
+import {forkJoin} from "rxjs";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {DataTableComponent} from "../../../components";
+import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
+import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
+import {GatePassDetailsComponent} from "./gate-pass-details/gate-pass-details.component";
+
+@Component({
+  selector: 'app-gate-pass',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, NgbInputDatepicker, AutoCompleteComponent, GatePassDetailsComponent],
+  templateUrl: './gate-pass.component.html',
+  styleUrls: ['./gate-pass.component.scss'],
+  providers: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class GatePassComponent {
+  apiService = inject(ApiService);
+  datePipe = inject(DatePipe);
+  printService = inject(PrintService);
+  utilService = inject(UtilService);
+  toasterService = inject(ToastService);
+
+  readonly apiUrls = API.GATE_OPERATION.GATE_PASS;
+  readonly headers = DATA_TABLE_HEADERS.GATE_OPERATION.GATE_PASS.MAIN;
+
+  form!: FormGroup;
+  invoiceList = signal<any[]>([]);
+  chaList = signal<any[]>([]);
+  importerExporterList = signal<any[]>([]);
+  shippingLineList = signal<any[]>([]);
+  portList = signal<any[]>([]);
+  gatePassDetails = signal<any[]>([]);
+  isSaving = signal(false);
+  isViewMode = signal(false);
+
+  @ViewChild(DataTableComponent) table!: DataTableComponent;
+
+  constructor() {
+    this.setHeaderCallbacks()
+    this.getInvoiceList()
+    this.getChaList();
+    this.getImporterExporterList()
+    this.getShippingLineList();
+    this.getPortList()
+    this.makeForm();
+  }
+
+  getInvoiceList() {
+    this.apiService.get(API.IMPORT.YARD_INVOICE.LIST).subscribe({
+      next: (response: any) => {
+        this.invoiceList.set(response.data)
+      }
+    })
+  }
+
+  getChaList() {
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.CHA}).subscribe({
+      next: (response: any) => {
+        this.chaList.set(response.data)
+      }
+    })
+  }
+
+  getImporterExporterList() {
+    forkJoin([
+      this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.IMPORTER}),
+      this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.EXPORTER})
+    ]).subscribe({
+      next: (responses: any) => {
+        this.importerExporterList.set([...responses[0].data, ...responses[1].data])
+      }
+    })
+  }
+
+  getShippingLineList() {
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.SHIPPING_LINE}).subscribe({
+      next: (response: any) => {
+        this.shippingLineList.set(response.data)
+      }
+    })
+  }
+
+  getPortList() {
+    this.apiService.get(API.MASTER.PORT.LIST).subscribe({
+      next: (response: any) => {
+        this.portList.set(response.data)
+      }
+    })
+  }
+
+  getGatePassDetails(record: any) {
+    this.apiService.get(this.apiUrls.GATE_PASS_DETAILS, {gatepassId: record.gatePassId}).subscribe({
+      next: (response: any) => {
+        this.gatePassDetails.set(response.data)
+      }
+    })
+  }
+
+  makeForm(){
+    this.form = new FormGroup({
+      gatePassId: new FormControl(0, []),
+      gatePassNo: new FormControl("", []),
+      gatePssDate: new FormControl(null, []),
+      invoiceId: new FormControl(null, []),
+      expDate: new FormControl(null, []),
+      chaName: new FormControl(null, []),
+      impExpName: new FormControl(null, []),
+      shippingLineName: new FormControl(null, []),
+      departureDate: new FormControl(null, []),
+      arrivalDate: new FormControl(null, []),
+      remarks: new FormControl("", []),
+    });
+  }
+
+  edit(record: any) {
+    this.patchForm({...record}, false);
+  }
+
+  view(record: any) {
+    this.patchForm({...record}, true);
+  }
+
+  patchForm(record: any, isViewMode: boolean) {
+    record.gatePssDate = this.utilService.getNgbDateObject(record.gatePssDate);
+    record.expDate = this.utilService.getNgbDateObject(record.expDate);
+    record.arrivalDate = this.utilService.getNgbDateObject(record.arrivalDate);
+    record.departureDate = this.utilService.getNgbDateObject(record.departureDate);
+    this.form.reset();
+    this.form.patchValue(record);
+    this.isViewMode.set(isViewMode);
+    isViewMode ? this.form.disable() : this.form.enable();
+    this.getGatePassDetails(record);
+  }
+
+  setEditMode(){
+    this.form.enable();
+    this.isViewMode.set(false);
+  }
+
+  reset() {
+    this.form.reset();
+    this.makeForm();
+  }
+
+  submit() {
+    this.form.markAllAsTouched();
+    if (this.form.valid) {
+      this.isSaving.set(true);
+      const data = this.makePayload();
+      this.apiService.post(this.apiUrls.SAVE, data).subscribe({
+        next:() => {
+          this.toasterService.showSuccess("Gate pass saved successfully");
+          this.table.reload();
+          this.gatePassDetails.set([])
+          this.makeForm();
+          this.isSaving.set(false);
+        }, error: () => {
+          this.isSaving.set(false);
+        }
+      })
+    }
+  }
+
+  makePayload() {
+    const value = {...this.form.value};
+    value.gatePssDate = this.utilService.getDateObject(value.gatePssDate);
+    value.expDate = this.utilService.getDateObject(value.expDate);
+    value.arrivalDate = this.utilService.getDateObject(value.arrivalDate);
+    value.departureDate = this.utilService.getDateObject(value.departureDate);
+    return  {
+      gatePass: value,
+      gatePassDetails: this.gatePassDetails()
+    };
+  }
+
+  hasError(formControlName: string) {
+    const control = this.form.get(formControlName);
+    return control?.touched && control.invalid;
+  }
+
+  setHeaderCallbacks() {
+    this.headers.forEach(header => {
+      if(header.field === "edit") {
+        header.callback = this.edit.bind(this);
+      }
+      if(header.field === "view") {
+        header.callback = this.view.bind(this);
+      }
+      if(header.field === "invoiceNo") {
+        header.valueGetter = (record: any) => this.invoiceList().find(invoice => invoice.yardInvId === record.invoiceId)?.invoiceNo;
+      }
+    });
+  }
+
+  changeGatePassDetails(records: any[]) {
+    this.gatePassDetails.set(records);
+  }
+}

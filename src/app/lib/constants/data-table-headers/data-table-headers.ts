@@ -19,15 +19,26 @@ import {YardInvoicePreviewHeaders} from "./yard-invoice-preview.header";
 import {PaymentReceiptInvoiceHeaders} from "./payment-receipt-invoice.header";
 import {YardInvoiceHeaders} from "./yard-invoice.header";
 import {PaymentReceiptHeaders} from "./payment-receipt.header";
+import {RentOfficeSpaceHeaders} from "./rent-office-space-header";
+import {RentTableSpaceHeaders} from "./rent-table-space-header";
+import {StorageChargeHeaders} from "./storage-charge-header";
+import {TransportationHeaders} from "./transportaion-header";
+import {GatePassHeaders} from "./gate-pass-headers";
+import {GatePassDetailsHeaders} from "./gate-pass-datails-headers";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
-    GATE_IN: GateInHeaders
+    GATE_IN: GateInHeaders,
+    GATE_PASS: {
+      MAIN: GatePassHeaders,
+      GATE_PASS_DETAILS: GatePassDetailsHeaders,
+    },
   },
   MASTER: {
     HT_CHARGES: {
       UNLOADING_LOADING: UnloadingLoadingHeaders,
       HANDLING: HandlingHeaders,
+      TRANSPORTATION: TransportationHeaders,
     },
     SAC: SacHeaders,
     OPERATION: OperationHeaders,
@@ -40,6 +51,9 @@ export const DATA_TABLE_HEADERS = {
       INSURANCE_CHARGE: InsuranceChargeHeaders,
       OVER_TIME: OverTimeHeaders,
       EXAMINATION: ExaminationHeaders,
+      RENT_OFFICE_SPACE: RentOfficeSpaceHeaders,
+      RENT_TABLE_SPACE: RentTableSpaceHeaders,
+      STORAGE_CHARGE: StorageChargeHeaders,
     }
   },
   IMPORT: {

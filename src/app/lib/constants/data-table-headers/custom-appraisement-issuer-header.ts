@@ -9,7 +9,6 @@ export const CustomAppraisementIssuerHeaders: IDataTableHeader[] = [
     valueClass: 'text-center',
     class: 'text-center',
   },
-
   {
     field: 'edit',
     label: 'Edit',

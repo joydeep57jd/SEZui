@@ -17,7 +17,13 @@
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
-        <app-auto-complete keyName="containerCBTNo" keyValue="containerCBTNo" label="Container / CBT No:" title="List of Container / CBT No." formControlName="containerCBTNo" [options]="containerList()" />
+        <div class="form-group">
+          <label>Container / CBT No:</label>
+          <input formControlName="containerCBTNo" placeholder="Enter Container / CBT No:" type="text">
+          <ng-container *ngIf="hasError('containerCBTNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">

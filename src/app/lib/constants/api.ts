@@ -10,7 +10,7 @@ export const API = {
         SAVE: "Sez/AddEditHandlingCharges",
       },
       TRANSPORTATION: {
-        LIST: "Sez/GetAllTransportationCharges",
+        LIST: "Sez/GetTransportationCharges",
         SAVE: "Sez/AddEditTransportationCharges",
       },
     },
@@ -57,6 +57,18 @@ export const API = {
         LIST: "Sez/GetExaminationCharge",
         SAVE: "Sez/AddEditExaminationCharge",
       },
+      RENT_OFFICE_SPACE: {
+        LIST: "Sez/GetRequestRentOfficeSpaceCharges",
+        SAVE: "Sez/AddEditRequestRentOfficeSpaceCharges",
+      },
+      RENT_TABLE_SPACE: {
+        LIST: "Sez/GetRentTableSpaceCharges",
+        SAVE: "Sez/AddEditRentTableSpaceCharges",
+      },
+      STORAGE_CHARGE: {
+        LIST: "Sez/GetStorageChargesGodown",
+        SAVE: "Sez/AddEditStorageChargesGodown",
+      },
     },
     COUNTRY: "Sez/GetCountry",
     STATE: "Sez/GetState",
@@ -66,6 +78,11 @@ export const API = {
       LIST: "Sez/GetAllEntries",
       SAVE: "Sez/AddEditEntry",
     },
+    GATE_PASS: {
+      LIST: "Sez/GetPassHeader",
+      SAVE: "Sez/CreateGatePass",
+      GATE_PASS_DETAILS: "Sez/GetPassDetails",
+    }
   },
   IMPORT: {
     OBL_ENTRY: {

@@ -34,25 +34,15 @@ export class OblEntryComponent {
   portList = signal<any[]>([]);
   countryList = signal<any[]>([]);
   commodityList = signal<any[]>([]);
-  containerList = signal<any[]>([]);
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor(private cdr: ChangeDetectorRef) {
-    this.getContainerList()
     this.getPortList();
     this.getCountryList();
     this.getCommodityList();
     this.setHeaderCallbacks();
     this.makeForm();
-  }
-
-  getContainerList() {
-    this.apiService.get(this.apiUrls.CONTAINER_LIST).subscribe({
-      next: (response: any) => {
-        this.containerList.set(response.data)
-      }
-    })
   }
 
   getPortList() {

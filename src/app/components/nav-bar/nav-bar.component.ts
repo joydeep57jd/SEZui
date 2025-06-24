@@ -63,7 +63,7 @@ export class NavBarComponent implements OnInit {
 
 
   isActiveLink(url: string) {
-    return this.getPathFromUrl(this.currentUrl()) === `/${url}`
+    return this.getPathFromUrl(this.currentUrl()).startsWith(`/${url}`)
   }
 
   getPathFromUrl(url: string) {

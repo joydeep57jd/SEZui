@@ -1,0 +1,118 @@
+
+<!--<app-container-details [records]="containerDetails()" [isViewMode]="isViewMode()" [chaList]="chaList" [importerList]="importerList"-->
+<!--                       [containerList]="containerList" [oblList]="oblList" (changeContainerDetails)="changeContainerDetails($event)" />-->
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>* Gate Pass No:</label>
+          <input formControlName="gatePassNo" placeholder="Enter Gate Pass No" type="text">
+          <ng-container *ngIf="hasError('gatePassNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Gate Pass Date:</label>
+          <div class="position-relative">
+            <input formControlName="gatePssDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #gatePssDatePicker="ngbDatepicker"
+                   (click)="gatePssDatePicker.open()" (dateSelect)="gatePssDatePicker.close()" />
+            <span (click)="gatePssDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('gatePssDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="invoiceNo" keyValue="yardInvId" label="Invoice No:" placeholder="Select Invoice No" title="List of Invoice No" formControlName="invoiceId" [options]="invoiceList()" />
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Delivery Date:</label>
+          <div class="position-relative">
+            <input formControlName="expDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #expDatePicker="ngbDatepicker"
+                   (click)="expDatePicker.open()" (dateSelect)="expDatePicker.close()" />
+            <span (click)="expDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('expDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="CHA Name:" placeholder="Select CHA Name" title="List of CHA" formControlName="chaName" [options]="chaList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="Importer / Exporter Name:" placeholder="Select Importer / Exporter Name" title="List of Importer / Exporter" formControlName="impExpName" [options]="importerExporterList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="Shipping Line Name:" placeholder="Select Shipping Line Name" title="List of Shipping Line" formControlName="shippingLineName" [options]="shippingLineList()" />
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Excepted date of departure:</label>
+          <div class="position-relative">
+            <input formControlName="departureDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #departureDatePicker="ngbDatepicker"
+                   (click)="departureDatePicker.open()" (dateSelect)="departureDatePicker.close()" />
+            <span (click)="departureDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('departureDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Expected date of arrival at next location:</label>
+          <div class="position-relative">
+            <input formControlName="arrivalDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #arrivalDatePicker="ngbDatepicker"
+                   (click)="arrivalDatePicker.open()" (dateSelect)="arrivalDatePicker.close()" />
+            <span (click)="arrivalDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('arrivalDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Remarks:</label>
+          <textarea formControlName="remarks" placeholder="Enter Remarks" rows="4"></textarea>
+        </div>
+      </div>
+
+      <app-gate-pass-details [records]="gatePassDetails()" [isViewMode]="isViewMode()" [portList]="portList()" (changeGatePassDetails)="changeGatePassDetails($event)" />
+    </div>
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

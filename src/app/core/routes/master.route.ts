@@ -82,7 +82,7 @@ export const MASTER_ROUTES: Route[] = [
       },
       {
         path: PATHS.MASTER.HT_CHARGES.TRANSPORTATION,
-        loadComponent: () => import('../../').then((c) => c.TarnsportationComponent),
+        loadComponent: () => import('../../').then((c) => c.TransportationComponent),
         data: { title: "H&T Charges" },
       }
     ]

@@ -1,6 +1,5 @@
 import {ElementRef, Injectable} from '@angular/core';
 import {INVOICE_CSS} from "../lib/constants/invoice-css";
-// import html2pdf from "html2pdf.js";
 
 @Injectable({
   providedIn: 'root'

@@ -19,7 +19,7 @@ export const MENU = [
     children: [
       { label: 'Gate In', path: PATHS.GATE_OPERATION.GATE_IN },
       { label: 'Gate Exit', path: PATHS.GATE_OPERATION.GATE_EXIT },
-      { label: 'Gate Pass', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'Gate Pass', path: PATHS.GATE_OPERATION.GATE_PASS },
     ],
   },
   {
