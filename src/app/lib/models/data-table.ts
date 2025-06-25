@@ -17,6 +17,7 @@ export type IDataTableDataType =
   | 'string'
   | 'number'
   | 'date'
+  | 'date-time'
   | 'boolean'
   | 'price'
   | 'icon'

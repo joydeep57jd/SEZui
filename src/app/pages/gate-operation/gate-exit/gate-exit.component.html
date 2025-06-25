@@ -1,1 +1,129 @@
-<p>gate-exit works!</p>
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label>* Gate Exit No:</label>
+          <input formControlName="gateExitNo" placeholder="Enter Gate Exit No" type="text">
+          <ng-container *ngIf="hasError('gateExitNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label>Gate Exit Date:</label>
+          <div class="position-relative">
+            <input formControlName="gateExitDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #gateExitDatePicker="ngbDatepicker"
+                   (click)="gateExitDatePicker.open()" (dateSelect)="gateExitDatePicker.close()" />
+            <span (click)="gateExitDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('gateExitDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label>Gate Exit Time:</label>
+          <input formControlName="gateExitTime" type="time">
+          <ng-container *ngIf="hasError('gateExitTime')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <app-auto-complete keyName="gatePassNo" keyValue="gatePassId" label="Gate Pass No:" placeholder="Select Gate Pass No" title="List of Gate Pass No" formControlName="gatePassId" [options]="gatePassList()" />
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label>Gate Pass Date:</label>
+          <div class="position-relative">
+            <input formControlName="gatePassDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #gatePassDatePicker="ngbDatepicker"
+                   (click)="gatePassDatePicker.open()" (dateSelect)="gatePassDatePicker.close()" />
+            <span (click)="gatePassDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('gatePassDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="form-group">
+          <label>Expected Time Of Arrival:</label>
+          <div class="position-relative">
+            <input formControlName="expectedTime" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #expectedTimePicker="ngbDatepicker"
+                   (click)="expectedTimePicker.open()" (dateSelect)="expectedTimePicker.close()" />
+            <span (click)="expectedTimePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('expectedTime')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Container/CBT/Cargo No:</label>
+          <input formControlName="cbtNo" placeholder="Enter Container/CBT/Cargo No" type="text">
+          <ng-container *ngIf="hasError('cbtNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Size :</label>
+          <select formControlName="size" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('size')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="Shipping Line:" placeholder="Select Shipping Line" title="List of Shipping Line" formControlName="shippingLine" [options]="shippingLineList()" />
+      </div>
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="CHA Name:" placeholder="Select CHA Name" title="List of CHA Name" formControlName="chaName" [options]="chaList()" />
+      </div>
+
+      <div class="col-sm-12">
+        <div class="form-group">
+          <label>Cargo Description:</label>
+          <textarea formControlName="cargoDescription" placeholder="Enter Cargo Description" type="text"></textarea>
+        </div>
+      </div>
+
+      <app-gate-exit-details [records]="gateExitDetails()" [isViewMode]="isViewMode()" (changeGateExitDetails)="changeGateExitDetails($event)" />
+    </div>
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

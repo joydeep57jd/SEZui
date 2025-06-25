@@ -140,8 +140,6 @@ export class IssuerDetailsComponent implements OnChanges{
         if(!header.callback) {
           header.callback = this.view.bind(this);
         }
-        header.class = this.isViewMode ? "d-none" : "";
-        header.valueClass = this.isViewMode ? "d-none" : "";
       }
       return header;
     });

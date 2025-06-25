@@ -37,6 +37,8 @@ export class TableComponent {
         return record[header.field] ? 'Yes' : 'No';
       case 'date':
         return value ? this.datePipe.transform(new Date(value), 'MMMM d, y') : '';
+      case 'date-time':
+        return value ? this.datePipe.transform(new Date(value), 'MMMM d, y hh:mm a') : '';
       case 'number':
         return value;
       case 'price':

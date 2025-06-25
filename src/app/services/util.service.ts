@@ -8,9 +8,6 @@ export class UtilService {
 
   getNgbDateObject(date: Date | string, isTimeRequired: boolean = false): (NgbDateStruct & {hour: number, minute: number}) | null {
     if(!date) return null
-    if( !(date as string).endsWith("Z")) {
-       date = date + "Z";
-    }
     date = new Date(date);
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -20,10 +17,11 @@ export class UtilService {
     return { year, month, day, hour, minute };
   }
 
+
   getDateObject(data: { year: number, month: number, day: number } | null, hour: number = 0, minute: number = 0) {
     if(!data) return null;
     const { year, month, day } = data;
-    return new Date(year, month - 1, day, hour, minute).toISOString()
+    return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}T${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}:00.000`
   }
 
   generateUniqueCode(noOfDigits: number = 3, noOfString: number = 3): string {

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {UtilService} from "../../../../services";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DATA_TABLE_HEADERS} from "../../../../lib";
-import {GATE_PASS_DATA} from "../gate-pas-data";
+import {GATE_PASS_DATA} from "../gate-pass-data";
 import {TableComponent} from "../../../../components/table/table.component";
 import {AutoCompleteComponent} from "../../../../components/auto-complete/auto-complete.component";
 
@@ -59,7 +59,7 @@ export class GatePassDetailsComponent {
       weight: new FormControl(detail?.weight ?? null, []),
       location: new FormControl(detail?.location ?? "", []),
       portOfDispatch: new FormControl(detail?.portOfDispatch ?? "", []),
-      isReefer: new FormControl(detail?.isReefer ?? 1, []),
+      isReefer: new FormControl(detail?.isReefer ?? 0, []),
     });
     this.updateFormViewMode()
   }
@@ -141,8 +141,6 @@ export class GatePassDetailsComponent {
         if(!header.callback) {
           header.callback = this.view.bind(this);
         }
-        header.class = this.isViewMode ? "d-none" : "";
-        header.valueClass = this.isViewMode ? "d-none" : "";
       }
       return header;
     });

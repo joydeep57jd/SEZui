@@ -25,6 +25,8 @@ import {StorageChargeHeaders} from "./storage-charge-header";
 import {TransportationHeaders} from "./transportaion-header";
 import {GatePassHeaders} from "./gate-pass-headers";
 import {GatePassDetailsHeaders} from "./gate-pass-datails-headers";
+import {GateExitDetailsHeaders} from "./gate-exit-datails-headers";
+import {GateExitHeaders} from "./gate-exit-headers";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -33,6 +35,10 @@ export const DATA_TABLE_HEADERS = {
       MAIN: GatePassHeaders,
       GATE_PASS_DETAILS: GatePassDetailsHeaders,
     },
+    GATE_EXIT: {
+      MAIN: GateExitHeaders,
+      GATE_EXIT_DETAILS: GateExitDetailsHeaders,
+    }
   },
   MASTER: {
     HT_CHARGES: {

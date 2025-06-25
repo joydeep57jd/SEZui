@@ -159,8 +159,6 @@ fieldset[disabled] input {
 }
 
 .form-group {
-  position: relative;
-  bottom: 7px;
   .ng-touched.ng-invalid {
     border: 1px solid #dc3545;
   }
@@ -244,8 +242,11 @@ ngb-modal-window {
 }
 
 form {
+  .row {
+    row-gap: 4px;
+  }
   .table-container {
-    margin-bottom: .5rem;
+    margin: .5rem 0;
     .no-records {
       height: max-content;
     }
