@@ -51,14 +51,14 @@ export class IssuerDetailsComponent implements OnChanges{
     }
   }
 
-  makeForm(detail?: any) {
+  makeForm() {
     this.form = new FormGroup({
-      id: new FormControl(detail?.id ?? 0, []),
-      doIssuedBy: new FormControl(detail?.doIssuedBy ?? "", []),
-      cargosDeliveredTo: new FormControl(detail?.cargosDeliveredTo ?? "", []),
-      validType: new FormControl(detail?.validType ?? "", []),
-      doValidDate: new FormControl(this.utilService.getNgbDateObject(detail?.doValidDate), []),
-      customAppraisementId: new FormControl(detail?.customAppraisementId ?? 0, []),
+      id: new FormControl(0, []),
+      doIssuedBy: new FormControl("", []),
+      cargosDeliveredTo: new FormControl("", []),
+      validType: new FormControl("", []),
+      doValidDate: new FormControl(null, []),
+      customAppraisementId: new FormControl(0, []),
     });
     this.updateFormViewMode()
   }

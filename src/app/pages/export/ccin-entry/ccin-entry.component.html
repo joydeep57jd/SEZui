@@ -1,0 +1,225 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CCIN App No:</label>
+          <input formControlName="ccinNo" placeholder="Enter CCIN App No" type="text">
+          <ng-container *ngIf="hasError('ccinNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CCIN App Date:</label>
+          <div class="position-relative">
+            <input formControlName="ccinDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #ccinDatePicker="ngbDatepicker"
+                   (click)="ccinDatePicker.open()" (dateSelect)="ccinDatePicker.close()" />
+            <span (click)="ccinDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('ccinDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>SB No:</label>
+          <input formControlName="sbNo" placeholder="Enter SB No" type="text">
+          <ng-container *ngIf="hasError('sbNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6 pt-md-2">
+        <div class="form-group">
+          <div class="checkbox-container">
+            <input id="sez" formControlName="sez" [disabled]="true" hidden type="checkbox">
+            <label for="sez">
+              <i class="square"></i>
+              <span>SEZ</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>SB Date:</label>
+          <div class="position-relative">
+            <input formControlName="sbDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #sbDatePicker="ngbDatepicker"
+                   (click)="sbDatePicker.open()" (dateSelect)="sbDatePicker.close()" />
+            <span (click)="sbDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('sbDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label> SB Type:</label>
+          <select formControlName="sbType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let sbType of sbTypes" [value]="sbType.value">{{sbType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('sbType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-6 col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Exporter:" placeholder="Select Exporter" title="List of Exporter" formControlName="exporterId" [options]="exporterList()" />
+      </div>
+
+      <div class="col-md-6 col-lg-6 col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" placeholder="Select Shipping Line" title="List of Shipping Line" formControlName="shippingLineId" [options]="shippingLineList()" />
+      </div>
+
+      <div class="col-md-6 col-lg-6 col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="CHA:" placeholder="Select CHA" title="List of CHA" formControlName="chaId" [options]="chaList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Consignee:</label>
+          <input formControlName="consigneeName" placeholder="Enter Consignee" type="text">
+          <ng-container *ngIf="hasError('consigneeName')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Consignee Address:</label>
+          <textarea formControlName="consigneeAdd" placeholder="Enter Consignee Address" type="text"></textarea>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Country of Destination:</label>
+          <select formControlName="countryId" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let country of countryList()" [value]="country.id">{{country.name}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('countryId')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-6 col-sm-6">
+        <app-auto-complete keyName="portName" keyValue="portId" label="Port of destination:" placeholder="Select Port of destination" title="List of Port" formControlName="portofDestId" [options]="portList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="commodityName" keyValue="commodityId" label="Commodity:" placeholder="Select Commodity" title="List of Commodity" formControlName="commodityId" [options]="commodityList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Pack UQC:</label>
+          <input formControlName="packUQCCode" placeholder="Enter Pack UQC" type="text">
+          <ng-container *ngIf="hasError('packUQCCode')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Cargo Type:</label>
+          <select formControlName="cargoType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let cargoType of cargoTypes" [value]="cargoType.value">{{cargoType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('cargoType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="portName" keyValue="portId" label="Port of Loading:" placeholder="Select Port of Loading" title="List of Port" formControlName="portOfLoadingId" [options]="portList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="portName" keyValue="portName" label="Port of Discharge:" placeholder="Select Port of Discharge" title="List of Port" formControlName="portOfDischarge" [options]="portList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>No of Package:</label>
+          <input formControlName="package" placeholder="Enter No of Package" type="number">
+          <ng-container *ngIf="hasError('package')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Weight (Kg):</label>
+          <input formControlName="weight" placeholder="Enter Weight (Kg)" type="number">
+          <ng-container *ngIf="hasError('weight')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>FOB:</label>
+          <input formControlName="fob" placeholder="Enter FOB" type="number">
+          <ng-container *ngIf="hasError('fob')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Package Type:</label>
+          <select formControlName="packageType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let packageType of packageTypes" [value]="packageType.value">{{packageType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('packageType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

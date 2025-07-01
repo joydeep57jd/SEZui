@@ -1,0 +1,128 @@
+<div class="secondary-form-container">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Shipping Bill No:</label>
+          <input formControlName="shippingBillNo" placeholder="Enter Shipping Bill No" type="text">
+          <ng-container *ngIf="hasError('shippingBillNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Shipping Bill Date:</label>
+          <div class="position-relative">
+            <input formControlName="shippingDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #shippingDatePicker="ngbDatepicker"
+                   (click)="shippingDatePicker.open()" (dateSelect)="shippingDatePicker.close()" />
+            <span (click)="shippingDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('shippingDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="CHA:" placeholder="Select CHA" title="List of CHA" formControlName="chaId" [options]="chaList" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="Exporter:" placeholder="Select Exporter" title="List of Exporter" formControlName="exporter" [options]="exporterList" />
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label>Consignee:</label>
+          <input formControlName="consignee" placeholder="Enter Consignee" type="text">
+          <ng-container *ngIf="hasError('consignee')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label>Cargo Description:</label>
+          <textarea formControlName="cargoDescription" placeholder="Enter Cargo Description" rows="2"></textarea>
+        </div>
+        </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Marks & No:</label>
+          <input formControlName="marksNo" placeholder="Enter Marks & No" type="text">
+          <ng-container *ngIf="hasError('marksNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>FOB Value:</label>
+          <input formControlName="fob" placeholder="Enter FOB Value" type="number">
+          <ng-container *ngIf="hasError('fob')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Stuffed Qty:</label>
+          <input formControlName="stuffQuantity" placeholder="Enter Stuffed Qty" type="number">
+          <ng-container *ngIf="hasError('stuffQuantity')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Stuffed Wt (Kg):</label>
+          <input formControlName="stuffWeight" placeholder="Enter Stuffed Wt (Kg)" type="number">
+          <ng-container *ngIf="hasError('stuffWeight')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>MCIN/PCIN:</label>
+          <input formControlName="mcinpcin" placeholder="Enter MCIN/PCIN" type="text">
+          <ng-container *ngIf="hasError('mcinpcin')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label></label>
+          <div class="checkbox-container mt-0">
+            <input id="insured" formControlName="insured" hidden type="checkbox">
+            <label for="insured">
+              <i class="square"></i>
+              <span>Insured</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <hr />
+    <div *ngIf="!isViewMode" class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="submit()">{{ editIndex !== null ? 'Save' : 'Add' }}</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-table [headers]="headers" [records]="records"></app-table>
+  </div>
+</div>

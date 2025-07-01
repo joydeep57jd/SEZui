@@ -110,6 +110,10 @@
   </form>
 
   <div class="mt-2 d-flex flex-column gap-2">
-    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST" [actionLoaders]="actionLoaders" idKey="gatePassId"></app-data-table>
   </div>
+</div>
+
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-gate-pass-print [pdfData]="pdfData()" />
 </div>

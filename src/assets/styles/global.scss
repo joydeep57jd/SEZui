@@ -2,6 +2,21 @@ html * {
   box-sizing: border-box !important;
 }
 
+::-webkit-scrollbar {
+  width: .3rem;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: grey;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 1px white;
+  border-radius: 10px;
+}
+
 body {
   background: $bs-bg-color;
 }

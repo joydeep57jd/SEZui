@@ -64,30 +64,30 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
     }
   }
 
-  makeForm(detail?: any) {
+  makeForm() {
     this.form = new FormGroup({
-      id: new FormControl(detail?.id ?? 0, []),
-      containerCBTNo: new FormControl(detail?.containerCBTNo ?? "", []),
-      icdCode: new FormControl(detail?.icdCode ?? "", []),
-      size: new FormControl(detail?.size ?? "", []),
-      fcL_LCL: new FormControl(detail?.fcL_LCL ?? "", []),
-      containerCBTType: new FormControl(detail?.containerCBTType ?? "", []),
-      cargoType: new FormControl(detail?.cargoType ?? "", []),
-      rms: new FormControl(detail?.rms ?? "", []),
-      lineNo: new FormControl(detail?.lineNo ?? "", []),
-      oblNoId: new FormControl(detail?.oblNoId ?? "", []),
-      oblDate: new FormControl(this.utilService.getNgbDateObject(detail?.oblDate), []),
-      boeNo: new FormControl(detail?.boeNo ?? "", []),
-      boeDate: new FormControl(this.utilService.getNgbDateObject(detail?.boeDate), []),
-      chaId: new FormControl(detail?.chaId ?? "", []),
-      importerId: new FormControl(detail?.importerId ?? "", []),
-      cargoDescription: new FormControl(detail?.cargoDescription ?? "", []),
-      cifValue: new FormControl(detail?.cifValue ?? null, []),
-      duty: new FormControl(detail?.duty ?? null, []),
-      noOfPackages: new FormControl(detail?.noOfPackages ?? null, []),
-      grossWeightKg: new FormControl(detail?.grossWeightKg ?? null, []),
-      withoutDOSealNo: new FormControl(detail?.withoutDOSealNo ?? "", []),
-      customAppraisementId: new FormControl(detail?.customAppraisementId ?? 0, []),
+      id: new FormControl(0, []),
+      containerCBTNo: new FormControl("", []),
+      icdCode: new FormControl("", []),
+      size: new FormControl("", []),
+      fcL_LCL: new FormControl("", []),
+      containerCBTType: new FormControl("", []),
+      cargoType: new FormControl("", []),
+      rms: new FormControl("", []),
+      lineNo: new FormControl("", []),
+      oblNoId: new FormControl("", []),
+      oblDate: new FormControl(null, []),
+      boeNo: new FormControl("", []),
+      boeDate: new FormControl(null, []),
+      chaId: new FormControl("", []),
+      importerId: new FormControl("", []),
+      cargoDescription: new FormControl("", []),
+      cifValue: new FormControl(null, []),
+      duty: new FormControl(null, []),
+      noOfPackages: new FormControl(null, []),
+      grossWeightKg: new FormControl(null, []),
+      withoutDOSealNo: new FormControl("", []),
+      customAppraisementId: new FormControl(0, []),
     });
     this.form.get("containerCBTNo")?.valueChanges
       .pipe(

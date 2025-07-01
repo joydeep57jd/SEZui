@@ -25,6 +25,7 @@ import {
   PaymentReceiptInvoiceComponent
 } from "../../cash-management/payment-receipt/payment-receipt-invoice/payment-receipt-invoice.component";
 import {YardInvoiceVoucherComponent} from "./yard-invoice-voucher/yard-invoice-voucher.component";
+import {INVOICE_CSS} from "../../../lib/constants/invoice-css";
 
 @Component({
   selector: 'app-yard-invoice',
@@ -40,6 +41,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
   datePipe = inject(DatePipe);
   modalService = inject(NgbModal);
   printService = inject(PrintService);
+  cdr = inject(ChangeDetectorRef);
 
   readonly invoiceTypes = YARD_INVOICE_DATA.invoiceTypes;
   readonly destuffingTypes = YARD_INVOICE_DATA.destuffingTypes;
@@ -54,6 +56,8 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
   insuredContainerSet = signal<Set<string>>(new Set());
   selectedContainerList = signal<any[]>([]);
   chargeDetails = signal<any>({});
+  transportChargeDetails = signal<any>({});
+  totalCharges = signal<any>({});
   pdfData = signal<any>({});
   isViewMode = signal(false);
   isSaving = signal(false);
@@ -63,7 +67,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
   @ViewChild(DataTableComponent) table!: DataTableComponent;
   @ViewChild('invoiceSection') invoiceSection!: ElementRef;
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor() {
     super();
     this.setHeaderCallbacks()
     this.getChargeTypeList()
@@ -76,13 +80,32 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
 
   fetchCharges() {
     const body = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
+    this.fetchTransportCharges();
     if(!body) {
-      this.chargeDetails.set([]);
+      this.chargeDetails.set({});
+      this.totalCharges.set(this.getTotalCharges({}, this.transportChargeDetails()))
       return;
     }
     this.apiService.post(this.apiUrls.CHARGE_DETAILS, body).subscribe({
       next: (response: any) => {
-        this.chargeDetails.set(this.formatChargeDetails(response.data[0]))
+        this.chargeDetails.set(response.data[0])
+        this.totalCharges.set(this.getTotalCharges(response.data[0], this.transportChargeDetails()))
+      }
+    })
+  }
+
+  fetchTransportCharges() {
+    const value = this.form.get("transportationChargeType")?.value;
+    const params = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
+    if(!value || !params) {
+      this.transportChargeDetails.set({})
+      this.totalCharges.set(this.getTotalCharges(this.chargeDetails(), {}));
+      return;
+    }
+    this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, params).subscribe({
+      next: (response: any) => {
+        this.transportChargeDetails.set(response)
+        this.totalCharges.set(this.getTotalCharges(this.chargeDetails(), response));
       }
     })
   }
@@ -106,6 +129,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
       otHours: new FormControl("", []),
       container: new FormControl("", []),
       remarks: new FormControl("", []),
+      transportationChargeType: new FormControl("", []),
     })
     this.form.get("partyId")?.valueChanges
       .pipe(
@@ -119,6 +143,15 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
         this.form.get("gstNo")?.setValue(eximTrader?.gstNo ?? "");
         this.fetchCharges()
       })
+      this.form.get("transportationChargeType")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.fetchTransportCharges();
+      })
   }
 
   reset() {
@@ -130,7 +163,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload(this.form.value, this.chargeDetails(), this.selectedContainerList(), this.partyList());
+      const data = this.makePayload(this.form.value, this.chargeDetails(), this.transportChargeDetails(), this.selectedContainerList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Yard invoice saved successfully");
@@ -203,7 +236,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
           this.printInProgress[record.yardInvId] = false;
           this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
           this.cdr.detectChanges()
-          this.printService.print(this.invoiceSection, record.invoiceNo);
+          this.printService.print(this.invoiceSection, record.invoiceNo, INVOICE_CSS);
         }, 10)
       }, error: () => {
         this.printInProgress[record.yardInvId] = false;

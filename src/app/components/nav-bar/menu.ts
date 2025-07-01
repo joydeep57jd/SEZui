@@ -25,9 +25,9 @@ export const MENU = [
   {
     label: 'Export',
     children: [
-      { label: 'CCIN Entry', path: PATHS.UNDER_DEVELOPMENT, },
+      { label: 'CCIN Entry', path: PATHS.EXPORT.CCIN_ENTRY, },
       { label: 'Container Movement Invoice', path: PATHS.UNDER_DEVELOPMENT },
-      { label: 'Container Stuffing', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'Container Stuffing', path: PATHS.EXPORT.CONTAINER_STUFFING },
       { label: 'Load Container Invoice', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Container Movement Request', path: PATHS.UNDER_DEVELOPMENT },
     ],
@@ -40,8 +40,7 @@ export const MENU = [
       { label: 'Yard Invoice', path: PATHS.IMPORT.YARD_INVOICE },
       { label: 'Delivery Application', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Delivery Invoice', path: PATHS.UNDER_DEVELOPMENT },
-      { label: 'Destuffing Entry', path: PATHS.UNDER_DEVELOPMENT },
-      { label: 'Godown Invoice', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'Destuffing Entry', path: PATHS.IMPORT.DESTUFFING_ENTRY },
       { label: 'Godown Invoice', path: PATHS.UNDER_DEVELOPMENT },
     ],
   },

@@ -1,0 +1,87 @@
+<table class="full-table">
+  <thead>
+  <tr>
+    <td colspan="12">
+      <table class="header-table">
+        <tr>
+          <th colspan="6" class="text-left"></th>
+          <th colspan="6" class="text-right small-text" style="padding-top: 10px">Doc. No.F/CD/CFS/25</th>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th colspan="12" class="header"></th>
+  </tr>
+  <tr><td class="gap"></td></tr>
+  </thead>
+
+  <tbody>
+  <tr>
+    <td colspan="12">
+      <table class="title-table">
+        <tr>
+          <td><img src="assets/images/CWCPDF.PNG" class="logo" /></td>
+          <td class="text-center">
+            <h1>CENTRAL WAREHOUSING CORPORATION</h1>
+            <div class="sub-header">(A Govt. of India Undertaking)</div>
+            <div class="sub-header">CFS Whitefield</div>
+            <div class="bold header">GATE PASS (Empty Container Gate Out)</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr><td class="gap"></td></tr>
+
+  <tr>
+    <td colspan="12">
+      <table class="data-table">
+        <tr *ngFor="let row of data">
+          <th [attr.colspan]="row.leftColSpan || 6" class="cell border-right">
+            {{ row.labelLeft }} :
+            <span class="normal">{{ row.valueLeft }}</span>
+          </th>
+          <th *ngIf="row.rightColSpan !== 0" [attr.colspan]="6" class="cell">
+            <ng-container *ngIf="row.labelRight">
+              {{ row.labelRight }} :
+              <span class="normal">{{ row.valueRight }}</span>
+            </ng-container>
+          </th>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan="12">
+      <table class="signature-table">
+        <tr><td colspan="9" class="gap"></td></tr>
+        <tr>
+          <td colspan="3" class="signature-section">
+            Signature of CHA<br />
+            Received with Intact and Good Condition
+          </td>
+          <td></td>
+          <td colspan="3" class="signature-section">
+            PO<br />
+            CWC CFS, Whitefield
+          </td>
+          <td></td>
+          <td colspan="3" class="signature-section">
+            Delivered By<br />
+            Shed Incharge/CWC CFS, Whitefield
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr><td colspan="12" class="gap"></td></tr>
+
+  <tr>
+    <td colspan="12">****Material handed over in good condition</td>
+  </tr>
+  </tbody>
+</table>

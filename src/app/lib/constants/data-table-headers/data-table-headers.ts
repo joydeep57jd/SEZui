@@ -27,6 +27,11 @@ import {GatePassHeaders} from "./gate-pass-headers";
 import {GatePassDetailsHeaders} from "./gate-pass-datails-headers";
 import {GateExitDetailsHeaders} from "./gate-exit-datails-headers";
 import {GateExitHeaders} from "./gate-exit-headers";
+import {CcinEntryHeaders} from "./ccin-entry-header";
+import {DestuffingEntryHeaders} from "./destuffing-entry-header";
+import {DestuffingEntryDetailsHeaders} from "./destuffing-entry-details-header";
+import {ContainerStuffingEntryHeaders} from "./container-stuffing-entry-header";
+import {ContainerStuffingEntryDetailsHeaders} from "./container-stuffing-entry-details-header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -72,10 +77,21 @@ export const DATA_TABLE_HEADERS = {
     YARD_INVOICE: {
       YARD_INVOICE_PREVIEW: YardInvoicePreviewHeaders,
       MAIN: YardInvoiceHeaders
+    },
+    DESTUFFING_ENTRY: {
+      MAIN: DestuffingEntryHeaders,
+      DETAILS: DestuffingEntryDetailsHeaders,
     }
   },
   CASH_MANAGEMENT: {
     PAYMENT_RECEIPT_INVOICE: PaymentReceiptInvoiceHeaders,
     PAYMENT_RECEIPT: PaymentReceiptHeaders,
-  }
+  },
+  EXPORT: {
+    CCIN_ENTRY: CcinEntryHeaders,
+    CONTAINER_STUFFING: {
+      MAIN: ContainerStuffingEntryHeaders,
+      DETAILS: ContainerStuffingEntryDetailsHeaders,
+    }
+  },
 }

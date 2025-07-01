@@ -24,7 +24,7 @@ export const apiInterceptor: HttpInterceptorFn = (
     catchError((error: HttpErrorResponse) => {
       console.error('🚨 HTTP Error:', {
         status: error.status,
-        message: error.message,
+        message: error.error?.message ?? error.message,
         url: error.url,
       });
 
@@ -32,7 +32,7 @@ export const apiInterceptor: HttpInterceptorFn = (
       if (error.status === 401) {
         // redirectToLogin();
       } else {
-        toastService.showError(error.error.title ?? 'Something went wrong');
+        toastService.showError(error.error?.message ?? error.error.title ?? 'Something went wrong');
       }
       return throwError(() => error);
     })

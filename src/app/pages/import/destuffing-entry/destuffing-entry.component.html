@@ -1,0 +1,96 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="containerCBTNo" keyValue="containerCBTNo" label="Container / CBT No:" placeholder="Select Container / CBT No" title="List of Container / CBT No" formControlName="containerNo" [options]="containerList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Start Date:</label>
+          <div class="position-relative">
+            <input formControlName="startDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #startDatePicker="ngbDatepicker"
+                   (click)="startDatePicker.open()" (dateSelect)="startDatePicker.close()" />
+            <span (click)="startDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('startDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Destuffing No:</label>
+          <input formControlName="destuffingEntryNo" placeholder="Enter Destuffing No" type="text">
+          <ng-container *ngIf="hasError('destuffingEntryNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Destuffing Date:</label>
+          <div class="position-relative">
+            <input formControlName="destuffingEntryDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #destuffingEntryDatePicker="ngbDatepicker"
+                   (click)="destuffingEntryDatePicker.open()" (dateSelect)="destuffingEntryDatePicker.close()" />
+            <span (click)="destuffingEntryDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('destuffingEntryDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" placeholder="Select Shipping Line" title="List of Shipping Line" formControlName="shippingLineId" [options]="shippingLineList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="CHA Name:" placeholder="Select CHA Name" title="List of CHA Name" formControlName="chaId" [options]="chaList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Rotation:</label>
+          <input formControlName="rotation" placeholder="Enter Rotation" type="text">
+          <ng-container *ngIf="hasError('rotation')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6 pt-md-2">
+        <div class="form-group">
+          <div class="checkbox-container">
+            <input id="cargoDelivery" formControlName="cargoDelivery" [disabled]="true" hidden type="checkbox">
+            <label for="cargoDelivery">
+              <i class="square"></i>
+              <span>Cargo Delivery</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <app-destuffing-entry-details [records]="entryDetails()" [godownList]="godownList()" [commodityList]="commodityList()" [isViewMode]="isViewMode()" (changeEntryDetails)="changeEntryDetails($event)" />
+    </div>
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

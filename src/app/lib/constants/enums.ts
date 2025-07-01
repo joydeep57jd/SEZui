@@ -12,4 +12,5 @@ export enum CHARGE_TYPE {
 export enum CHARGE_CODE {
   ENTRY = "ENT",
   EXAMINATION = "EXM",
+  TRANSPORTATION = "TRP",
 }

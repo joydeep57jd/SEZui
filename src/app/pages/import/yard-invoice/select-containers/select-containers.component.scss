@@ -1,15 +1,22 @@
 .container-obl-modal{
-  .td-border,.th-border {
-    border: 1px solid #ddd;
-    text-align: center;
-    &.checkbox{
-      display: table-cell;
-      text-align: -webkit-center;
+  .modal-body {
+    max-height: 500px;
+    overflow: auto;
+    .table {
+      margin-bottom: 0;
+      .td-border,.th-border {
+        border: 1px solid #ddd;
+        text-align: center;
+        &.checkbox{
+          display: table-cell;
+          text-align: -webkit-center;
+        }
+      }
+      .checkbox-container{
+        width: max-content;
+        position: relative;
+        left: 5px;
+      }
     }
-  }
-  .checkbox-container{
-    width: max-content;
-    position: relative;
-    left: 5px;
   }
 }

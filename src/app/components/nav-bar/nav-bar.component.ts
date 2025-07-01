@@ -30,6 +30,7 @@ export class NavBarComponent implements OnInit {
     this.checkScreenSize();
     this.onRouteChange();
     this.updateBreadCrumb()
+    this.expandCurrentMenu()
   }
 
   windowResize() {
@@ -47,6 +48,16 @@ export class NavBarComponent implements OnInit {
     });
   }
 
+  expandCurrentMenu(){
+    const index = this.menus.findIndex(menu => {
+      return menu.children.find(childMenu => this.getPathFromUrl(this.currentUrl()).startsWith(`/${childMenu.path}`));
+    });
+
+    this.expandedMenu.update((expandedMenu) =>
+      expandedMenu.set(index, !expandedMenu.get(index))
+    );
+  }
+
   updateBreadCrumb() {
     const currentRoute = this.getChild(this.activatedRoute);
     currentRoute.data.subscribe(data => {
@@ -60,7 +71,6 @@ export class NavBarComponent implements OnInit {
     }
     return route;
   }
-
 
   isActiveLink(url: string) {
     return this.getPathFromUrl(this.currentUrl()).startsWith(`/${url}`)

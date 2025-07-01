@@ -63,27 +63,26 @@ export class YardInvoiceHelper {
     return { containerOBLList: containerOblList, partyId, typeOfCharge: CHARGE_TYPE.IMPORT }
   }
 
-  formatChargeDetails(data: any) {
-    if(data) {
-      const total= data.totalEntryAmt + data.totalExamAmt;
-      const totalInvoice = Math.ceil(total);
-      const added = totalInvoice - total;
-      data.totalInvoice = totalInvoice;
-      data.added = added;
-      data.total = total;
+  getTotalCharges(chargeDetails: any, transportChargeDetails: any) {
+    if(!chargeDetails) {
+      return {}
     }
-    return data ?? {};
+    const total = (chargeDetails.totalEntryAmt ?? 0) + (chargeDetails.totalExamAmt ?? 0) + (transportChargeDetails.totalAmt_LV ?? 0) + (transportChargeDetails.totalAmt_HV ?? 0);
+    const totalInvoice = Math.ceil(total);
+    const added = totalInvoice - total;
+    return { total, totalInvoice, added }
   }
 
   getContainerOblNo(container: any) {
     return `${container.containerCBTNo}#${container.obL_HBL_No}`;
   }
 
-  makePayload(value: any, chargeDetails: any, selectedContainerList: any[], partyList: any[]) {
+  makePayload(value: any, chargeDetails: any, transportChargeDetails: any, selectedContainerList: any[], partyList: any[]) {
     const isTaxInvoice = value.invoiceType;
     const isFactoryDestuffing = value.destuffingType;
     const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
     const exmChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.EXAMINATION);
+    const trpChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.TRANSPORTATION);
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
     const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grWt + acc, 0);
     const rate = +(totalWeight / totalPackages).toFixed(2);
@@ -136,6 +135,46 @@ export class YardInvoiceHelper {
           "SGSTAmt": chargeDetails.examSGSTAmount,
           "Total": chargeDetails.totalExamAmt,
           "SACCode": chargeDetails.examinationSacCode,
+        },
+        {
+          "ChargesTypeId": trpChargeDetails.chargeId,
+          "OperationId": 0,
+          "Clause": "",
+          "ChargeType": trpChargeDetails.chargeCode,
+          "ChargeName": trpChargeDetails.chargeName,
+          "Quantity": totalPackages,
+          "Rate": rate,
+          "Amount": transportChargeDetails.totalHighValue,
+          "Discount": 0,
+          "Taxable": transportChargeDetails.totalHighValue,
+          "IGSTPer": transportChargeDetails.igsT_HV,
+          "IGSTAmt": transportChargeDetails.highValueIGSTAmount,
+          "CGSTPer": transportChargeDetails.cgsT_HV,
+          "CGSTAmt": transportChargeDetails.highValueCGSTAmount,
+          "SGSTPer": transportChargeDetails.sgsT_HV,
+          "SGSTAmt": transportChargeDetails.highValueSGSTAmount,
+          "Total": transportChargeDetails.totalAmt_HV,
+          "SACCode": transportChargeDetails.sacCode_HV,
+        },
+        {
+          "ChargesTypeId": trpChargeDetails.chargeId,
+          "OperationId": 0,
+          "Clause": "",
+          "ChargeType": trpChargeDetails.chargeCode,
+          "ChargeName": trpChargeDetails.chargeName,
+          "Quantity": totalPackages,
+          "Rate": rate,
+          "Amount": transportChargeDetails.totLowValue,
+          "Discount": 0,
+          "Taxable": transportChargeDetails.totLowValue,
+          "IGSTPer": transportChargeDetails.igsT_LV,
+          "IGSTAmt": transportChargeDetails.highValueIGSTAmount,
+          "CGSTPer": transportChargeDetails.cgsT_LV,
+          "CGSTAmt": transportChargeDetails.highValueCGSTAmount,
+          "SGSTPer": transportChargeDetails.sgsT_LV,
+          "SGSTAmt": transportChargeDetails.lowValueSGSTAmount,
+          "Total": transportChargeDetails.totalAmt_LV,
+          "SACCode": transportChargeDetails.sacCode_LV,
         }
       ])
     };

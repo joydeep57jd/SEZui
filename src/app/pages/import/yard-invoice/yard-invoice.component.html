@@ -208,6 +208,67 @@
             </table>
           </div>
         </div>
+
+        <div class="secondary-form-container px-2 pb-0">
+          <div class="primary-heading-container">
+            <p>Transportation Charges</p>
+          </div>
+          <div class="col-md-4 col-lg-3 col-sm-6">
+            <div class="form-group my-2">
+              <select formControlName="transportationChargeType" class="dropdown">
+                <option value="">---Select---</option>
+                <option value="transportation">Transportation</option>
+              </select>
+            </div>
+          </div>
+          <div *ngIf="transportChargeDetails().chargeName_HV" class="p-2 pb-0 calculation-table">
+            <table class="table table-bordered">
+              <thead>
+              <tr class="border-0">
+                <th class="text-left" rowspan="2">Charges</th>
+                <th rowspan="2">Value</th>
+                <th colspan="2" class="text-center">IGST</th>
+                <th colspan="2" class="text-center">CGST</th>
+                <th colspan="2" class="text-center">SGST</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr class="border-0">
+                <th>%</th>
+                <th>Amt</th>
+                <th>%</th>
+                <th>Amt</th>
+                <th>%</th>
+                <th>Amt</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="text-left">{{ transportChargeDetails().chargeName_HV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().totalHighValue) }}</td>
+                <td>{{ transportChargeDetails().igsT_HV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().highValueIGSTAmount) }}</td>
+                <td>{{ transportChargeDetails().cgsT_HV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().highValueCGSTAmount) }}</td>
+                <td>{{ transportChargeDetails().sgsT_HV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().highValueSGSTAmount) }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().totalAmt_HV) }}</td>
+              </tr>
+              <tr>
+                <td class="text-left">{{ transportChargeDetails().chargeName_LV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().totLowValue) }}</td>
+                <td>{{ transportChargeDetails().igsT_LV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().lowValueIGSTAmount) }}</td>
+                <td>{{ transportChargeDetails().cgsT_LV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().lowValueCGSTAmount) }}</td>
+                <td>{{ transportChargeDetails().sgsT_LV }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().lowValueSGSTAmount) }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().totalAmt_LV) }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="secondary-form-container px-2 pb-0">
           <div class="primary-heading-container">
             <p>Total Charges</p>
@@ -217,15 +278,15 @@
               <tfoot>
               <tr class="border-0">
                 <th colspan="8">Total Value:</th>
-                <th>{{ utilService.formatCurrency(chargeDetails().total) }}</th>
+                <th>{{ utilService.formatCurrency(totalCharges().total) }}</th>
               </tr>
               <tr class="border-0">
                 <th colspan="8">Round Up:</th>
-                <th>{{ utilService.formatCurrency(chargeDetails().added) }}</th>
+                <th>{{ utilService.formatCurrency(totalCharges().added) }}</th>
               </tr>
               <tr class="border-0">
                 <th colspan="8">Total Invoice Amount:</th>
-                <th>{{ utilService.formatCurrency(chargeDetails().totalInvoice) }}</th>
+                <th>{{ utilService.formatCurrency(totalCharges().totalInvoice) }}</th>
               </tr>
               </tfoot>
             </table>

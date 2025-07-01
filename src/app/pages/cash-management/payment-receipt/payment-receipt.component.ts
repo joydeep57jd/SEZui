@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, signal, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  signal,
+  ViewChild
+} from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ApiService, ToastService, UtilService} from "../../../services";
@@ -27,6 +36,7 @@ export class PaymentReceiptComponent implements OnDestroy{
   printService = inject(PrintService);
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
+  cdr = inject(ChangeDetectorRef);
 
   readonly paymentModes = PAYMENT_RECEIPT_DATA.paymentModes;
   readonly invoiceHeaders = DATA_TABLE_HEADERS.CASH_MANAGEMENT.PAYMENT_RECEIPT_INVOICE
@@ -41,6 +51,9 @@ export class PaymentReceiptComponent implements OnDestroy{
   isSaving = signal(false);
   totalPaymentReceipt = signal(0);
   selectedInvoiceIds = signal(new Set<number>());
+  pdfData = signal<any>({});
+  printInProgress: Record<string,boolean> = {};
+  actionLoaders: Record<string, Record<string,boolean>> = {}
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
   @ViewChild('invoiceSection') invoiceSection!: ElementRef;
@@ -271,7 +284,27 @@ export class PaymentReceiptComponent implements OnDestroy{
   }
 
   print(record: any) {
-    this.printService.print(this.invoiceSection, "test")
+    if(this.printInProgress[record.cashReceiptId]) return;
+    this.printInProgress[record.cashReceiptId] = true;
+    this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+    this.apiService.get(this.apiUrls.PAYMENT_RECEIPT_DETAILS, {CashReceiptId: record.cashReceiptId}).subscribe({
+      next: (response: any) => {
+        this.pdfData.set({
+          header: {...record,  invoiceNo: this.invoiceList().find(invoice => invoice.yardInvId === record.invoiceId)?.invoiceNo},
+          details: response.data
+        })
+        setTimeout(() => {
+          this.printInProgress[record.cashReceiptId] = false;
+          this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+          this.cdr.detectChanges()
+          this.printService.print(this.invoiceSection, record.receiptNo);
+        }, 10)
+      }, error: () => {
+        this.printInProgress[record.cashReceiptId] = false;
+        this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+        this.cdr.detectChanges()
+      }
+    });
   }
 
   select(record: any, index?: number) {
@@ -299,10 +332,6 @@ export class PaymentReceiptComponent implements OnDestroy{
         header.callback = this.print.bind(this);
       }
     });
-  }
-
-  get timeStamp() {
-    return  this.datePipe.transform(new Date(), 'MMMM d, y hh:mm:ss a');
   }
 
   ngOnDestroy() {

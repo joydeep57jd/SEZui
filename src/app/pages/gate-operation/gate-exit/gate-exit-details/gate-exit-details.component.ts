@@ -39,18 +39,18 @@ export class GateExitDetailsComponent implements OnChanges {
     }
   }
 
-  makeForm(detail?: any) {
+  makeForm() {
     this.form = new FormGroup({
-      exitIdDtls: new FormControl(detail?.exitIdDtls ?? 0, []),
-      exitIdHeader: new FormControl(detail?.exitIdHeader ?? 0, []),
-      cargoType: new FormControl(detail?.cargoType ?? "", []),
-      vehicleNo: new FormControl(detail?.vehicleNo ?? "", []),
-      noOfPackages: new FormControl(detail?.noOfPackages ?? "", []),
-      grossWeight: new FormControl(detail?.grossWeight ?? null, []),
-      depositorName: new FormControl(detail?.depositorName ?? "", []),
-      remarks: new FormControl(detail?.remarks ?? "", []),
-      reefer: new FormControl(detail?.reefer ?? 0, []),
-      cfsCode: new FormControl(detail?.cfsCode ?? 0, []),
+      exitIdDtls: new FormControl(0, []),
+      exitIdHeader: new FormControl(0, []),
+      cargoType: new FormControl("", []),
+      vehicleNo: new FormControl("", []),
+      noOfPackages: new FormControl("", []),
+      grossWeight: new FormControl(null, []),
+      depositorName: new FormControl("", []),
+      remarks: new FormControl("", []),
+      reefer: new FormControl(0, []),
+      cfsCode: new FormControl(0, []),
     });
     this.updateFormViewMode()
   }

@@ -1,5 +1,13 @@
-import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
-import {CommonModule, DatePipe} from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild
+} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {PrintService} from "../../../services/print.service";
 import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
@@ -9,22 +17,23 @@ import {DataTableComponent} from "../../../components";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 import {GatePassDetailsComponent} from "./gate-pass-details/gate-pass-details.component";
+import {GatePassPrintComponent} from "./gate-pass-print/gate-pass-print.component";
+import {GATE_PASS_CSS} from "../../../lib/constants/gate-pass-css";
 
 @Component({
   selector: 'app-gate-pass',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, NgbInputDatepicker, AutoCompleteComponent, GatePassDetailsComponent],
+  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, NgbInputDatepicker, AutoCompleteComponent, GatePassDetailsComponent, GatePassPrintComponent],
   templateUrl: './gate-pass.component.html',
   styleUrls: ['./gate-pass.component.scss'],
-  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GatePassComponent {
   apiService = inject(ApiService);
-  datePipe = inject(DatePipe);
   printService = inject(PrintService);
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
+  cdr = inject(ChangeDetectorRef);
 
   readonly apiUrls = API.GATE_OPERATION.GATE_PASS;
   readonly headers = DATA_TABLE_HEADERS.GATE_OPERATION.GATE_PASS.MAIN;
@@ -38,8 +47,12 @@ export class GatePassComponent {
   gatePassDetails = signal<any[]>([]);
   isSaving = signal(false);
   isViewMode = signal(false);
+  pdfData = signal<any>({});
+  printInProgress: Record<string,boolean> = {};
+  actionLoaders: Record<string, Record<string,boolean>> = {}
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
+  @ViewChild('invoiceSection') invoiceSection!: ElementRef;
 
   constructor() {
     this.setHeaderCallbacks()
@@ -184,6 +197,30 @@ export class GatePassComponent {
     return control?.touched && control.invalid;
   }
 
+  print(record: any) {
+    if(this.printInProgress[record.gatePassId]) return;
+    this.printInProgress[record.gatePassId] = true;
+    this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+    this.apiService.get(this.apiUrls.GATE_PASS_DETAILS, {GatePassDtlId: record.gatePassId}).subscribe({
+      next: (response: any) => {
+        this.pdfData.set({
+          header: {...record, invoiceNo: this.invoiceList().find(invoice => invoice.yardInvId === record.invoiceId)?.invoiceNo},
+          details: response.data
+        })
+        setTimeout(() => {
+          this.printInProgress[record.gatePassId] = false;
+          this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+          this.cdr.detectChanges()
+          this.printService.print(this.invoiceSection, record.gatePassNo, GATE_PASS_CSS);
+        }, 10)
+      }, error: () => {
+        this.printInProgress[record.gatePassId] = false;
+        this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+        this.cdr.detectChanges()
+      }
+    });
+  }
+
   setHeaderCallbacks() {
     this.headers.forEach(header => {
       if(header.field === "edit") {
@@ -191,6 +228,9 @@ export class GatePassComponent {
       }
       if(header.field === "view") {
         header.callback = this.view.bind(this);
+      }
+      if(header.field === "print") {
+        header.callback = this.print.bind(this);
       }
       if(header.field === "invoiceNo") {
         header.valueGetter = (record: any) => this.invoiceList().find(invoice => invoice.yardInvId === record.invoiceId)?.invoiceNo;

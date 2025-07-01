@@ -72,7 +72,7 @@ export class GateExitComponent implements OnDestroy {
   }
 
   getGateExitDetails(record: any) {
-    this.apiService.get(this.apiUrls.GATE_EXIT_DETAILS, {exitIdHeader: record.exitIdHeaderId}).subscribe({
+    this.apiService.get(this.apiUrls.GATE_EXIT_DETAILS, {GateExitHeaderId: record.exitIdHeaderId}).subscribe({
       next: (response: any) => {
         this.gateExitDetails.set(response.data)
       }

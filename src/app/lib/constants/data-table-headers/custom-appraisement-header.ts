@@ -25,11 +25,6 @@ export const CustomAppraisementHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
-    field: 'date',
-    label: 'Date',
-    type: 'date',
-  },
-  {
     field: 'appraisementNo',
     label: 'Appraisement No',
     type: 'string',

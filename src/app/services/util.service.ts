@@ -95,9 +95,9 @@ export class UtilService {
   }
 
   convertAmountToWords(amount: number): string {
-    const [rupees, paise] = amount.toFixed(2).split('.').map(Number);
-
+    const [rupees, paise] = (amount ?? 0).toFixed(2).split('.').map(Number);
     let words = '';
+
     if (rupees > 0) {
       words += this.numberToWords(rupees) + ' Rupees';
     }

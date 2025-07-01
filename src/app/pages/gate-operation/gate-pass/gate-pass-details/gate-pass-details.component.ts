@@ -44,22 +44,22 @@ export class GatePassDetailsComponent {
     }
   }
 
-  makeForm(detail?: any) {
+  makeForm() {
     this.form = new FormGroup({
-      gatepassDtlId: new FormControl(detail?.gatepassDtlId ?? 0, []),
-      gatepassId: new FormControl(detail?.gatepassId ?? 0, []),
-      containerNo: new FormControl(detail?.containerNo ?? "", []),
-      size: new FormControl(detail?.size ?? "", []),
-      elwbTareWeight: new FormControl(detail?.elwbTareWeight ?? "", []),
-      elwbCargoWeight: new FormControl(detail?.elwbCargoWeight ?? "", []),
-      cargoDescription: new FormControl(detail?.cargoDescription ?? "", []),
-      cargeType: new FormControl(detail?.cargeType ?? "", []),
-      vehicleNo: new FormControl(detail?.vehicleNo ?? "", []),
-      noOfUnits: new FormControl(detail?.noOfUnits ?? "", []),
-      weight: new FormControl(detail?.weight ?? null, []),
-      location: new FormControl(detail?.location ?? "", []),
-      portOfDispatch: new FormControl(detail?.portOfDispatch ?? "", []),
-      isReefer: new FormControl(detail?.isReefer ?? 0, []),
+      gatepassDtlId: new FormControl(0, []),
+      gatepassId: new FormControl(0, []),
+      containerNo: new FormControl("", []),
+      size: new FormControl("", []),
+      elwbTareWeight: new FormControl("", []),
+      elwbCargoWeight: new FormControl("", []),
+      cargoDescription: new FormControl("", []),
+      cargeType: new FormControl("", []),
+      vehicleNo: new FormControl("", []),
+      noOfUnits: new FormControl("", []),
+      weight: new FormControl(null, []),
+      location: new FormControl("", []),
+      portOfDispatch: new FormControl("", []),
+      isReefer: new FormControl(0, []),
     });
     this.updateFormViewMode()
   }

@@ -1,27 +1,24 @@
 import {ElementRef, Injectable} from '@angular/core';
-import {INVOICE_CSS} from "../lib/constants/invoice-css";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrintService {
-  print(invoiceSection: ElementRef, fileName: string) {
+  print(invoiceSection: ElementRef, fileName: string, style?: string) {
     const clone = invoiceSection.nativeElement.cloneNode(true) as HTMLElement;
     clone.style.display = 'block';
-
     const container = document.createElement('div');
     container.appendChild(clone);
-
     document.body.appendChild(container);
-
     const printWindow = window.open('', 'referral', 'width=800,height=600');
+
     if (printWindow) {
       printWindow.document.write(`
         <html>
           <head>
             <title>${fileName}</title>
             <style>
-                ${INVOICE_CSS}
+                ${style}
             </style>
           </head>
           <body>
@@ -34,8 +31,7 @@ export class PrintService {
       printWindow.onload = () => {
         printWindow.focus();
         printWindow.print();
-        printWindow.close();
-        document.body.removeChild(container);
+        printWindow.close()
       };
     } else {
       document.body.removeChild(container);

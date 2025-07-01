@@ -81,7 +81,7 @@ export const API = {
     GATE_PASS: {
       LIST: "Sez/GetPassHeader",
       SAVE: "Sez/CreateGatePass",
-      GATE_PASS_DETAILS: "Sez/GetPassDetails",
+      GATE_PASS_DETAILS: "Sez/GetGatePassGateOut",
     },
     GATE_EXIT: {
       LIST: "Sez/GetExitThroughHeader",
@@ -100,6 +100,7 @@ export const API = {
       SAVE: "Sez/AddEditYardInvoice",
       OBL_CONTAINER_LIST: "Sez/GetOBLContainerList",
       CHARGE_DETAILS: "Sez/GetImportCharges",
+      TRANSPORTATION_CHARGES: "Sez/GetImportTransportChargesCalc",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
       LIST: "Sez/GetYardInvoice",
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
@@ -112,12 +113,35 @@ export const API = {
       OBL_LIST: "Sez/GetOBLEntriesWithDetails",
       CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
     },
+    DESTUFFING_ENTRY: {
+      LIST: "Sez/GetDestuffingEntryHdr",
+      SAVE: "Sez/AddEditDestuffingEntry",
+      ENTRY_DETAILS: "Sez/GetDestuffingEntryDtl",
+      CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
+    },
+    DELIVERY_APPLICATION: {
+      LIST: "Sez/GetImpDeliveryApplicationHdr",
+      SAVE: "Sez/AddEditDeliveryApplication",
+      ENTRY_DETAILS: "Sez/GetImpDeliveryApplicationDtl",
+    }
   },
   CASH_MANAGEMENT: {
     PAYMENT_RECEIPT: {
       LIST: "Sez/GetPaymentReceiptHeader",
       SAVE: "Sez/AddEditPaymentReceipt",
       INVOICE_LIST: "Sez/GetPaymentReceiptInvoiceDetails",
+      PAYMENT_RECEIPT_DETAILS: "Sez/GetPaymentDetails",
     },
+  },
+  EXPORT: {
+    CCIN_ENTRY: {
+      LIST: "Sez/GetCCINEntry",
+      SAVE: "Sez/AddEditCCINEntry",
+    },
+    CONTAINER_STUFFING: {
+      LIST: "Sez/GetContainerStuffingHdr",
+      SAVE: "Sez/AddEditContainerStuffing",
+      CONTAINER_STUFFING_DETAILS: "Sez/GetContainerStuffingDtl",
+    }
   },
 };

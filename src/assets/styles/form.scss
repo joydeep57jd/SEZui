@@ -198,43 +198,6 @@ form table {
     }
   }
 }
-ngb-modal-window {
-  background: rgba(0, 0, 0, 0.75);
-
-  .modal-dialog {
-    margin-top: 100px;
-
-    &.auto-complete-modal {
-      width: 404px;
-
-      .modal-body {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-
-        .option-list {
-          margin-top: 10px;
-          padding: 10px 0px;
-          max-height: 280px;
-          overflow: auto;
-          border: 1px solid #c7c7cc;
-
-          li {
-            list-style: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 13px;
-
-            &:hover, &.selected {
-              background: $primary;
-              color: white;
-            }
-          }
-        }
-      }
-    }
-  }
-}
 
 .secondary-form-container{
   border: 1px solid $primary;
@@ -252,6 +215,39 @@ form {
     }
     .data-table-no-record-img {
       margin: 0;
+    }
+  }
+}
+
+ngb-modal-window .modal-dialog.auto-complete-modal {
+  width: 404px;
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    i.fa.fa-close, i.fa.fa-search {
+      color: #919197;
+    }
+
+    .option-list {
+      margin-top: 10px;
+      padding: 10px 0px;
+      max-height: 280px;
+      overflow: auto;
+      border: 1px solid #c7c7cc;
+
+      li {
+        list-style: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 13px;
+
+        &:hover, &.selected {
+          background: $primary;
+          color: white;
+        }
+      }
     }
   }
 }

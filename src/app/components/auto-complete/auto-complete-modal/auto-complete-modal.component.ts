@@ -17,7 +17,7 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
   imports: [CommonModule, FormsModule],
   templateUrl: './auto-complete-modal.component.html',
   styleUrls: ['./auto-complete-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AutoCompleteModalComponent {
   modal = inject(NgbActiveModal);

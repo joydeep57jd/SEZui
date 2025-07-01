@@ -12,10 +12,14 @@ export const IMPORT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.YardInvoiceComponent),
     data: { title: "Yard Invoice (FCL)" }
   },
-
   {
     path: PATHS.IMPORT.OBL_ENTRY,
     loadComponent: () => import('../..').then((c) => c.OblEntryComponent),
     data: { title: "OBL Entry" }
+  },
+  {
+    path: PATHS.IMPORT.DESTUFFING_ENTRY,
+    loadComponent: () => import('../..').then((c) => c.DestuffingEntryComponent),
+    data: { title: "Destuffing Entry" }
   },
 ];
