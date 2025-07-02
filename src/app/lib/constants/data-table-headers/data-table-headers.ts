@@ -32,6 +32,10 @@ import {DestuffingEntryHeaders} from "./destuffing-entry-header";
 import {DestuffingEntryDetailsHeaders} from "./destuffing-entry-details-header";
 import {ContainerStuffingEntryHeaders} from "./container-stuffing-entry-header";
 import {ContainerStuffingEntryDetailsHeaders} from "./container-stuffing-entry-details-header";
+import {DeliveryApplicationHeaders} from "./delivery-application-header";
+import {DeliveryApplicationDetailsHeaders} from "./delivery-application-details-header";
+import {LoadContainerRequestHeaders} from "./load-container-request-header";
+import {LoadContainerRequestDetailsHeaders} from "./load-container-request-details-header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -81,6 +85,10 @@ export const DATA_TABLE_HEADERS = {
     DESTUFFING_ENTRY: {
       MAIN: DestuffingEntryHeaders,
       DETAILS: DestuffingEntryDetailsHeaders,
+    },
+    DELIVERY_APPLICATION: {
+      MAIN: DeliveryApplicationHeaders,
+      DETAILS: DeliveryApplicationDetailsHeaders,
     }
   },
   CASH_MANAGEMENT: {
@@ -92,6 +100,10 @@ export const DATA_TABLE_HEADERS = {
     CONTAINER_STUFFING: {
       MAIN: ContainerStuffingEntryHeaders,
       DETAILS: ContainerStuffingEntryDetailsHeaders,
+    },
+    LOAD_CONTAINER_REQUEST: {
+      MAIN: LoadContainerRequestHeaders,
+      DETAILS: LoadContainerRequestDetailsHeaders,
     }
   },
 }

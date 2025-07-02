@@ -12,4 +12,9 @@ export const EXPORT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.ContainerStuffingComponent),
     data: { title: "Container/CBT Stuffing" }
   },
+  {
+    path: PATHS.EXPORT.LOAD_CONTAINER_REQUEST,
+    loadComponent: () => import('../..').then((c) => c.LoadContainerRequestComponent),
+    data: { title: "Loaded Container / CBT Request" }
+  },
 ];

@@ -2,13 +2,17 @@ import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@an
 import { CommonModule } from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
+import {
+  DeliveryApplicationDetailsComponent
+} from "./delivery-application-details/delivery-application-details.component";
+import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 
 @Component({
   selector: 'app-delivery-application',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, DataTableComponent, DeliveryApplicationDetailsComponent, AutoCompleteComponent],
   templateUrl: './delivery-application.component.html',
   styleUrls: ['./delivery-application.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -18,7 +22,7 @@ export class DeliveryApplicationComponent {
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
 
-  readonly headers = DATA_TABLE_HEADERS.EXPORT.CONTAINER_STUFFING.MAIN
+  readonly headers = DATA_TABLE_HEADERS.IMPORT.DELIVERY_APPLICATION.MAIN
   readonly apiUrls = API.IMPORT.DELIVERY_APPLICATION;
 
   form!: FormGroup;
@@ -35,6 +39,8 @@ export class DeliveryApplicationComponent {
   constructor() {
     this.getImporterLineList()
     this.getChaList()
+    this.getOblList()
+    this.getDestuffingList()
     this.setHeaderCallbacks();
     this.makeForm();
   }
@@ -51,6 +57,22 @@ export class DeliveryApplicationComponent {
     this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.CHA}).subscribe({
       next: (response: any) => {
         this.chaList.set(response.data)
+      }
+    })
+  }
+
+  getOblList() {
+    this.apiService.get(this.apiUrls.OBL_LIST).subscribe({
+      next: (response: any) => {
+        this.oblList.set(response.data)
+      }
+    })
+  }
+
+  getDestuffingList() {
+    this.apiService.get(this.apiUrls.DESTUFFING_LIST).subscribe({
+      next: (response: any) => {
+        this.destuffingList.set(response.data)
       }
     })
   }
@@ -96,6 +118,8 @@ export class DeliveryApplicationComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.entryDetails.set([])
+    this.isViewMode.set(false);
   }
 
   submit() {
@@ -120,13 +144,11 @@ export class DeliveryApplicationComponent {
   makePayload() {
     const value = {...this.form.value};
     return  {
-      containerStuffingHeader: {
+      impDeliveryApplicationHdr: {
         ...value,
       },
-      containerStuffingDetails: this.entryDetails().map((entry: any) => ({
+      impDeliveryApplicationDtl: this.entryDetails().map((entry: any) => ({
         ...entry,
-        containerNo: value.containerNo,
-        size: value.containerSize,
       })),
     };
   }
@@ -143,6 +165,9 @@ export class DeliveryApplicationComponent {
       }
       if(header.field === "view") {
         header.callback = this.view.bind(this);
+      }
+      if(header.field === "chaId") {
+        header.valueGetter = (record) => this.chaList().find(cha => cha.partyId === record.chaId)?.partyName;
       }
     });
   }

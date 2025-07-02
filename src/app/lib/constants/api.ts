@@ -123,6 +123,8 @@ export const API = {
       LIST: "Sez/GetImpDeliveryApplicationHdr",
       SAVE: "Sez/AddEditDeliveryApplication",
       ENTRY_DETAILS: "Sez/GetImpDeliveryApplicationDtl",
+      OBL_LIST: "Sez/GetOBLContainerList",
+      DESTUFFING_LIST: "Sez/GetDestuffingEntryHdr",
     }
   },
   CASH_MANAGEMENT: {
@@ -142,6 +144,11 @@ export const API = {
       LIST: "Sez/GetContainerStuffingHdr",
       SAVE: "Sez/AddEditContainerStuffing",
       CONTAINER_STUFFING_DETAILS: "Sez/GetContainerStuffingDtl",
+    },
+    LOAD_CONTAINER_REQUEST: {
+      LIST: "Sez/GetLoadContainerHeader",
+      SAVE: "Sez/CreateLoadContainerRequest",
+      ENTRY_DETAILS: "Sez/GetLoadContainerDetails",
     }
   },
 };

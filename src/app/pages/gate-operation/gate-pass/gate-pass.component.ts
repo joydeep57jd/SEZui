@@ -159,6 +159,8 @@ export class GatePassComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.gatePassDetails.set([])
+    this.isViewMode.set(false);
   }
 
   submit() {

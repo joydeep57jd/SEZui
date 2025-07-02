@@ -138,7 +138,8 @@ export class GateExitComponent implements OnDestroy {
   reset() {
     this.form.reset();
     this.makeForm();
-
+    this.gateExitDetails.set([])
+    this.isViewMode.set(false);
   }
 
   submit() {

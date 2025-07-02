@@ -91,6 +91,7 @@ export class StorageChargeComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.isViewMode.set(false);
   }
 
   submit() {
@@ -114,8 +115,8 @@ export class StorageChargeComponent {
   makePayload() {
     const {storageForId, areaTypeId, basisId} = this.form.value;
     const storageForName = this.storageFors.find(storageFor => storageFor.value == storageForId)?.label ?? '';
-    const basisName = this.storageFors.find(storageFor => storageFor.value == basisId)?.label ?? '';
-    const areaTypeName = this.storageFors.find(storageFor => storageFor.value == areaTypeId)?.label ?? '';
+    const basisName = this.basisList.find(basis => basis.value == basisId)?.label ?? '';
+    const areaTypeName = this.arcaTypes.find(arcaType => arcaType.value == areaTypeId)?.label ?? '';
 
     return {...this.form.value, effectiveDate: this.utilService.getDateObject(this.form.value.effectiveDate), storageForName, basisName, areaTypeName};
   }

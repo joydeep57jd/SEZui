@@ -1,0 +1,244 @@
+<div class="secondary-form-container mt-2">
+  <form [formGroup]="form">
+    <div class="primary-heading-container">
+      <p>Container / CBT Details</p>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Exporter:" placeholder="Select Exporter" title="List of Exporter" formControlName="exporterId" [options]="exporterList" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" placeholder="Select Shipping Line" title="List of Shipping Line" formControlName="shippingLineId" [options]="shippingLineList" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container / CBT No:</label>
+          <input formControlName="containerNo" placeholder="Enter Container / CBT No" type="text">
+          <ng-container *ngIf="hasError('containerNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Size :</label>
+          <select formControlName="size" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let size of loadContainerRequestData.sizes" [value]="size.value">{{size.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('size')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <div class="checkbox-container mt-sm-4">
+            <input id="isInsured" formControlName="isInsured" hidden type="checkbox">
+            <label for="isInsured">
+              <i class="square"></i>
+              <span>Insured</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-md-none d-lg-block col-lg-3"></div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Shipping Bill No:</label>
+          <input formControlName="shippingBillNo" placeholder="Enter Shipping Bill No" type="text">
+          <ng-container *ngIf="hasError('shippingBillNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <div class="checkbox-container mt-sm-4">
+            <input id="sez" formControlName="sez" hidden type="checkbox">
+            <label for="sez">
+              <i class="square"></i>
+              <span>SEZ</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-md-none d-lg-block col-lg-3"></div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Shipping Bill Date:</label>
+          <div class="position-relative">
+            <input formControlName="shippingBillDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #shippingBillDatePicker="ngbDatepicker"
+                   (click)="shippingBillDatePicker.open()" (dateSelect)="shippingBillDatePicker.close()" />
+            <span (click)="shippingBillDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('shippingBillDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-sm-6 col-md-4">
+        <app-auto-complete keyName="commodityName" keyValue="commodityId" label="Commodity:" placeholder="Select Commodity" title="List of Commodity" formControlName="exporterId" [options]="commodityList" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Cargo Type :</label>
+          <select formControlName="cargoType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let cargoType of loadContainerRequestData.cargoTypes" [value]="cargoType.value">{{cargoType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('cargoType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Container Load Type :</label>
+          <select formControlName="contLoadType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let containerLoadType of loadContainerRequestData.containerLoadTypes" [value]="containerLoadType.value">{{containerLoadType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('contLoadType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Custom Seal:</label>
+          <input formControlName="customSeal" placeholder="Enter Custom Seal" type="text">
+          <ng-container *ngIf="hasError('customSeal')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Package Type :</label>
+          <select formControlName="packageType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let packageType of loadContainerRequestData.packageTypes" [value]="packageType.value">{{packageType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('packageType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Equipment Seal Type :</label>
+          <select formControlName="equipmentSealType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let equipmentSealType of loadContainerRequestData.equipmentSealTypes" [value]="equipmentSealType.value">{{equipmentSealType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('equipmentSealType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Equipment Status :</label>
+          <select formControlName="equipmentStatus" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let equipmentStaus of loadContainerRequestData.equipmentStauses" [value]="equipmentStaus.value">{{equipmentStaus.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('equipmentStatus')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between flex-wrap row p-0 m-0">
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Equipment QUC :</label>
+            <select formControlName="equipmentQUC" class="dropdown">
+              <option value="">---Select---</option>
+              <option *ngFor="let equipmentQuc of loadContainerRequestData.equipmentQucList" [value]="equipmentQuc.value">{{equipmentQuc.label}}
+              </option>
+            </select>
+            <ng-container *ngIf="hasError('equipmentQUC')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <app-auto-complete keyName="partyName" keyValue="partyName" label="Pack UQC:" placeholder="Select Pack UQC" title="List of Pack UQC" formControlName="packUQCCode" [options]="[]" />
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label>Cargo Description:</label>
+          <textarea formControlName="cargoDescription" placeholder="Enter Cargo Description" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>No of Units:</label>
+          <input formControlName="noOfUnits" placeholder="Enter No of Units" type="number">
+          <ng-container *ngIf="hasError('noOfUnits')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Gross Weight (Kg):</label>
+          <input formControlName="grossWt" placeholder="Enter Gross Weight (Kg)" type="number">
+          <ng-container *ngIf="hasError('grossWt')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>FOB Value:</label>
+          <input formControlName="fobValue" placeholder="Enter FOB Value" type="number">
+          <ng-container *ngIf="hasError('fobValue')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+    <hr />
+    <div *ngIf="!isViewMode" class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="submit()">{{ editIndex !== null ? 'Save' : 'Add' }}</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-table [headers]="headers" [records]="records"></app-table>
+  </div>
+</div>

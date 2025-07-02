@@ -150,6 +150,9 @@ export class CustomAppraisementComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.issuerDetails.set([])
+    this.containerDetails.set([])
+    this.isViewMode.set(false);
   }
 
   submit() {

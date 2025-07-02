@@ -22,4 +22,14 @@ export const IMPORT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.DestuffingEntryComponent),
     data: { title: "Destuffing Entry" }
   },
+  {
+    path: PATHS.IMPORT.DELIVERY_APPLICATION,
+    loadComponent: () => import('../..').then((c) => c.DeliveryApplicationComponent),
+    data: { title: "Merge DeliApp PaymentSheet IssueSlip Application" }
+  },
+  {
+    path: PATHS.IMPORT.GODOWN_INVOICE,
+    loadComponent: () => import('../..').then((c) => c.GodownInvoiceComponent),
+    data: { title: "Payment Sheet / Invoice" }
+  },
 ];

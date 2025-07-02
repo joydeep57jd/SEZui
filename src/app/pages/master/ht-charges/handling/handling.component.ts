@@ -5,6 +5,7 @@ import {API, DATA_TABLE_HEADERS} from "src/app";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {AutoCompleteComponent} from "../../../../components/auto-complete/auto-complete.component";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
+import {HANDLING_DATA} from "./handling-data";
 
 @Component({
   selector: 'app-handling',
@@ -21,6 +22,7 @@ export class HandlingComponent {
 
   readonly headers = DATA_TABLE_HEADERS.MASTER.HT_CHARGES.HANDLING
   readonly apiUrls = API.MASTER.HT_CHARGES.HANDLING;
+  readonly basisList = HANDLING_DATA.basisList;
 
   form!: FormGroup;
   sacList = signal<any[]>([]);
@@ -56,6 +58,10 @@ export class HandlingComponent {
       sacCodeId: new FormControl(null, []),
       rate: new FormControl(null, []),
       minRateperSBBOE: new FormControl(null, []),
+      basisName: new FormControl("", []),
+      weight: new FormControl(null, []),
+      additionalPktCharges: new FormControl(null, []),
+      maxvalue_CRORE: new FormControl(null, []),
     })
   }
 
@@ -83,6 +89,7 @@ export class HandlingComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.isViewMode.set(false);
   }
 
   submit() {

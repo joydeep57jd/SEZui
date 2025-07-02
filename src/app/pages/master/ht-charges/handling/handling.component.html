@@ -33,8 +33,52 @@
     <div class="col-md-4 col-lg-3 col-sm-6">
       <div class="form-group">
         <label>Minium Rate per SB/BOE:</label>
-        <input formControlName="minRateperSBBOE" placeholder="Enter Minimum Rate" type="number">
+        <input formControlName="minRateperSBBOE" placeholder="Enter Minimum Rate per SB/BOE" type="number">
         <ng-container *ngIf="hasError('minRateperSBBOE')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>* Basis:</label>
+        <select formControlName="basisName" class="dropdown">
+          <option value="">---Select---</option>
+          <option *ngFor="let basisId of basisList" [value]="basisId.value">{{basisId.label}}
+          </option>
+        </select>
+        <ng-container *ngIf="hasError('basisName')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>Weight (Kg):</label>
+        <input formControlName="weight" placeholder="Enter Weight (Kg)" type="number">
+        <ng-container *ngIf="hasError('weight')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>Additional Packet Charge :</label>
+        <input formControlName="additionalPktCharges" placeholder="Enter Additional Packet Charge" type="number">
+        <ng-container *ngIf="hasError('additionalPktCharges')">
+          <span class="error">Required field</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-lg-3 col-sm-6">
+      <div class="form-group">
+        <label>Max Value (Crore):</label>
+        <input formControlName="maxvalue_CRORE" placeholder="Enter Max Value (Crore)" type="number">
+        <ng-container *ngIf="hasError('maxvalue_CRORE')">
           <span class="error">Required field</span>
         </ng-container>
       </div>

@@ -156,6 +156,9 @@ export class ContainerStuffingComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.isViewMode.set(false);
+    this.entryDetails.set([])
+    this.isViewMode.set(false);
   }
 
   submit() {

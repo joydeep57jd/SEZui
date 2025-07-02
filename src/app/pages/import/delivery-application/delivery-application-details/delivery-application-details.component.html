@@ -1,1 +1,185 @@
-<p>delivery-application-details works!</p>
+<div class="secondary-form-container mt-2">
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="obL_HBL_No" keyValue="obL_HBL_No" label="OBL/HBL - Line No:" title="List of OBL/HBL - Line No" placeholder="Select OBL/HBL - Line No" formControlName="obl" [options]="oblList" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>BOE No:</label>
+          <input formControlName="boE_NO" placeholder="Enter BOE No" type="text">
+          <ng-container *ngIf="hasError('boE_NO')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>BOE Date:</label>
+          <div class="position-relative">
+            <input formControlName="boE_DATE" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                   #boeDatePicker="ngbDatepicker"
+                   (click)="boeDatePicker.open()" (dateSelect)="boeDatePicker.close()" />
+            <span (click)="boeDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('boE_DATE')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label>Cargo Description:</label>
+          <textarea formControlName="cargoDescription" placeholder="Enter Cargo Description" type="text"></textarea>
+        </div>
+      </div>
+      <div class="col-12">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Importer:" title="List of Importer" placeholder="Select Importer" formControlName="importerId" [options]="importerList" />
+      </div>
+
+      <div class="px-2.5 mt-2">
+        <div class="primary-heading-container">
+          <p>Destuffing</p>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>No Of Packages:</label>
+          <input formControlName="noOfPackages" placeholder="Enter No Of Packages" type="number">
+          <ng-container *ngIf="hasError('noOfPackages')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Weight(Kg):</label>
+          <input formControlName="grossWt" placeholder="Enter Weight(Kg)" type="number">
+          <ng-container *ngIf="hasError('grossWt')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>SQM:</label>
+          <input formControlName="sqm" placeholder="Enter SQM" type="number">
+          <ng-container *ngIf="hasError('sqm')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CUM:</label>
+          <input formControlName="cum" placeholder="Enter CUM" type="number">
+          <ng-container *ngIf="hasError('cum')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CIF:</label>
+          <input formControlName="cif" placeholder="Enter CIF" type="number">
+          <ng-container *ngIf="hasError('cif')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Duty:</label>
+          <input formControlName="duty" placeholder="Enter Duty" type="number">
+          <ng-container *ngIf="hasError('duty')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="px-2.5 mt-2">
+        <div class="primary-heading-container">
+          <p>Delivery</p>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>No Of Packages:</label>
+          <input formControlName="delNoOfPackages" placeholder="Enter No Of Packages" type="number">
+          <ng-container *ngIf="hasError('delNoOfPackages')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Weight(Kg):</label>
+          <input formControlName="delGrossWt" placeholder="Enter Weight(Kg)" type="number">
+          <ng-container *ngIf="hasError('delGrossWt')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>SQM:</label>
+          <input formControlName="delSQM" placeholder="Enter SQM" type="number">
+          <ng-container *ngIf="hasError('delSQM')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CUM:</label>
+          <input formControlName="delCUM" placeholder="Enter CUM" type="number">
+          <ng-container *ngIf="hasError('delCUM')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>CIF:</label>
+          <input formControlName="delCIF" placeholder="Enter CIF" type="number">
+          <ng-container *ngIf="hasError('delCIF')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Duty:</label>
+          <input formControlName="delDuty" placeholder="Enter Duty" type="number">
+          <ng-container *ngIf="hasError('delDuty')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+    <hr />
+    <div *ngIf="!isViewMode" class="d-flex justify-content-left gap-2">
+      <button type="button" class="btn btn-primary form-btn" (click)="submit()">{{ editIndex !== null ? 'Save' : 'Add' }}</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-table [headers]="headers" [records]="records"></app-table>
+  </div>
+</div>

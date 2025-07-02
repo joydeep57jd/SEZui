@@ -134,6 +134,8 @@ export class DestuffingEntryComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.entryDetails.set([])
+    this.isViewMode.set(false);
   }
 
   submit() {

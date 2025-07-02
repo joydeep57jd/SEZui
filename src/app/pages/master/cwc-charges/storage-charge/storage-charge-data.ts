@@ -4,11 +4,11 @@ export const STORAGE_CHARGE_DATA = {
     { value: 2, label: "Net" },
   ],
   storageFors: [
-    { value: 1, label: "Storage 1" },
-    { value: 2, label: "Storage 2" },
+    { value: 1, label: "Import" },
+    { value: 2, label: "Export" },
   ],
   basisList: [
-    { value: 1, label: "Basis 1" },
-    { value: 2, label: "Basis 2" },
+    { value: 1, label: "High" },
+    { value: 2, label: "Low" },
   ]
 };

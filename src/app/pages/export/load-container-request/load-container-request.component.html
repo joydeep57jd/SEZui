@@ -1,0 +1,121 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="d-flex justify-content-between flex-wrap row p-0 m-0">
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Container / CBT Request No:</label>
+            <input formControlName="loadContReqNo" placeholder="Enter Container / CBT Request No" type="text">
+            <ng-container *ngIf="hasError('loadContReqNo')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Container / CBT Request Date:</label>
+            <div class="position-relative">
+              <input formControlName="loadContReqDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                     #loadContReqDatePicker="ngbDatepicker"
+                     (click)="loadContReqDatePicker.open()" (dateSelect)="loadContReqDatePicker.close()" />
+              <span (click)="loadContReqDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+            </div>
+            <ng-container *ngIf="hasError('loadContReqDate')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="CHA:" placeholder="Select CHA" title="List of CHA" formControlName="chaId" [options]="chaList()" />
+      </div>
+      <div class="col-md-4 col-lg-3 col-sm-6"></div>
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="portName" keyValue="portId" label="Final Destination location:" placeholder="Select Final Destination location" title="List of Final Destination location" formControlName="finalDestinationLocationID" [options]="portList()" />
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label>Remarks:</label>
+          <textarea formControlName="remarks" placeholder="Enter Remarks" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Movement :</label>
+          <select formControlName="movement" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let movement of loadContainerRequestData.movements" [value]="movement.value">{{movement.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('movement')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Custom Examination Type :</label>
+          <select formControlName="examType" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let customExaminationType of loadContainerRequestData.customExaminationTypes" [value]="customExaminationType.value">{{customExaminationType.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('examType')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Origin :</label>
+          <select formControlName="origin" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let origin of loadContainerRequestData.origins" [value]="origin.value">{{origin.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('origin')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Via :</label>
+          <select formControlName="via" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let via of loadContainerRequestData.viaList" [value]="via.value">{{via.label}}
+            </option>
+          </select>
+          <ng-container *ngIf="hasError('via')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <app-load-container-request-details [records]="entryDetails()" [exporterList]="exporterList()" [commodityList]="commodityList()" [shippingLineList]="shippingLineList()" [isViewMode]="isViewMode()" (changeEntryDetails)="changeEntryDetails($event)" />
+
+    </div>
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

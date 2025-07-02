@@ -28,8 +28,8 @@ export const MENU = [
       { label: 'CCIN Entry', path: PATHS.EXPORT.CCIN_ENTRY, },
       { label: 'Container Movement Invoice', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Container Stuffing', path: PATHS.EXPORT.CONTAINER_STUFFING },
+      { label: 'Load Container Request', path: PATHS.EXPORT.LOAD_CONTAINER_REQUEST },
       { label: 'Load Container Invoice', path: PATHS.UNDER_DEVELOPMENT },
-      { label: 'Container Movement Request', path: PATHS.UNDER_DEVELOPMENT },
     ],
   },
   {
@@ -38,10 +38,10 @@ export const MENU = [
       { label: 'OBL Entry', path: PATHS.IMPORT.OBL_ENTRY },
       { label: 'Custom Appraisement', path: PATHS.IMPORT.CUSTOM_APPRAISEMENT, },
       { label: 'Yard Invoice', path: PATHS.IMPORT.YARD_INVOICE },
-      { label: 'Delivery Application', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'Delivery Application', path: PATHS.IMPORT.DELIVERY_APPLICATION },
       { label: 'Delivery Invoice', path: PATHS.UNDER_DEVELOPMENT },
       { label: 'Destuffing Entry', path: PATHS.IMPORT.DESTUFFING_ENTRY },
-      { label: 'Godown Invoice', path: PATHS.UNDER_DEVELOPMENT },
+      { label: 'Godown Invoice', path: PATHS.IMPORT.GODOWN_INVOICE },
     ],
   },
   {

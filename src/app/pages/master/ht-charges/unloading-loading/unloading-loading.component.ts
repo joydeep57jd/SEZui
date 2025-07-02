@@ -89,6 +89,7 @@ export class UnloadingLoadingComponent {
   reset() {
     this.form.reset();
     this.makeForm();
+    this.isViewMode.set(false);
   }
 
   submit() {
