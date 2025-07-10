@@ -12,5 +12,10 @@ export const YARD_INVOICE_DATA = {
   examinationTypes: [
     { value: 1, label: "Less than 100%" },
     { value: 2, label: "100%" },
+  ],
+
+  sezTypes: [
+    { value: 1, label: "SEZWP" },
+    { value: 2, label: "SEZWOP" },
   ]
 }

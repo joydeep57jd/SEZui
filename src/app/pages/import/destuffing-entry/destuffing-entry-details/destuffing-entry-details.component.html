@@ -16,7 +16,7 @@
         <div class="form-group">
           <label>OBL/HBL Date:</label>
           <div class="position-relative">
-            <input formControlName="oblHblDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="oblHblDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #oblHblDatePicker="ngbDatepicker"
                    (click)="oblHblDatePicker.open()" (dateSelect)="oblHblDatePicker.close()" />
             <span (click)="oblHblDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -120,7 +120,7 @@
         <div class="form-group">
           <label>OBL Wise Destuffing Date:</label>
           <div class="position-relative">
-            <input formControlName="oblWiseDestuffingDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="oblWiseDestuffingDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #oblWiseDestuffingDatePicker="ngbDatepicker"
                    (click)="oblWiseDestuffingDatePicker.open()" (dateSelect)="oblWiseDestuffingDatePicker.close()" />
             <span (click)="oblWiseDestuffingDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -166,7 +166,7 @@
         <div class="form-group">
           <label>BOE Date:</label>
           <div class="position-relative">
-            <input formControlName="boeDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="boeDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #boeDatePicker="ngbDatepicker"
                    (click)="boeDatePicker.open()" (dateSelect)="boeDatePicker.close()" />
             <span (click)="boeDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

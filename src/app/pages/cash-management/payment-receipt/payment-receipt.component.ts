@@ -20,6 +20,7 @@ import {PAYMENT_RECEIPT_DATA} from "./payment-receipt-data";
 import {DataTableComponent} from "../../../components";
 import {PrintService} from "../../../services/print.service";
 import {PaymentReceiptInvoiceComponent} from "./payment-receipt-invoice/payment-receipt-invoice.component";
+import {PAYMENT_RECEIPT_CSS} from "../../../lib/constants/payment-receipt-css";
 
 @Component({
   selector: 'app-payment-receipt',
@@ -297,7 +298,7 @@ export class PaymentReceiptComponent implements OnDestroy{
           this.printInProgress[record.cashReceiptId] = false;
           this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
           this.cdr.detectChanges()
-          this.printService.print(this.invoiceSection, record.receiptNo);
+          this.printService.print(this.invoiceSection, record.receiptNo, PAYMENT_RECEIPT_CSS);
         }, 10)
       }, error: () => {
         this.printInProgress[record.cashReceiptId] = false;

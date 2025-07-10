@@ -24,6 +24,13 @@ export class UtilService {
     return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}T${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}:00.000`
   }
 
+  getCurrentTime(): string {
+    const date = new Date();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+  }
+
   generateUniqueCode(noOfDigits: number = 3, noOfString: number = 3): string {
     const digits = '0123456789';
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

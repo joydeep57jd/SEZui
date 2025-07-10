@@ -35,8 +35,8 @@ export const CustomAppraisementHeaders: IDataTableHeader[] = [
     type: 'date',
   },
   {
-    field: 'appraisementStatus',
-    label: 'Appraisement Status',
+    field: 'containerCBTNo',
+    label: 'Container / CBT No',
     type: 'string',
   }
 ];

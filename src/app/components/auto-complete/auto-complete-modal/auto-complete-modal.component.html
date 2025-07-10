@@ -22,8 +22,9 @@
     </ul>
   </div>
   <div class="modal-footer">
-    <div class="d-flex justify-content-end p-0">
+    <div class="d-flex justify-content-end gap-2 p-0">
       <button (click)="modal.close()" type="button" class="btn btn-outline-primary close-btn" data-dismiss="modal">Close</button>
+      <button *ngIf="searchValue.value && canAdd" (click)="add.emit(searchValue.value); modal.close()" type="button" class="btn btn-primary close-btn" data-dismiss="modal">Add</button>
     </div>
   </div>
 </div>

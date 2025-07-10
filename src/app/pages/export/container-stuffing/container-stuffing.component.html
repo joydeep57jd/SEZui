@@ -29,7 +29,7 @@
         <div class="form-group">
           <label>Stuffing Date:</label>
           <div class="position-relative">
-            <input formControlName="stuffingDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="stuffingDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #stuffingDatePicker="ngbDatepicker"
                    (click)="stuffingDatePicker.open()" (dateSelect)="stuffingDatePicker.close()" />
             <span (click)="stuffingDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

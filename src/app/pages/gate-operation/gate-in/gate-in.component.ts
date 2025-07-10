@@ -38,6 +38,8 @@ export class GateInComponent implements OnDestroy {
   shippingLineList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
+  containerCBTList = signal<any[]>([]);
+  currentRecord: any = null;
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
@@ -47,6 +49,15 @@ export class GateInComponent implements OnDestroy {
     this.setHeaderCallbacks();
     this.makeForm();
     this.updateCfsNo()
+    this.getContainerList()
+  }
+
+  getContainerList() {
+    this.apiService.get(this.apiUrls.CONTAINER_LIST).subscribe({
+      next: (response: any) => {
+        this.containerCBTList.set(response.data)
+      }
+    })
   }
 
   getPartyList() {
@@ -83,8 +94,8 @@ export class GateInComponent implements OnDestroy {
       driverLicenseNo: new FormControl("", []),
       remarks: new FormControl("", []),
       cfsNo: new FormControl("", []),
-      gateinDate: new FormControl(null, []),
-      gateinTime: new FormControl("", []),
+      gateinDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
+      gateinTime: new FormControl(this.utilService.getCurrentTime(), []),
       reefer: new FormControl(false, []),
     })
 
@@ -116,13 +127,17 @@ export class GateInComponent implements OnDestroy {
     const dateTime = this.utilService.getNgbDateObject(record.gateinDate);
     record.gateinDate = {day: dateTime?.day, month: dateTime?.month, year: dateTime?.year};
     record.gateinTime = `${dateTime?.hour.toString().padStart(2, "0")}:${dateTime?.minute.toString().padStart(2, "0")}`
-    this.form.reset();
-    this.form.patchValue(record);
+    this.currentRecord = record;
+    this.updateContainerList()
     setTimeout(() => {
-      this.form.get("cfsNo")?.setValue(record.cfsNo);
-    }, 2)
-    this.isViewMode.set(isViewMode);
-    isViewMode ? this.form.disable() : this.form.enable();
+      this.form.reset();
+      this.form.patchValue(record);
+      setTimeout(() => {
+        this.form.get("cfsNo")?.setValue(record.cfsNo);
+      }, 2)
+      this.isViewMode.set(isViewMode);
+      isViewMode ? this.form.disable() : this.form.enable();
+    }, 10)
   }
 
   setEditMode() {
@@ -134,6 +149,7 @@ export class GateInComponent implements OnDestroy {
     this.form.reset();
     this.makeForm();
     this.isViewMode.set(false);
+    this.currentRecord = null;
   }
 
   submit() {
@@ -146,7 +162,10 @@ export class GateInComponent implements OnDestroy {
           this.toasterService.showSuccess("Entry saved successfully");
           this.table.reload();
           this.makeForm();
+          this.updateCfsNo()
           this.isSaving.set(false);
+          this.currentRecord = null;
+          this.getContainerList()
         }, error: () => {
           this.isSaving.set(false);
         }
@@ -175,6 +194,18 @@ export class GateInComponent implements OnDestroy {
         header.callback = this.view.bind(this);
       }
     });
+  }
+
+  addContainerOption(option: any) {
+    this.containerCBTList.update(data => [...data, option]);
+  }
+
+  updateContainerList() {
+    const list = [...this.containerCBTList()]
+    if(this.currentRecord && !list.find(container => container.containerNo === this.currentRecord.containerNo)) {
+      list.push({containerNo: this.currentRecord.containerNo})
+    }
+    this.containerCBTList.set(list)
   }
 
   ngOnDestroy(): void {

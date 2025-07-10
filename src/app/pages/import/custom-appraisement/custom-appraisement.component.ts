@@ -37,27 +37,17 @@ export class CustomAppraisementComponent {
   importerList = signal<any[]>([])
   issuerDetails = signal<any[]>([])
   containerDetails = signal<any[]>([])
-  oblList = signal<any[]>([]);
   containerList = signal<any[]>([]);
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor() {
-    this.getOblList()
     this.getContainerList()
     this.getShippingLineList()
     this.getChaList()
     this.getImporterList()
     this.setHeaderCallbacks();
     this.makeForm();
-  }
-
-  getOblList() {
-    this.apiService.get(this.apiUrls.OBL_LIST).subscribe({
-      next: (response: any) => {
-        this.oblList.set(response.data)
-      }
-    })
   }
 
   getContainerList() {
@@ -112,9 +102,9 @@ export class CustomAppraisementComponent {
     this.form = new FormGroup({
       id: new FormControl(0, []),
       appraisementNo: new FormControl("", []),
-      appraisementDate: new FormControl(null, []),
+      appraisementDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       shippingLineId: new FormControl(null, []),
-      chaId: new FormControl(null, []),
+      chaId: new FormControl(0, []),
       vessel: new FormControl("", []),
       voyage: new FormControl("", []),
       rotation: new FormControl("", []),
@@ -176,7 +166,8 @@ export class CustomAppraisementComponent {
   }
 
   makePayload() {
-    return  {...this.form.value, appraisementDate: this.utilService.getDateObject(this.form.value.appraisementDate), appraisementContainerDetailsList: this.containerDetails(), appraisementDoDetailsList: this.issuerDetails()};
+    const value = this.form.getRawValue();
+    return  {...value, appraisementDate: this.utilService.getDateObject(value.appraisementDate), appraisementContainerDetailsList: this.containerDetails(), appraisementDoDetailsList: this.issuerDetails()};
   }
 
   hasError(formControlName: string) {

@@ -1,1 +1,36 @@
-<p>select-obls works!</p>
+<div class="modal-content popup_modal container-obl-modal">
+  <div class="modal-header popup_header">
+    <h4 class="modal-title">List of Container / CBT</h4>
+    <i (click)="modal.close()" class="fa fa-times close" aria-hidden="true"></i>
+  </div>
+  <div class="modal-body popup_body">
+    <table class="table table-bordered">
+      <tr>
+        <th class="th-border"></th>
+        <th class="th-border">Container CBT No</th>
+        <th class="th-border">OBL HBL No</th>
+      </tr>
+      <tr *ngFor="let record of records(); let index = index">
+        <td class="td-border checkbox">
+          <div class="checkbox-container mt-0">
+            <input (change)="selectionChange.emit(record)" [checked]="selectedOblSet().has(getContainerOblNo(record))" [id]="'isSelected-'+index"  hidden type="checkbox">
+            <label [for]="'isSelected-'+index">
+              <i class="square"></i>
+              <span></span>
+            </label>
+          </div>
+        </td>
+        <td class="td-border">{{ record.containerCBTNo }}</td>
+        <td class="td-border">{{ record.obL_HBL_No }}</td>
+      </tr>
+      <tr class="text-center" *ngIf="!records().length">
+        <td class="py-4" colspan="3">No Obls Found</td>
+      </tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <div class="d-flex justify-content-end p-0">
+      <button (click)="modal.close()" type="button" class="btn btn-outline-primary close-btn" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  inject,
+  inject, OnDestroy,
   signal,
   ViewChild
 } from '@angular/core';
@@ -11,7 +11,7 @@ import {CommonModule} from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {PrintService} from "../../../services/print.service";
 import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
-import {forkJoin} from "rxjs";
+import {debounceTime, distinctUntilChanged, forkJoin, Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
@@ -28,12 +28,14 @@ import {GATE_PASS_CSS} from "../../../lib/constants/gate-pass-css";
   styleUrls: ['./gate-pass.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GatePassComponent {
+export class GatePassComponent implements OnDestroy {
   apiService = inject(ApiService);
   printService = inject(PrintService);
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
-  cdr = inject(ChangeDetectorRef);
+  cdr = inject(ChangeDetectorRef)
+
+  private readonly destroy$ = new Subject<void>();
 
   readonly apiUrls = API.GATE_OPERATION.GATE_PASS;
   readonly headers = DATA_TABLE_HEADERS.GATE_OPERATION.GATE_PASS.MAIN;
@@ -119,7 +121,7 @@ export class GatePassComponent {
     this.form = new FormGroup({
       gatePassId: new FormControl(0, []),
       gatePassNo: new FormControl("", []),
-      gatePssDate: new FormControl(null, []),
+      gatePssDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       invoiceId: new FormControl(null, []),
       expDate: new FormControl(null, []),
       chaName: new FormControl(null, []),
@@ -129,6 +131,25 @@ export class GatePassComponent {
       arrivalDate: new FormControl(null, []),
       remarks: new FormControl("", []),
     });
+
+    this.form.get("invoiceId")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe((invoiceId) => {
+        const invoice = this.invoiceList().find(invoice => invoice.yardInvId === invoiceId);
+        const cha = this.chaList().find(cha => cha.partyId === invoice?.partyId);
+        const importer = this.chaList().find(cha => cha.partyId === invoice?.payeeId);
+        if(cha) {
+          this.form.get("chaName")?.setValue(cha?.partyName);
+        }
+        if(importer) {
+          this.form.get("impExpName")?.setValue(importer?.partyName);
+        }
+        this.form.get("expDate")?.setValue(invoice ? this.utilService.getNgbDateObject(invoice?.deliveryDate) : null);
+      })
   }
 
   edit(record: any) {
@@ -243,4 +264,10 @@ export class GatePassComponent {
   changeGatePassDetails(records: any[]) {
     this.gatePassDetails.set(records);
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 }

@@ -2,23 +2,75 @@
   <form [formGroup]="form">
     <div class="row">
 
-      <div class="col-12">
-        <div class="form-group">
-          <label>Operation Type:</label>
-          <div>
-            <label *ngFor="let operationsName of operationsNames" class="radio-container">
-              {{operationsName.label}}
-              <input type="radio" formControlName="operationName" [value]="operationsName.value">
-              <span class="checkmark"></span>
-            </label>
+      <div class="row d-flex flex-wrap justify-content-between m-0 p-0">
+        <div class="col-md-8 col-lg-9 col-sm-6">
+          <div class="form-group">
+            <label>Operation Type:</label>
+            <div>
+              <label *ngFor="let operationsName of operationsNames" class="radio-container">
+                {{operationsName.label}}
+                <input type="radio" formControlName="operationName" [value]="operationsName.value">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>CFS No:</label>
+            <input formControlName="cfsNo" readonly type="text">
+            <ng-container *ngIf="hasError('cfsNo')">
+              <span class="error">Required field</span>
+            </ng-container>
           </div>
         </div>
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
+          <label>Gate In Date:</label>
+          <div class="position-relative">
+            <input formControlName="gateinDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
+                   #gateinDatePicker="ngbDatepicker"
+                   (click)="gateinDatePicker.open()" (dateSelect)="gateinDatePicker.close()"/>
+            <span (click)="gateinDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('gateinDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Gate In Time:</label>
+          <input formControlName="gateinTime" type="time">
+          <ng-container *ngIf="hasError('gateinTime')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label></label>
+          <div class="checkbox-container mt-2">
+            <input id="reefer" formControlName="reefer" hidden type="checkbox">
+            <label for="reefer">
+              <i class="square"></i>
+              <span>Reefer</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6"></div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
           <label>Reference No:</label>
-          <input formControlName="referenceNo" placeholder="Enter Reference No" type="text">
+          <input formControlName="referenceNo" readonly placeholder="Enter Reference No" type="text">
           <ng-container *ngIf="hasError('referenceNo')">
             <span class="error">Required field</span>
           </ng-container>
@@ -76,11 +128,7 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Container No:</label>
-          <input formControlName="containerNo" placeholder="Enter Container No" type="text">
-          <ng-container *ngIf="hasError('containerNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="containerNo" keyValue="containerNo" label="Container No:" placeholder="Select Container No" title="List of Container No" formControlName="containerNo" [options]="containerCBTList()" [canAdd]="true" (addOption)="addContainerOption($event)" />
         </div>
       </div>
 
@@ -142,56 +190,6 @@
         </div>
       </div>
 
-      <div class="col-md-4 col-lg-3 col-sm-6"></div>
-
-      <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>ICD Code:</label>
-          <input formControlName="cfsNo" type="text">
-          <ng-container *ngIf="hasError('cfsNo')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>Gate In Date:</label>
-          <div class="position-relative">
-            <input formControlName="gateinDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
-                   #gateinDatePicker="ngbDatepicker"
-                   (click)="gateinDatePicker.open()" (dateSelect)="gateinDatePicker.close()"/>
-            <span (click)="gateinDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-          </div>
-          <ng-container *ngIf="hasError('gateinDate')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>Gate In Time:</label>
-          <input formControlName="gateinTime" type="time">
-          <ng-container *ngIf="hasError('gateinTime')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label></label>
-          <div class="checkbox-container mt-2">
-            <input id="reefer" formControlName="reefer" hidden type="checkbox">
-            <label for="reefer">
-              <i class="square"></i>
-              <span>Reefer</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
       <div class="col-md-12">
         <div class="form-group">
           <label>Remarks:</label>
@@ -204,6 +202,7 @@
 
     </div>
 
+    <hr />
     <div class="d-flex justify-content-left gap-2">
       <ng-container *ngIf="isViewMode(); else formActionButton">
         <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>

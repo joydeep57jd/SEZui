@@ -19,7 +19,7 @@
         <div class="form-group">
           <label>BOE Date:</label>
           <div class="position-relative">
-            <input formControlName="boE_DATE" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="boE_DATE" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #boeDatePicker="ngbDatepicker"
                    (click)="boeDatePicker.open()" (dateSelect)="boeDatePicker.close()" />
             <span (click)="boeDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

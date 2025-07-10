@@ -150,21 +150,15 @@ export class ContainerStuffingDetailsComponent implements OnChanges{
   setHeaderCallbacks() {
     this.headers = this.headers.map(header => {
       if(header.field === "edit") {
-        if(!header.callback) {
-          header.callback = this.edit.bind(this);
-        }
+        header.callback = this.edit.bind(this);
         header.class = this.isViewMode ? "d-none" : "";
         header.valueClass = this.isViewMode ? "d-none" : "";
       }
       if(header.field === "view") {
-        if(!header.callback) {
-          header.callback = this.view.bind(this);
-        }
+        header.callback = this.view.bind(this);
       }
       if(header.field === "containerNo") {
-        if(!header.callback) {
-          header.valueGetter = (record) => this.headerFormValue.containerNo;
-        }
+        header.valueGetter = (record) => this.headerFormValue.containerNo;
       }
       return header;
     });

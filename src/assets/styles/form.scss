@@ -2,18 +2,19 @@ $radio-size: 20px;
 $dot-size: 8px;
 $checked-bg: #2196f3;
 $dot-color: white;
-$disabled-color: #ddd;
+$disabled-color: #eee;
 
 label {
   font-size: 9.75px;
   color: #556b82;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 input,
 select,
 textarea,
 {
-  font-size: 0.75rem;
+  font-size: 0.58rem;
   color: #1c1c1c;
   border: 1px solid $disabled-color;
   border-radius: 4px;
@@ -33,7 +34,7 @@ input[disabled] ~ .input_icon {
   position: absolute;
   right: 7px;
   top: 0;
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   height: 100%;
   display: flex;
@@ -47,6 +48,17 @@ textarea[disabled],
 fieldset[disabled] input {
   background-color: $disabled-color;
   opacity: 1;
+  border: 1px solid #ddd
+}
+
+input[readonly]::placeholder,
+input:disabled::placeholder,
+textarea:disabled::placeholder {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  line-height: 0 !important;
+  color: transparent !important;
 }
 
 .checkbox-container {
@@ -250,4 +262,17 @@ ngb-modal-window .modal-dialog.auto-complete-modal {
       }
     }
   }
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

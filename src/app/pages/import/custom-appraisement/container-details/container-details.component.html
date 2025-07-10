@@ -100,7 +100,7 @@
         <div class="form-group">
           <label>OBL Date:</label>
           <div class="position-relative">
-            <input formControlName="oblDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="oblDate" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker container="body"
                    #oblDatePicker="ngbDatepicker"
                    (click)="oblDatePicker.open()" (dateSelect)="oblDatePicker.close()"/>
             <span (click)="oblDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -125,7 +125,7 @@
         <div class="form-group">
           <label>BOE Date:</label>
           <div class="position-relative">
-            <input formControlName="boeDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="boeDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #boeDatePicker="ngbDatepicker"
                    (click)="boeDatePicker.open()" (dateSelect)="boeDatePicker.close()"/>
             <span (click)="boeDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

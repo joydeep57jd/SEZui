@@ -34,6 +34,7 @@ export class CcinEntryComponent {
   portList = signal<any[]>([]);
   commodityList = signal<any[]>([]);
   countryList = signal<any[]>([]);
+  packUqcList = signal<any[]>([]);
   isViewMode = signal(false);
   isSaving = signal(false);
 
@@ -48,6 +49,15 @@ export class CcinEntryComponent {
     this.getPortList();
     this.getCommodityList();
     this.getCountryList();
+    this.getPackUqcList()
+  }
+
+  getPackUqcList() {
+    this.apiService.get(API.MASTER.PACK_UQC).subscribe({
+      next: (response: any) => {
+        this.packUqcList.set(response.data)
+      }
+    })
   }
 
   getExporterList() {
@@ -102,7 +112,7 @@ export class CcinEntryComponent {
     this.form = new FormGroup({
       ccinId: new FormControl(0, []),
       ccinNo: new FormControl("", []),
-      ccinDate: new FormControl(null, []),
+      ccinDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       sbNo: new FormControl("", []),
       sbDate: new FormControl(null, []),
       sbType: new FormControl("", []),

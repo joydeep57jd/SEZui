@@ -22,11 +22,6 @@ export const YardInvoiceHeaders: IDataTableHeader[] = [
     type: 'string',
   },
   {
-    field: 'paymentMode',
-    label: 'Payment Mode',
-    type: 'string',
-  },
-  {
     field: 'payeeName',
     label: 'Payee Name',
     type: 'string',

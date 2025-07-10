@@ -33,6 +33,9 @@
           </div>
         </td>
       </tr>
+      <tr class="text-center" *ngIf="!records().length">
+        <td class="py-4" colspan="4">No Containers Found</td>
+      </tr>
     </table>
   </div>
   <div class="modal-footer">

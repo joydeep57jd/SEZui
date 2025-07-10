@@ -1,21 +1,17 @@
 <div class="invoice-container">
   <div style="padding: 0 13px;">
     <div class="header">
-        <div class="logo">CWC</div>
+        <img align="right" src="assets/images/CWC.png" width="40" />
         <div class="company-info">
-          <h2>CENTRAL WAREHOUSING CORPORATION</h2>
-          <p>(A Govt. of India Undertaking)</p>
-          <p>107-109 , EPIP Zone , KIADB Industrial Area</p>
-          <p>Whitefield , Bengaluru, Pin. - 560066</p>
-          <p>Email - cwcwfdcfs@gmail.com</p>
-
+          <h2>{{ data()?.companyName }}</h2>
+          <p>{{data().companyAddress}}</p>
+          <p>Email - {{data().emailAddress}}</p>
         </div>
       <div class="qr-code">QR CODE</div>
     </div>
-
     <div style="padding-left: 11px;">
-      <p><strong>IRN : </strong>a132259880d809cc1baf9a4b5c91eff7ed90f64444a921730876ac076d51c449</p>
-      <p>CWC GST No. 29AAACC1206D2ZB</p>
+      <p><strong>IRN : </strong></p>
+      <p>CWC GST No.</p>
     </div>
 
   </div>
@@ -34,7 +30,7 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">Party Address</span>
-          <span class="detail-value">: {{data().partyAddress}} {{data().partyAddress}}</span>
+          <span class="detail-value">: {{data().partyAddress}}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Party GST</span>
@@ -68,13 +64,13 @@
         </div>
         <div class="detail-row">
           <span class="detail-label">Supply Type</span>
-          <span class="detail-value">: B2B</span>
+          <span class="detail-value">:</span>
         </div>
       </div>
     </div>
 
     <div class="container-section">
-      <div style="font-weight: bold; margin-bottom: 5px;">Assessment No : APPRAISEMENTNO1320</div>
+      <div style="font-weight: bold; margin-bottom: 5px;">Assessment No : {{ data().appraisement?.appraisementNo }}</div>
       <div style="font-weight: bold; margin-bottom: 10px;">Container / CBT Details :</div>
 
       <table class="container-table">
@@ -97,10 +93,10 @@
           <td>{{ item.icdNo }}</td>
           <td>{{ item.containerCBTNo}}</td>
           <td>{{ item.size}}</td>
-          <td>09/06/25</td>
+          <td>{{ data().arrivalDate | date: 'dd/MM/yy'}}</td>
           <td>{{ item.grWt}}</td>
-          <td>10/06/25</td>
-          <td>2</td>
+          <td>{{ data().header.deliveryDate | date: 'dd/MM/yy'}}</td>
+          <td>{{noOfDays}}</td>
           <td>{{ item.cargoType}}</td>
         </tr>
         </tbody>
@@ -111,50 +107,50 @@
       <div style="font-weight: bold; margin-bottom: 10px;">Container / CBT Charges :</div>
       <table class="charges-table">
         <thead>
-        <tr>
-          <th>SR No.</th>
-          <th>Charge Code</th>
-          <th>Description</th>
-          <th>HSN Code</th>
-          <th>Rate</th>
-          <th>Taxable Amt.</th>
-          <th colspan="2">CGST</th>
-          <th colspan="2">SGST</th>
-          <th colspan="2">IGST</th>
-          <th>Total</th>
-        </tr>
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th>Rate</th>
-          <th>Amt.</th>
-          <th>Rate</th>
-          <th>Amt.</th>
-          <th>Rate</th>
-          <th>Amt.</th>
-          <th></th>
-        </tr>
+          <tr>
+            <th>SR No.</th>
+            <th>Charge Code</th>
+            <th>Description</th>
+            <th>HSN Code</th>
+            <th>Rate</th>
+            <th>Taxable Amt.</th>
+            <th colspan="2">CGST</th>
+            <th colspan="2">SGST</th>
+            <th colspan="2">IGST</th>
+            <th>Total</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Rate</th>
+            <th>Amt.</th>
+            <th>Rate</th>
+            <th>Amt.</th>
+            <th>Rate</th>
+            <th>Amt.</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let item of data().charges; let index = index">
-          <td>{{ index + 1  }}</td>
-          <td>{{ item.chargeCode }}</td>
-          <td class="description">{{ item.descripton }}</td>
-          <td>{{ item.sacCode }}</td>
-          <td class="amount">{{ formatCurrency(item.rate) }}</td>
-          <td class="amount">{{ formatCurrency(item.taxableAmt) }}</td>
-          <td>{{ item.cgstRate }}</td>
-          <td class="amount">{{ formatCurrency(item.cgstAmt) }}</td> c
-          <td>{{ item.sgstRate }}</td>
-          <td class="amount">{{ formatCurrency(item.sgstAmt) }}</td>s
-          <td>{{ item.igstRate }}</td>
-          <td class="amount">{{ item.igstAmt }}</td>i
-          <td class="amount">{{ formatCurrency(item.total) }}</td>
-        </tr>
+          <tr *ngFor="let item of data()?.charges ?? []; let index = index">
+            <td>{{ index + 1  }}</td>
+            <td>{{ item.chargeCode }}</td>
+            <td class="description">{{ item.descripton }}</td>
+            <td>{{ item.sacCode }}</td>
+            <td class="amount">{{ formatCurrency(item.rate) }}</td>
+            <td class="amount">{{ formatCurrency(item.taxableAmt) }}</td>
+            <td>{{ item.cgstRate }}</td>
+            <td class="amount">{{ formatCurrency(item.cgstAmt) }}</td>
+            <td>{{ item.sgstRate }}</td>
+            <td class="amount">{{ formatCurrency(item.sgstAmt) }}</td>
+            <td>{{ item.igstRate }}</td>
+            <td class="amount">{{ item.igstAmt }}</td>
+            <td class="amount">{{ formatCurrency(item.total) }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -184,7 +180,6 @@
 
   <div class="footer-section">
     <div class="footer-left">
-      <div><strong>Receipt No.:</strong> Payer Code:PD6</div>
       <div><strong>Payer Name:</strong>{{ data().payerName }}</div>
       <div><strong>Remarks:</strong>{{data().remarks}}</div>
     </div>
@@ -203,7 +198,6 @@
           <div>For Central Warehousing Corporation<br>(Authorized Signatories)</div>
         </div>
       </div>
-
     </div>
   </div>
 

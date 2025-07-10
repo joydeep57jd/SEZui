@@ -7,4 +7,14 @@ export const CASH_MANAGEMENT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.PaymentReceiptComponent),
     data: {title: "Payment Receipt"}
   },
+  {
+    path: PATHS.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY,
+    loadComponent: () => import('../..').then((c) => c.RegisterOfOutwardSupplyComponent),
+    data: {title: "Register of Outward Supply"}
+  },
+  {
+    path: PATHS.CASH_MANAGEMENT.DAILY_CASH_BOOK,
+    loadComponent: () => import('../..').then((c) => c.DailyCashBookComponent),
+    data: {title: "Daily Cash Book"}
+  },
 ];

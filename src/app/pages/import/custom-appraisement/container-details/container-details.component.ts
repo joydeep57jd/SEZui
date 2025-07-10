@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   EventEmitter,
   inject,
@@ -29,12 +29,12 @@ import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 export class ContainerDetailsComponent implements OnChanges, OnDestroy {
   utilService = inject(UtilService);
   apiService = inject(ApiService);
+  cdr = inject(ChangeDetectorRef)
 
   @Input() records!: any[];
   @Input() isViewMode!: boolean;
   @Input() chaList = signal<any[]>([])
   @Input() importerList = signal<any[]>([])
-  @Input() oblList = signal<any[]>([]);
   @Input() containerList = signal<any[]>([]);
 
   @Output() changeContainerDetails = new EventEmitter<any[]>();
@@ -43,10 +43,12 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
   readonly fclLclList = CONTAINER_DETAILS_DATA.fclLclList;
   readonly containerCBTs = CONTAINER_DETAILS_DATA.containerCBTs;
   readonly rmsList = CONTAINER_DETAILS_DATA.rmsList;
+  readonly apiUrls = API.IMPORT.CUSTOM_APPRAISEMENT;
 
   private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
+  oblList = signal<any[]>([])
   headers = DATA_TABLE_HEADERS.IMPORT.CUSTOM_APPRAISEMENT.CONTAINER
   editIndex: number | null = null;
 
@@ -62,6 +64,15 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
     if(changes['isViewMode']) {
       this.updateFormViewMode()
     }
+  }
+
+  getOblList(containerNo: string) {
+    if(!containerNo) return;
+    this.apiService.get(this.apiUrls.OBL_LIST, {containerNo}).subscribe({
+      next: (response: any) => {
+        this.oblList.set(response.data)
+      }
+    })
   }
 
   makeForm() {
@@ -95,8 +106,9 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
         debounceTime(0),
         distinctUntilChanged()
       )
-      .subscribe(() => {
+      .subscribe((value: string) => {
         this.fetchContainerDetails()
+        this.getOblList(value)
       })
     this.form.get("oblNoId")?.valueChanges
       .pipe(
@@ -153,7 +165,7 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
   }
 
   edit(record: any, index?: number) {
-    this.editIndex = index!
+    this.editIndex = index!;
     this.patchForm({...record}, false);
   }
 
@@ -169,6 +181,8 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
     this.form.patchValue(record);
     isViewMode ? this.form.disable() : this.form.enable();
     this.makeFormControlsDisabled()
+    this.form.updateValueAndValidity()
+    this.cdr.detectChanges()
   }
 
   reset() {
@@ -212,16 +226,12 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
   setHeaderCallbacks() {
     this.headers = this.headers.map(header => {
       if(header.field === "edit") {
-        if(!header.callback) {
-          header.callback = this.edit.bind(this);
-        }
+        header.callback = this.edit.bind(this);
         header.class = this.isViewMode ? "d-none" : "";
         header.valueClass = this.isViewMode ? "d-none" : "";
       }
       if(header.field === "view") {
-        if(!header.callback) {
-          header.callback = this.view.bind(this);
-        }
+        header.callback = this.view.bind(this);
       }
       return header;
     });

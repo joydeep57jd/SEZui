@@ -40,7 +40,7 @@
         <div class="form-group">
           <label>Do Valid Date:</label>
           <div class="position-relative">
-            <input formControlName="doValidDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="doValidDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #doValidDatePicker="ngbDatepicker"
                    (click)="doValidDatePicker.open()" (dateSelect)="doValidDatePicker.close()" />
             <span (click)="doValidDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

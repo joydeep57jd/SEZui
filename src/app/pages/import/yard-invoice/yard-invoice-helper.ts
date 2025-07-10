@@ -1,6 +1,7 @@
 import {API, CHARGE_CODE, CHARGE_TYPE} from "../../../lib";
 import {inject, signal} from "@angular/core";
 import {ApiService, UtilService} from "../../../services";
+import {BehaviorSubject} from "rxjs";
 
 export class YardInvoiceHelper {
   apiService = inject(ApiService);
@@ -12,9 +13,24 @@ export class YardInvoiceHelper {
   partyList = signal<any[]>([]);
   containerList = signal<any[]>([]);
   allChargeTypes = signal<any[]>([]);
+  applicationList = signal<any[]>([])
+  chargeDetails = signal<any>({});
+  transportChargeDetails = signal<any>({});
+  insuranceChargeDetails = signal<any>({});
+  totalCharges = signal<any>({});
+  isChargesFetching = signal<boolean>(false);
+  fetchChargesParams$ = new BehaviorSubject<any>(null);
 
-  getContainerList() {
-    this.apiService.get(this.apiUrls.OBL_CONTAINER_LIST).subscribe({
+  getCustomAppraisementList () {
+    this.apiService.get(this.apiUrls.APPLICATION_LIST, {isInvoiceCheck: true}).subscribe({
+      next: (response: any) => {
+        this.applicationList.set(response.data)
+      }
+    })
+  }
+
+  getContainerList(appNo: number) {
+    this.apiService.get(this.apiUrls.OBL_CONTAINER_LIST, {AppNo: appNo}).subscribe({
       next: (response: any) => {
         this.containerList.set(response.data)
       }
@@ -49,25 +65,52 @@ export class YardInvoiceHelper {
     })
   }
 
-  getFetchChargesPayload(partyId: number, selectedContainerList: any[]) {
+  updateFetchChargesParams(formValue: any, selectedContainerList: any[]) {
+    const partyId = formValue.partyId;
     if(!partyId || !selectedContainerList.length) {
-      return;
+      this.chargeDetails.set({});
+      this.transportChargeDetails.set({});
+      this.insuranceChargeDetails.set({});
+      this.totalCharges.set(this.getTotalCharges());
+      this.fetchChargesParams$.next(null)
+      return
     }
+
     const containerOblList = selectedContainerList.reduce((acc: any, container: any, index: number) => {
-      acc += this.getContainerOblNo(container);
+      const containerObl = this.getContainerOblNo(container);
+      acc.all += containerObl;
       if(index !== selectedContainerList.length - 1) {
-        acc += ",";
+        acc.all += ",";
+      }
+      if(!container.isInsured) {
+        if(acc.insured.length > 0) {
+          acc.insured += ",";
+        }
+        acc.insured += containerObl;
       }
       return acc;
-    }, "")
-    return { containerOBLList: containerOblList, partyId, typeOfCharge: CHARGE_TYPE.IMPORT }
+    }, {all: "", insured: ""})
+
+    const baseParams = { containerOBLList: containerOblList.all, partyId }
+    const params = {
+      entryParams: {...baseParams, typeOfCharge: CHARGE_TYPE.IMPORT},
+      transportParams: formValue.transportationChargeType && {...baseParams},
+      insuredParams: (containerOblList.insured && formValue.invoiceDate) && {containerOblList: containerOblList.insured, partyId, invoiceDate: this.utilService.getDateObject(formValue.invoiceDate)}
+    }
+    if(!params.transportParams) {
+      this.transportChargeDetails.set({});
+    }
+    if(!params.insuredParams) {
+      this.insuranceChargeDetails.set({});
+    }
+    this.fetchChargesParams$.next(params)
   }
 
-  getTotalCharges(chargeDetails: any, transportChargeDetails: any) {
-    if(!chargeDetails) {
+  getTotalCharges() {
+    if(!Object.keys(this.chargeDetails())) {
       return {}
     }
-    const total = (chargeDetails.totalEntryAmt ?? 0) + (chargeDetails.totalExamAmt ?? 0) + (transportChargeDetails.totalAmt_LV ?? 0) + (transportChargeDetails.totalAmt_HV ?? 0);
+    const total = (this.chargeDetails().totalEntryAmt ?? 0) + (this.chargeDetails().totalExamAmt ?? 0) + (this.transportChargeDetails().totalAmt ?? 0) + (this.insuranceChargeDetails().totalAmt ?? 0);
     const totalInvoice = Math.ceil(total);
     const added = totalInvoice - total;
     return { total, totalInvoice, added }
@@ -77,106 +120,118 @@ export class YardInvoiceHelper {
     return `${container.containerCBTNo}#${container.obL_HBL_No}`;
   }
 
-  makePayload(value: any, chargeDetails: any, transportChargeDetails: any, selectedContainerList: any[], partyList: any[]) {
+  makePayload(value: any, selectedContainerList: any[], partyList: any[]) {
     const isTaxInvoice = value.invoiceType;
     const isFactoryDestuffing = value.destuffingType;
     const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
     const exmChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.EXAMINATION);
     const trpChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.TRANSPORTATION);
+    const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
     const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grWt + acc, 0);
     const rate = +(totalWeight / totalPackages).toFixed(2);
+
+    const jsonData = [
+      {
+        "ChargesTypeId": entChargeDetails.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": entChargeDetails.chargeCode,
+        "ChargeName": entChargeDetails.chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": this.chargeDetails().totalEntryValue,
+        "Discount": 0,
+        "Taxable": this.chargeDetails().totalEntryValue,
+        "IGSTPer": this.chargeDetails().igsTper,
+        "IGSTAmt": this.chargeDetails().entryIGSTAmount,
+        "CGSTPer": this.chargeDetails().cgsTper,
+        "CGSTAmt": this.chargeDetails().entryCGSTAmount,
+        "SGSTPer": this.chargeDetails().sgsTper,
+        "SGSTAmt": this.chargeDetails().entrySGSTAmount,
+        "Total": this.chargeDetails().totalEntryAmt,
+        "SACCode": this.chargeDetails().entrySacCode,
+      },
+      {
+        "ChargesTypeId": exmChargeDetails.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": exmChargeDetails.chargeCode,
+        "ChargeName": exmChargeDetails.chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": this.chargeDetails().totalExamValue,
+        "Discount": 0,
+        "Taxable": this.chargeDetails().totalExamValue,
+        "IGSTPer": this.chargeDetails().igsTperExam,
+        "IGSTAmt": this.chargeDetails().examIGSTAmount,
+        "CGSTPer": this.chargeDetails().cgsTperExam,
+        "CGSTAmt": this.chargeDetails().examCGSTAmount,
+        "SGSTPer": this.chargeDetails().sgsTperExam,
+        "SGSTAmt": this.chargeDetails().examSGSTAmount,
+        "Total": this.chargeDetails().totalExamAmt,
+        "SACCode": this.chargeDetails().examinationSacCode,
+      }
+    ]
+
+    if(Object.keys(this.insuranceChargeDetails()).length) {
+      jsonData.push({
+        "ChargesTypeId": insChargeDetails?.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": insChargeDetails?.chargeCode,
+        "ChargeName": insChargeDetails?.chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": this.insuranceChargeDetails().totalInsuranceValue,
+        "Taxable": this.insuranceChargeDetails().totalInsuranceValue,
+        "IGSTPer": this.insuranceChargeDetails().igst,
+        "IGSTAmt": this.insuranceChargeDetails().igstAmount,
+        "CGSTPer": this.insuranceChargeDetails().cgst,
+        "CGSTAmt": this.insuranceChargeDetails().cgstAmount,
+        "SGSTPer": this.insuranceChargeDetails().sgst,
+        "SGSTAmt": this.insuranceChargeDetails().sgstAmount,
+        "Total": this.insuranceChargeDetails().totalAmt,
+        "Discount": 0,
+        "SACCode": this.insuranceChargeDetails().sacCode,
+      })
+    }
+
+    if (Object.keys(this.transportChargeDetails()).length) {
+      jsonData.push({
+        "ChargesTypeId": trpChargeDetails.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": trpChargeDetails.chargeCode,
+        "ChargeName": this.transportChargeDetails().chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": this.transportChargeDetails().totalValue,
+        "Discount": 0,
+        "Taxable": this.transportChargeDetails().totalValue,
+        "IGSTPer": this.transportChargeDetails().igst,
+        "IGSTAmt": this.transportChargeDetails().igstAmount,
+        "CGSTPer": this.transportChargeDetails().cgst,
+        "CGSTAmt": this.transportChargeDetails().cgstAmount,
+        "SGSTPer": this.transportChargeDetails().sgst,
+        "SGSTAmt": this.transportChargeDetails().sgstAmount,
+        "Total": this.transportChargeDetails().totalAmt,
+        "SACCode": this.transportChargeDetails().sacCode,
+      })
+    }
+
     return {
       ...value,
-      taxInvoice: isTaxInvoice,
+      isLoadContainerInvoice: false,
+      moveToId: 0,
+      taxInvoice: !!isTaxInvoice,
       billOfSupply: !isTaxInvoice,
-      factoryDestuffing: isFactoryDestuffing,
+      factoryDestuffing: !!isFactoryDestuffing,
       directDestuffing: !isFactoryDestuffing,
       deliveryDate: this.utilService.getDateObject(value.deliveryDate),
       invoiceDate: this.utilService.getDateObject(value.invoiceDate),
       payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName,
-      jsonData: JSON.stringify([
-        {
-          "ChargesTypeId": entChargeDetails.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": entChargeDetails.chargeCode,
-          "ChargeName": entChargeDetails.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": chargeDetails.totalEntryValue,
-          "Discount": 0,
-          "Taxable": chargeDetails.totalEntryValue,
-          "IGSTPer": chargeDetails.igsTper,
-          "IGSTAmt": chargeDetails.entryIGSTAmount,
-          "CGSTPer": chargeDetails.cgsTper,
-          "CGSTAmt": chargeDetails.entryCGSTAmount,
-          "SGSTPer": chargeDetails.sgsTper,
-          "SGSTAmt": chargeDetails.entrySGSTAmount,
-          "Total": chargeDetails.totalEntryAmt,
-          "SACCode": chargeDetails.entrySacCode,
-        },
-        {
-          "ChargesTypeId": exmChargeDetails.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": exmChargeDetails.chargeCode,
-          "ChargeName": exmChargeDetails.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": chargeDetails.totalExamValue,
-          "Discount": 0,
-          "Taxable": chargeDetails.totalExamValue,
-          "IGSTPer": chargeDetails.igsTperExam,
-          "IGSTAmt": chargeDetails.examIGSTAmount,
-          "CGSTPer": chargeDetails.cgsTperExam,
-          "CGSTAmt": chargeDetails.examCGSTAmount,
-          "SGSTPer": chargeDetails.sgsTperExam,
-          "SGSTAmt": chargeDetails.examSGSTAmount,
-          "Total": chargeDetails.totalExamAmt,
-          "SACCode": chargeDetails.examinationSacCode,
-        },
-        {
-          "ChargesTypeId": trpChargeDetails.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": trpChargeDetails.chargeCode,
-          "ChargeName": trpChargeDetails.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": transportChargeDetails.totalHighValue,
-          "Discount": 0,
-          "Taxable": transportChargeDetails.totalHighValue,
-          "IGSTPer": transportChargeDetails.igsT_HV,
-          "IGSTAmt": transportChargeDetails.highValueIGSTAmount,
-          "CGSTPer": transportChargeDetails.cgsT_HV,
-          "CGSTAmt": transportChargeDetails.highValueCGSTAmount,
-          "SGSTPer": transportChargeDetails.sgsT_HV,
-          "SGSTAmt": transportChargeDetails.highValueSGSTAmount,
-          "Total": transportChargeDetails.totalAmt_HV,
-          "SACCode": transportChargeDetails.sacCode_HV,
-        },
-        {
-          "ChargesTypeId": trpChargeDetails.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": trpChargeDetails.chargeCode,
-          "ChargeName": trpChargeDetails.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": transportChargeDetails.totLowValue,
-          "Discount": 0,
-          "Taxable": transportChargeDetails.totLowValue,
-          "IGSTPer": transportChargeDetails.igsT_LV,
-          "IGSTAmt": transportChargeDetails.highValueIGSTAmount,
-          "CGSTPer": transportChargeDetails.cgsT_LV,
-          "CGSTAmt": transportChargeDetails.highValueCGSTAmount,
-          "SGSTPer": transportChargeDetails.sgsT_LV,
-          "SGSTAmt": transportChargeDetails.lowValueSGSTAmount,
-          "Total": transportChargeDetails.totalAmt_LV,
-          "SACCode": transportChargeDetails.sacCode_LV,
-        }
-      ])
+      jsonData: JSON.stringify(jsonData)
     };
   }
 }

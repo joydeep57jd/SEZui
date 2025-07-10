@@ -6,7 +6,7 @@
         <div class="col-md-4 col-lg-3 col-sm-6">
           <div class="form-group">
             <label>Container / CBT Request No:</label>
-            <input formControlName="loadContReqNo" placeholder="Enter Container / CBT Request No" type="text">
+            <input formControlName="loadContReqNo" readonly placeholder="Enter Container / CBT Request No" type="text">
             <ng-container *ngIf="hasError('loadContReqNo')">
               <span class="error">Required field</span>
             </ng-container>
@@ -17,7 +17,7 @@
           <div class="form-group">
             <label>Container / CBT Request Date:</label>
             <div class="position-relative">
-              <input formControlName="loadContReqDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+              <input formControlName="loadContReqDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                      #loadContReqDatePicker="ngbDatepicker"
                      (click)="loadContReqDatePicker.open()" (dateSelect)="loadContReqDatePicker.close()" />
               <span (click)="loadContReqDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -100,7 +100,7 @@
         </div>
       </div>
 
-      <app-load-container-request-details [records]="entryDetails()" [exporterList]="exporterList()" [commodityList]="commodityList()" [shippingLineList]="shippingLineList()" [isViewMode]="isViewMode()" (changeEntryDetails)="changeEntryDetails($event)" />
+      <app-load-container-request-details [records]="entryDetails()" [packUqcList]="packUqcList()" [shippingBillList]="shippingBillList()" [containerList]="containerList()" [exporterList]="exporterList()" [commodityList]="commodityList()" [shippingLineList]="shippingLineList()" [isViewMode]="isViewMode()" (changeEntryDetails)="changeEntryDetails($event)" />
 
     </div>
     <hr />

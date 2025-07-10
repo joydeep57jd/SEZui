@@ -5,7 +5,7 @@
       <div class="form-group">
         <label>* Effective Date:</label>
         <div class="position-relative">
-          <input formControlName="effectiveDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+          <input formControlName="effectiveDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                  #effectiveDatePicker="ngbDatepicker"
                  (click)="effectiveDatePicker.open()" (dateSelect)="effectiveDatePicker.close()"/>
           <span (click)="effectiveDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -76,14 +76,13 @@
 
     <div class="col-md-4 col-lg-3 col-sm-6">
       <div class="form-group">
-        <label>Max Value (Crore):</label>
-        <input formControlName="maxvalue_CRORE" placeholder="Enter Max Value (Crore)" type="number">
+        <label>Additional Value / Core:</label>
+        <input formControlName="maxvalue_CRORE" placeholder="Enter Additional Value / Core" type="number">
         <ng-container *ngIf="hasError('maxvalue_CRORE')">
           <span class="error">Required field</span>
         </ng-container>
       </div>
     </div>
-
   </div>
 
   <hr />

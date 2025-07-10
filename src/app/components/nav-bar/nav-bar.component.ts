@@ -4,6 +4,7 @@ import { ActivatedRoute, Event, NavigationEnd, Router, RouterOutlet } from '@ang
 import { debounceTime, fromEvent } from 'rxjs';
 import { MENU } from './menu';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import {ToastService} from "../../services";
 
 @Component({
   selector: 'app-nav-bar',
@@ -17,6 +18,7 @@ export class NavBarComponent implements OnInit {
   router = inject(Router);
   activatedRoute = inject(ActivatedRoute);
   breadCrumbService = inject(BreadcrumbService)
+  toastService = inject(ToastService);
 
   readonly menus = MENU;
 
@@ -102,10 +104,27 @@ export class NavBarComponent implements OnInit {
     if (menu.children?.length) {
       this.toggleMenu(index);
     } else {
-      this.router.navigate([menu.path]);
+      const isSameUrl = `/${menu.path}` === this.currentUrl();
+      if (isSameUrl) {
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          this.router.navigate([menu.path]);
+        });
+      } else {
+        this.router.navigate([menu.path]);
+      }
       if (this.isSmallDevice()) {
         this.toggleSideNav();
       }
     }
+  }
+
+  getFormattedError(errors: Record<string, string[]>) {
+    let errorList = [];
+    for (const key in errors) {
+      if (errors.hasOwnProperty(key)) {
+        errorList.push({key, error: errors[key]});
+      }
+    }
+    return errorList;
   }
 }

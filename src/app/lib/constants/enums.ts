@@ -13,4 +13,7 @@ export enum CHARGE_CODE {
   ENTRY = "ENT",
   EXAMINATION = "EXM",
   TRANSPORTATION = "TRP",
+  STORAGE = "STO",
+  INSURANCE = "INS",
+  HANDLING = "HAN",
 }

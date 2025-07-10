@@ -37,6 +37,9 @@ export class LoadContainerRequestComponent {
   shippingLineList = signal<any[]>([])
   commodityList = signal<any[]>([])
   entryDetails = signal<any[]>([])
+  containerList = signal<any[]>([]);
+  shippingBillList = signal<any[]>([])
+  packUqcList = signal<any[]>([]);
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
@@ -46,14 +49,41 @@ export class LoadContainerRequestComponent {
     this.getChaList()
     this.getCommodityList()
     this.getShippingLineList()
+    this.getShippingBillList()
+    this.getContainerList()
     this.setHeaderCallbacks();
+    this.getPackUqcList()
     this.makeForm();
+  }
+
+  getPackUqcList() {
+    this.apiService.get(API.MASTER.PACK_UQC).subscribe({
+      next: (response: any) => {
+        this.packUqcList.set(response.data)
+      }
+    })
+  }
+
+  getShippingBillList() {
+    this.apiService.get(this.apiUrls.SHIPPING_BILL_LIST).subscribe({
+      next: (response: any) => {
+        this.shippingBillList.set(response.data)
+      }
+    })
   }
 
   getPortList() {
     this.apiService.get(API.MASTER.PORT.LIST).subscribe({
       next: (response: any) => {
         this.portList.set(response.data)
+      }
+    })
+  }
+
+  getContainerList() {
+    this.apiService.get(this.apiUrls.CONTAINER_LIST).subscribe({
+      next: (response: any) => {
+        this.containerList.set(response.data)
       }
     })
   }
@@ -102,7 +132,7 @@ export class LoadContainerRequestComponent {
     this.form = new FormGroup({
       loadContReqId: new FormControl(0, []),
       loadContReqNo: new FormControl("", []),
-      loadContReqDate: new FormControl(null, []),
+      loadContReqDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       chaId: new FormControl(null, []),
       finalDestinationLocationID: new FormControl("", []),
       remarks: new FormControl("", []),

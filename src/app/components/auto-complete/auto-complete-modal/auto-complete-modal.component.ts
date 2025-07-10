@@ -26,10 +26,12 @@ export class AutoCompleteModalComponent {
   @Input() selectedOption = signal<any>(null);
   @Input() inputValue = signal<any>(null);
   @Input() title = signal<string>('');
+  @Input() canAdd = false;
   @Input() getOptionLabel!: (option: any) => string;
   @Input() getOptionValue!: (option: any) => string;
 
 
   @Output() search = new EventEmitter<string>();
   @Output() select = new EventEmitter<any>();
+  @Output() add = new EventEmitter<any>();
 }

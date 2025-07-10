@@ -18,11 +18,7 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Container / CBT No:</label>
-          <input formControlName="containerCBTNo" placeholder="Enter Container / CBT No:" type="text">
-          <ng-container *ngIf="hasError('containerCBTNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="containerNo" keyValue="containerNo" label="Container / CBT No:" placeholder="Select Container / CBT No" title="List of Container / CBT No" formControlName="containerCBTNo" [options]="containerCBTList()" [canAdd]="true" (addOption)="addContainerOption($event)" />
         </div>
       </div>
 
@@ -54,7 +50,7 @@
         <div class="form-group">
           <label>IGM Date:</label>
           <div class="position-relative">
-            <input formControlName="igmDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="igmDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #igmDatePicker="ngbDatepicker"
                    (click)="igmDatePicker.open()" (dateSelect)="igmDatePicker.close()" />
             <span (click)="igmDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -79,7 +75,7 @@
         <div class="form-group">
           <label>TP Date:</label>
           <div class="position-relative">
-            <input formControlName="tpDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="tpDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #tpDatePicker="ngbDatepicker"
                    (click)="tpDatePicker.open()" (dateSelect)="tpDatePicker.close()" />
             <span (click)="tpDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -123,13 +119,7 @@
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>Shipping Line:</label>
-          <input formControlName="shippingLine" placeholder="Enter Shipping Line" type="text">
-          <ng-container *ngIf="hasError('shippingLine')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
+        <app-auto-complete keyName="partyName" keyValue="partyName" label="Shipping Line:" placeholder="Select Shipping Line" title="List of Shipping Line" formControlName="shippingLine" [options]="shippingLineList()" />
       </div>
     </div>
 
@@ -171,7 +161,7 @@
             <td>
               <div class="form-group bottom-0">
                 <div class="position-relative">
-                  <input formControlName="obL_HBL_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                  <input formControlName="obL_HBL_Date" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                          #oblHblDatePicker="ngbDatepicker"
                          (click)="oblHblDatePicker.open()" (dateSelect)="oblHblDatePicker.close()" />
                   <span (click)="oblHblDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -192,7 +182,7 @@
             <td>
               <div class="form-group bottom-0">
                 <div class="position-relative">
-                  <input formControlName="smtP_Date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                  <input formControlName="smtP_Date" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                          #smtpDatePicker="ngbDatepicker"
                          (click)="smtpDatePicker.open()" (dateSelect)="smtpDatePicker.close()" />
                   <span (click)="smtpDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -239,10 +229,7 @@
             </td>
             <td>
               <div class="form-group bottom-0">
-                <input formControlName="importer_Name" placeholder="Enter Importer Name" type="text">
-                <ng-container *ngIf="hasError('importer_Name')">
-                  <span class="error">Required field</span>
-                </ng-container>
+                <app-auto-complete class="bottom-0" keyName="partyName" keyValue="partyName" label="" title="List of Importer" placeholder="Select Importer" formControlName="importer_Name" [options]="importerList()" />
               </div>
             </td>
             <td>

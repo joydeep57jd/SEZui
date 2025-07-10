@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
-import {CommonModule, JsonPipe} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
@@ -13,7 +13,7 @@ import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 @Component({
   selector: 'app-gate-exit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, DataTableComponent, GateExitDetailsComponent, NgbInputDatepicker, AutoCompleteComponent, JsonPipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DataTableComponent, GateExitDetailsComponent, NgbInputDatepicker, AutoCompleteComponent],
   templateUrl: './gate-exit.component.html',
   styleUrls: ['./gate-exit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -38,6 +38,7 @@ export class GateExitComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
+  @ViewChild(GateExitDetailsComponent) childComp!: GateExitDetailsComponent;
 
   constructor() {
     this.setHeaderCallbacks()
@@ -83,8 +84,8 @@ export class GateExitComponent implements OnDestroy {
     this.form = new FormGroup({
       exitIdHeaderId: new FormControl(0, []),
       gateExitNo: new FormControl("", []),
-      gateExitDate: new FormControl(null, []),
-      gateExitTime: new FormControl("", []),
+      gateExitDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
+      gateExitTime: new FormControl(this.utilService.getCurrentTime(), []),
       gatePassId: new FormControl(null, []),
       gatePassNo: new FormControl("", []),
       gatePassDate: new FormControl(null, []),
@@ -214,5 +215,6 @@ export class GateExitComponent implements OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    console.log("destroyed")
   }
 }

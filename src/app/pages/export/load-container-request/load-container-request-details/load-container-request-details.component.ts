@@ -4,7 +4,7 @@ import {
   EventEmitter,
   inject,
   Input,
-  OnChanges,
+  OnChanges, OnDestroy,
   Output,
   SimpleChanges
 } from '@angular/core';
@@ -16,6 +16,7 @@ import {TableComponent} from "../../../../components/table/table.component";
 import {AutoCompleteComponent} from "../../../../components/auto-complete/auto-complete.component";
 import {LOAD_CONTAINER_REQUEST_DATA} from "../load-container-request-data";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-load-container-request-details',
@@ -25,10 +26,13 @@ import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ['./load-container-request-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoadContainerRequestDetailsComponent implements OnChanges {
+export class LoadContainerRequestDetailsComponent implements OnChanges, OnDestroy {
   utilService = inject(UtilService);
 
   @Input() records!: any[];
+  @Input() packUqcList: any[] = [];
+  @Input() shippingBillList: any[] = [];
+  @Input() containerList: any[] = [];
   @Input() exporterList: any[] = [];
   @Input() shippingLineList: any[] = [];
   @Input() commodityList: any[] = [];
@@ -37,6 +41,7 @@ export class LoadContainerRequestDetailsComponent implements OnChanges {
   @Output() changeEntryDetails = new EventEmitter<any[]>();
 
   readonly loadContainerRequestData = LOAD_CONTAINER_REQUEST_DATA;
+  private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
   headers = DATA_TABLE_HEADERS.EXPORT.LOAD_CONTAINER_REQUEST.DETAILS
@@ -86,6 +91,40 @@ export class LoadContainerRequestDetailsComponent implements OnChanges {
       fobValue: new FormControl(null, []),
     });
     this.updateFormViewMode()
+    this.form.get("shippingBillNo")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe(shippingBillNo => {
+        const ccinEntry = this.shippingBillList.find((ccin: any) => ccin.sbNo === shippingBillNo);
+        if (ccinEntry) {
+          console.log(ccinEntry)
+          this.form.get("shippingBillDate")?.setValue(this.utilService.getNgbDateObject(ccinEntry.sbDate));
+          this.form.get("commodityId")?.patchValue(ccinEntry.commodityId);
+          this.form.get("sez")?.setValue(!!ccinEntry.sez);
+          this.form.get("cargoType")?.setValue(ccinEntry.cargoType);
+          this.form.get("packageType")?.setValue(ccinEntry.packageType);
+          this.form.get("packUQCCode")?.setValue(ccinEntry?.packUQCCode ?? null);
+          this.form.get("noOfUnits")?.setValue(ccinEntry.package ?? null);
+          this.form.get("grossWt")?.setValue(ccinEntry.weight ?? null);
+          this.form.get("fobValue")?.setValue(ccinEntry?.fob ?? null);
+        }
+      })
+    this.disableShippingBillFields()
+  }
+
+  disableShippingBillFields(){
+    this.form.get("shippingBillDate")?.disable()
+    this.form.get("commodityId")?.disable()
+    this.form.get("sez")?.disable()
+    this.form.get("cargoType")?.disable()
+    this.form.get("packageType")?.disable()
+    this.form.get("packUQCCode")?.disable()
+    this.form.get("noOfUnits")?.disable()
+    this.form.get("grossWt")?.disable()
+    this.form.get("fobValue")?.disable()
   }
 
   updateFormViewMode() {
@@ -95,6 +134,7 @@ export class LoadContainerRequestDetailsComponent implements OnChanges {
       this.form.enable()
     }
     this.setHeaderCallbacks()
+    this.disableShippingBillFields()
   }
 
   edit(record: any, index?: number) {
@@ -112,6 +152,7 @@ export class LoadContainerRequestDetailsComponent implements OnChanges {
     this.form.reset();
     this.form.patchValue(record);
     isViewMode ? this.form.disable() : this.form.enable();
+    this.disableShippingBillFields()
   }
 
   reset() {
@@ -160,18 +201,19 @@ export class LoadContainerRequestDetailsComponent implements OnChanges {
   setHeaderCallbacks() {
     this.headers = this.headers.map(header => {
       if(header.field === "edit") {
-        if(!header.callback) {
-          header.callback = this.edit.bind(this);
-        }
+        header.callback = this.edit.bind(this);
         header.class = this.isViewMode ? "d-none" : "";
         header.valueClass = this.isViewMode ? "d-none" : "";
       }
       if(header.field === "view") {
-        if(!header.callback) {
-          header.callback = this.view.bind(this);
-        }
+        header.callback = this.view.bind(this);
       }
       return header;
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

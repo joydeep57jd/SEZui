@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
-  Component,
+  Component, EventEmitter,
   forwardRef, inject,
   Input,
-  OnChanges,
+  OnChanges, Output,
   signal,
   SimpleChanges,
 } from '@angular/core';
@@ -37,6 +37,9 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
   @Input() keyValue!: string;
   @Input() class = "";
   @Input() title = ""
+  @Input() canAdd = false;
+
+  @Output() addOption = new EventEmitter<any>();
 
   private modalRef!: NgbModalRef | null;
 
@@ -67,6 +70,7 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
     this.modalRef = this.modalService.open(AutoCompleteModalComponent, {modalDialogClass: 'auto-complete-modal', backdrop : 'static', keyboard : false});
     this.modalRef.componentInstance.getOptionLabel = this.getOptionLabel.bind(this);
     this.modalRef.componentInstance.getOptionValue = this.getOptionValue.bind(this);
+    this.modalRef.componentInstance.canAdd = this.canAdd;
     this.modalRef.componentInstance.title.set(this.title);
     this.modalRef.componentInstance.options.set(this.filteredOptions());
     this.modalRef.componentInstance.selectedOption.set(this.selectedOption());
@@ -76,6 +80,11 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
     })
     this.modalRef.componentInstance.select.subscribe((result: any) => {
       this.onSelectOption(result ?? null);
+    })
+    this.modalRef.componentInstance.add.subscribe((result: any) => {
+      const option = {[this.keyValue]: result, [this.keyName]: result}
+      this.addOption.emit(option);
+      this.onSelectOption(option ?? null);
     })
     this.modalRef.closed.subscribe(() => {
       this.modalRef = null;
@@ -95,6 +104,7 @@ export class AutoCompleteComponent implements ControlValueAccessor, OnChanges {
     this.filterOptions();
     this.onChange(this.getOptionValue(option));
   }
+
 
   filterOptions() {
     const filterValue = this.inputValue().toLowerCase();

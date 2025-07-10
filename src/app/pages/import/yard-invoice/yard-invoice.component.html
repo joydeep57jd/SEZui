@@ -2,7 +2,7 @@
   <form [formGroup]="form">
     <div class="row">
 
-      <div class="col-12 mt-2">
+      <div class="col-12">
         <div class="form-group">
           <div>
             <label *ngFor="let invoiceType of invoiceTypes" class="radio-container">
@@ -17,7 +17,7 @@
       <div class="col-md-6 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Invoice No:</label>
-          <input formControlName="invoiceNo" placeholder="Enter Invoice No" type="text">
+          <input formControlName="invoiceNo" readonly placeholder="Enter Invoice No" type="text">
           <ng-container *ngIf="hasError('invoiceNo')">
             <span class="error">Required field</span>
           </ng-container>
@@ -28,7 +28,7 @@
         <div class="form-group">
           <label>Delivery Date:</label>
           <div class="position-relative">
-            <input formControlName="deliveryDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="deliveryDate" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker container="body"
                    #deliveryDatePicker="ngbDatepicker"
                    (click)="deliveryDatePicker.open()" (dateSelect)="deliveryDatePicker.close()"/>
             <span (click)="deliveryDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -40,20 +40,14 @@
       </div>
 
       <div class="col-md-6 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>Application No:</label>
-          <input formControlName="applicationId" placeholder="Enter Application No" type="number">
-          <ng-container *ngIf="hasError('applicationId')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
+        <app-auto-complete keyName="appraisementNo" keyValue="id" label="Appraisement No:" title="List of Custom Appraisement No" placeholder="Select Application No" formControlName="applicationId" [options]="applicationList()" />
       </div>
 
       <div class="col-md-6 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Date:</label>
           <div class="position-relative">
-            <input formControlName="invoiceDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="invoiceDate" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker container="body"
                    #invoiceDatePicker="ngbDatepicker"
                    (click)="invoiceDatePicker.open()" (dateSelect)="invoiceDatePicker.close()"/>
             <span (click)="invoiceDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -75,18 +69,8 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>GST No:</label>
-          <input formControlName="gstNo" placeholder="Enter GST No" type="text">
+          <input formControlName="gstNo" readonly placeholder="Enter GST No" type="text">
           <ng-container *ngIf="hasError('gstNo')">
-            <span class="error">Required field</span>
-          </ng-container>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-lg-3 col-sm-6">
-        <div class="form-group">
-          <label>Payment Mode:</label>
-          <input formControlName="paymentMode" placeholder="Enter Payment Mode" type="text">
-          <ng-container *ngIf="hasError('paymentMode')">
             <span class="error">Required field</span>
           </ng-container>
         </div>
@@ -121,7 +105,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Place Of Supply:</label>
-          <input formControlName="placeOfSupply" placeholder="Enter Place Of Supply" type="text">
+          <input formControlName="placeOfSupply" readonly placeholder="Enter Place Of Supply" type="text">
           <ng-container *ngIf="hasError('placeOfSupply')">
             <span class="error">Required field</span>
           </ng-container>
@@ -131,7 +115,11 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>SEZ:</label>
-          <input formControlName="sezId" placeholder="Enter SEZ" type="number">
+          <select formControlName="sezId" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let sezType of sezTypes" [value]="sezType.value">{{sezType.label}}
+            </option>
+          </select>
           <ng-container *ngIf="hasError('sezId')">
             <span class="error">Required field</span>
           </ng-container>
@@ -149,14 +137,17 @@
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6 d-flex align-items-center">
-        <button type="button" class="btn btn-primary " (click)="openSelectContainersModal()">Container/CBT Details</button>
+        <button type="button" class="btn btn-primary " (click)="openSelectContainersModal()">Container / CBT Details</button>
       </div>
 
       <div class="mt-2 d-flex flex-column gap-2">
         <app-table [headers]="yardInvoicePreviewHeaders" [records]="selectedContainerList()"></app-table>
       </div>
 
-      <div class="form-group">
+      <div class="form-group position-relative">
+        <div *ngIf="isChargesFetching()" class="invoice-loader">
+          <img src="assets/gifs/loader.gif" alt="loader" />
+        </div>
         <div class="secondary-form-container px-2 pb-0">
           <div class="primary-heading-container">
             <p>Charges</p>
@@ -194,7 +185,7 @@
                 <td>{{ utilService.formatCurrency(chargeDetails().totalEntryAmt) }}</td>
               </tr>
               <tr>
-                <td class="text-left">Examination Charges</td>
+                <td class="text-left">Examination Charges [EXM]</td>
                 <td>{{ utilService.formatCurrency(chargeDetails().totalExamValue) }}</td>
                 <td>{{ (chargeDetails().igsTperExam) }}</td>
                 <td>{{ utilService.formatCurrency(chargeDetails().examIGSTAmount) }}</td>
@@ -203,6 +194,17 @@
                 <td>{{ (chargeDetails().sgsTperExam) }}</td>
                 <td>{{ utilService.formatCurrency(chargeDetails().examSGSTAmount) }}</td>
                 <td>{{ utilService.formatCurrency(chargeDetails().totalExamAmt) }}</td>
+              </tr>
+              <tr *ngIf="isInsuranceChargeHaveValues">
+                <td class="text-left">Insurance [INS]</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalInsuranceValue) }}</td>
+                <td>{{ (insuranceChargeDetails().igst) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().igstAmount) }}</td>
+                <td>{{ (insuranceChargeDetails().cgst) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().cgstAmount) }}</td>
+                <td>{{ (insuranceChargeDetails().sgst) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().sgstAmount) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalAmt) }}</td>
               </tr>
               </tbody>
             </table>
@@ -221,7 +223,7 @@
               </select>
             </div>
           </div>
-          <div *ngIf="transportChargeDetails().chargeName_HV" class="p-2 pb-0 calculation-table">
+          <div *ngIf="transportChargeDetails().chargeName" class="p-2 pb-0 calculation-table">
             <table class="table table-bordered">
               <thead>
               <tr class="border-0">
@@ -243,26 +245,15 @@
               </thead>
               <tbody>
               <tr>
-                <td class="text-left">{{ transportChargeDetails().chargeName_HV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().totalHighValue) }}</td>
-                <td>{{ transportChargeDetails().igsT_HV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().highValueIGSTAmount) }}</td>
-                <td>{{ transportChargeDetails().cgsT_HV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().highValueCGSTAmount) }}</td>
-                <td>{{ transportChargeDetails().sgsT_HV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().highValueSGSTAmount) }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().totalAmt_HV) }}</td>
-              </tr>
-              <tr>
-                <td class="text-left">{{ transportChargeDetails().chargeName_LV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().totLowValue) }}</td>
-                <td>{{ transportChargeDetails().igsT_LV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().lowValueIGSTAmount) }}</td>
-                <td>{{ transportChargeDetails().cgsT_LV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().lowValueCGSTAmount) }}</td>
-                <td>{{ transportChargeDetails().sgsT_LV }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().lowValueSGSTAmount) }}</td>
-                <td>{{ utilService.formatCurrency(transportChargeDetails().totalAmt_LV) }}</td>
+                <td class="text-left">{{ transportChargeDetails().chargeName }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().totalValue) }}</td>
+                <td>{{ transportChargeDetails().igst }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().igstAmount) }}</td>
+                <td>{{ transportChargeDetails().cgst }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().cgstAmount) }}</td>
+                <td>{{ transportChargeDetails().sgst }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().sgstAmount) }}</td>
+                <td>{{ utilService.formatCurrency(transportChargeDetails().totalAmt) }}</td>
               </tr>
               </tbody>
             </table>
@@ -304,7 +295,7 @@
 
     <hr />
     <div class="d-flex justify-content-left gap-2">
-      <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      <button [disabled]="isSaving() || isChargesFetching()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
       <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
     </div>
   </form>
@@ -316,7 +307,7 @@
 <div #invoiceSection id="hidden-invoice" style="display: none;">
   <app-yard-invoice-voucher [data]="pdfData" />
   <div class="print-footer" id="custom-footer">
-    <div>Printed By: CWC Admin</div>
+    <div>Printed By: {{ pdfData()?.printedBy }}</div>
     <div id="timestamp">{{timeStamp}}</div>
   </div>
 </div>

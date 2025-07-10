@@ -29,9 +29,9 @@ export const LOAD_CONTAINER_REQUEST_DATA = {
     { value: "LCL", label: "LCL" },
   ],
   packageTypes: [
-    { value: "Package", label: "Package" },
-    { value: "Liquid Bulk", label: "Liquid Bulk" },
-    { value: "Dry Bulk", label: "Dry Bulk" },
+    { value: "1", label: "Package" },
+    { value: "2", label: "Liquid Bulk" },
+    { value: "3", label: "Dry Bulk" },
   ],
   equipmentSealTypes: [
     { value: "Bottle-Seal", label: "Bottle-Seal" },

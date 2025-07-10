@@ -17,4 +17,9 @@ export const EXPORT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.LoadContainerRequestComponent),
     data: { title: "Loaded Container / CBT Request" }
   },
+  {
+    path: PATHS.EXPORT.LOAD_CONTAINER_INVOICE,
+    loadComponent: () => import('../..').then((c) => c.LoadContainerInvoiceComponent),
+    data: { title: "Payment Sheet / Invoice"}
+  },
 ];

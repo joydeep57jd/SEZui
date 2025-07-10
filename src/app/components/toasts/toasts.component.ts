@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
-import { Toast, ToastService } from 'src/app';
+import { ToastService } from 'src/app';
 
 @Component({
   selector: 'app-toasts',
@@ -17,8 +17,4 @@ import { Toast, ToastService } from 'src/app';
 })
 export class ToastsComponent {
   toastService = inject(ToastService);
-
-  removeToast(toast: Toast) {
-    this.toastService.remove(toast)
-  }
 }

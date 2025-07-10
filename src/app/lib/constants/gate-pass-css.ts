@@ -26,6 +26,10 @@ body {
   border-collapse: collapse;
 }
 
+.header-table, .title-table h1{
+  font-size: 14pt;
+}
+
 .signature-table {
   margin-top: 60px;
 }
@@ -91,6 +95,18 @@ body {
   text-align: center;
   padding-top: 10px;
   vertical-align: top;
+}
+
+.signatures {
+  text-align: center;
+  font-size: 10px;
+}
+
+.signature-line {
+  border-bottom: 1px solid #000;
+  width: 190px;
+  height: 30px;
+  margin: 40px auto 5px auto;
 }
 
 .gap {

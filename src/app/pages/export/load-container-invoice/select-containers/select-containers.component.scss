@@ -1,0 +1,23 @@
+.container-obl-modal{
+  .modal-body {
+    max-height: 500px;
+    overflow: auto;
+    .table {
+      margin-bottom: 0;
+      .td-border,.th-border {
+        border: 1px solid #ddd;
+        text-align: center;
+        &.checkbox{
+          display: table-cell;
+          text-align: -webkit-center;
+          width: 30px;
+        }
+      }
+      .checkbox-container{
+        width: max-content;
+        position: relative;
+        left: 5px;
+      }
+    }
+  }
+}

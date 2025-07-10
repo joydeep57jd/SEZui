@@ -1,6 +1,6 @@
-<ngb-toast *ngFor="let toast of toastService.toasts$ | async" [class]="toast.classname" [autohide]="true"
-  [delay]="toast.delay || 5000" (hidden)="toastService.remove(toast)">
+<ngb-toast *ngFor="let toast of toastService.toasts$ | async; let index = index" [class]="toast.classname" [autohide]="true"
+  [delay]="toast.delay || 5000" (hidden)="toastService.remove(index)">
   <i [class]="toast.icon"></i>
   {{toast.message}}
-  <img (click)="removeToast(toast)" src="assets/svgs/cross.svg" />
+  <img (click)="toastService.remove(index)" src="assets/svgs/cross.svg" />
 </ngb-toast>

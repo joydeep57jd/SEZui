@@ -10,12 +10,12 @@ body {
   font-size: 11px;
   line-height: 1.2;
   background: white;
-  padding: 10px;
+  padding: 30px 0px;
   margin: 0;
 }
 
 .invoice-container {
-  margin: 0 auto;
+  margin: 30px 15px;
   border: 1px solid #000;
   background: white;
 }
@@ -85,6 +85,7 @@ body {
 
 .invoice-details {
   display: grid;
+  gap: 10px;
   grid-template-columns: 1fr 1fr;
   border-bottom: 1px solid #000;
 }
@@ -95,6 +96,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.right-details {
+  padding-left: 80px;
 }
 
 .detail-row {
@@ -220,7 +225,7 @@ body {
   border-bottom: 1px solid #000;
   width: 150px;
   height: 30px;
-  margin: 10px auto;
+  margin: 40px auto 5px auto;
 }
 
 .page-info {
@@ -255,7 +260,7 @@ body {
 }
 .print-footer {
   position: fixed;
-  bottom: 0px;
+  bottom: 10px;
   left: 0;
   right: 0;
   font-size: 10px;

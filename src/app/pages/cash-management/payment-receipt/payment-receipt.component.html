@@ -16,7 +16,7 @@
         <div class="form-group">
           <label>Receipt Date:</label>
           <div class="position-relative">
-            <input formControlName="receiptDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="receiptDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #receiptDatePicker="ngbDatepicker"
                    (click)="receiptDatePicker.open()" (dateSelect)="receiptDatePicker.close()" />
             <span (click)="receiptDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -116,7 +116,7 @@
           <td>
             <div class="form-group bottom-0">
               <div class="position-relative">
-                <input formControlName="date" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+                <input formControlName="date" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker container="body"
                        #datePicker="ngbDatepicker"
                        (click)="datePicker.open()" (dateSelect)="datePicker.close()" />
                 <span (click)="datePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

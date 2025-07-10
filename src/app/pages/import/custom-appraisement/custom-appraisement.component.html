@@ -6,7 +6,7 @@
         <div class="col-md-4 col-lg-3 col-sm-6">
           <div class="form-group">
             <label>Appraisement No:</label>
-            <input formControlName="appraisementNo" placeholder="Enter Appraisement No" type="text">
+            <input formControlName="appraisementNo" readonly placeholder="Enter Appraisement No" type="text">
             <ng-container *ngIf="hasError('appraisementNo')">
               <span class="error">Required field</span>
             </ng-container>
@@ -17,7 +17,7 @@
           <div class="form-group">
             <label>Appraisement Date:</label>
             <div class="position-relative">
-              <input formControlName="appraisementDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+              <input formControlName="appraisementDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                      #appraisementDatePicker="ngbDatepicker"
                      (click)="appraisementDatePicker.open()" (dateSelect)="appraisementDatePicker.close()" />
               <span (click)="appraisementDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -31,10 +31,6 @@
 
       <div class="col-md-6 col-lg-6 col-sm-6">
         <app-auto-complete keyName="partyName" keyValue="partyId" label="Shipping Line:" title="List of Shipping Line" formControlName="shippingLineId" [options]="shippingLineList()" />
-      </div>
-
-      <div class="col-md-6 col-lg-6 col-sm-6">
-        <app-auto-complete keyName="partyName" keyValue="partyId" label="CHA:" title="List of CHA" formControlName="chaId" [options]="chaList()" />
       </div>
 
       <div class="col-md-6 col-lg-6 col-sm-6">
@@ -93,7 +89,7 @@
       <div class="mt-2"></div>
     </div>
     <app-container-details [records]="containerDetails()" [isViewMode]="isViewMode()" [chaList]="chaList" [importerList]="importerList"
-                           [containerList]="containerList" [oblList]="oblList" (changeContainerDetails)="changeContainerDetails($event)" />
+                           [containerList]="containerList" (changeContainerDetails)="changeContainerDetails($event)" />
 
     <app-issuer-details [records]="issuerDetails()" [isViewMode]="isViewMode()" (changeIssuerDetails)="changeIssuerDetails($event)" />
     <div class="mt-3">

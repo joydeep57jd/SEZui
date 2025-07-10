@@ -2,13 +2,24 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  Input,
+  Input, OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, map, of, switchMap, tap, } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 import { IDataTableHeader, SearchCriteria, ApiService, DeleteModalComponent } from 'src/app';
 import { PaginatorComponent } from '..';
@@ -23,7 +34,7 @@ import { TableComponent } from "../table/table.component";
   styleUrls: ['./data-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DataTableComponent implements OnInit {
+export class DataTableComponent implements OnInit, OnDestroy {
   private modalService = inject(NgbModal);
   private apiService = inject(ApiService);
 
@@ -33,6 +44,8 @@ export class DataTableComponent implements OnInit {
   @Input() actionLoaders: Record<string, Record<string,boolean>> = {};
 
   searchCriteria$ = new BehaviorSubject<SearchCriteria>({ page: 1, size: 10, reloadCount: 0});
+  private readonly destroy$ = new Subject<void>();
+
   records = signal<any[] | null>(null);
   totalPage = signal<number>(0);
   isFetching = signal<boolean>(true)
@@ -46,6 +59,7 @@ export class DataTableComponent implements OnInit {
       debounceTime(500),
       map(() => this.getParams()),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+      takeUntil(this.destroy$),
       tap(() => this.isFetching.set(true)),
       switchMap((params) => this.getListData(params))
     ).subscribe({
@@ -89,5 +103,10 @@ export class DataTableComponent implements OnInit {
     const modalRef = this.modalService.open(DeleteModalComponent);
     modalRef.componentInstance.data = { url: header.deleteApiUrl, record, idKey: this.idKey, name };
     modalRef.result.then((result) => result && this.fetchRecords());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

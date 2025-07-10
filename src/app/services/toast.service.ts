@@ -13,6 +13,7 @@ export interface Toast {
 })
 export class ToastService {
   toasts$ = new BehaviorSubject<Toast[]>([]);
+  detailedError$ = new BehaviorSubject<any>(null);
 
   showError(message: string) {
     const toasts = [...this.toasts$.getValue(), { message, classname: 'bg-danger text-light', icon: 'fa fa-times-circle' }]
@@ -29,8 +30,9 @@ export class ToastService {
     this.toasts$.next(toasts);
   }
 
-  remove(toast: Toast) {
+  remove(index: number) {
     const toasts = this.toasts$.getValue();
+    toasts.splice(index, 1);
     this.toasts$.next(toasts);
   }
 

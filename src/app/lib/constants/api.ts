@@ -72,11 +72,13 @@ export const API = {
     },
     COUNTRY: "Sez/GetCountry",
     STATE: "Sez/GetState",
+    PACK_UQC: "Sez/GetPackUQC",
   },
   GATE_OPERATION: {
     GATE_IN: {
       LIST: "Sez/GetAllEntries",
       SAVE: "Sez/AddEditEntry",
+      CONTAINER_LIST: "Sez/GetContainerlistByOBLEntry",
     },
     GATE_PASS: {
       LIST: "Sez/GetPassHeader",
@@ -94,16 +96,28 @@ export const API = {
       LIST: "Sez/GetOblEntry",
       SAVE: "Sez/AddOblEntry",
       ADDITIONAL_INFO: "Sez/GetOblEntryAdditionalDetails",
-      CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
+      CONTAINER_LIST: "Sez/GetContainerlistByGetEntry",
     },
     YARD_INVOICE: {
       SAVE: "Sez/AddEditYardInvoice",
       OBL_CONTAINER_LIST: "Sez/GetOBLContainerList",
-      CHARGE_DETAILS: "Sez/GetImportCharges",
+      IMPORT_CHARGES: "Sez/GetImportCharges",
       TRANSPORTATION_CHARGES: "Sez/GetImportTransportChargesCalc",
+      INSURANCE_CHARGE: "Sez/GetImportInsuranceChargesCalc",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
-      LIST: "Sez/GetYardInvoice",
+      LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=false",
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
+      APPLICATION_LIST: "Sez/GetCustomAppraisementApplicationHeader"
+    },
+    GODOWN_INVOICE: {
+      SAVE: "Sez/AddGodownInvoice",
+      OBL_CONTAINER_LIST: "Sez/GetOBLContainerList",
+      IMPORT_CHARGES: "Sez/GetImportCharges",
+      STORAGE_CHARGES: "Sez/GetImportStorageChargesCalc",
+      INSURANCE_CHARGE: "Sez/GetImportInsuranceChargesCalc",
+      CHARGE_TYPE: "Sez/GetAllChargesTypes",
+      LIST: "Sez/GetGodownInvoice",
+      INVOICE_DETAILS: "Sez/GetGodownChargesInvoice",
     },
     CUSTOM_APPRAISEMENT: {
       LIST: "Sez/GetCustomAppraisementApplicationHeader",
@@ -134,6 +148,14 @@ export const API = {
       INVOICE_LIST: "Sez/GetPaymentReceiptInvoiceDetails",
       PAYMENT_RECEIPT_DETAILS: "Sez/GetPaymentDetails",
     },
+    REGISTER_OF_OUTWARD_SUPPLY: {
+      REPORT: "Sez/GetRegisterOfOutwardSupplyReport",
+      REPORT_INVOICE: "Sez/GetRegisterOfOutwardSupplyReportInvoice",
+      REPORT_CANCEL: "Sez/GetRegisterOfOutwardSupplyReportCancel",
+    },
+    DAILY_CASH_BOOK: {
+      REPORT: "Sez/GetDailyCashBookReport",
+    }
   },
   EXPORT: {
     CCIN_ENTRY: {
@@ -149,6 +171,18 @@ export const API = {
       LIST: "Sez/GetLoadContainerHeader",
       SAVE: "Sez/CreateLoadContainerRequest",
       ENTRY_DETAILS: "Sez/GetLoadContainerDetails",
+      CONTAINER_LIST: "Sez/GetGetInContainerList",
+      SHIPPING_BILL_LIST: "Sez/GetCCINEntryBySBNo",
+    },
+    LOAD_CONTAINER_INVOICE: {
+      SAVE: "Sez/AddEditYardInvoice",
+      IMPORT_CHARGES: "Sez/GetExportEntryFeeChargesResponse",
+      HANDLING_CHARGES: "Sez/GetHandlingChargesCalc",
+      INSURANCE_CHARGE: "Sez/GetExportInsuranceChargesCalc",
+      CHARGE_TYPE: "Sez/GetAllChargesTypes",
+      LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=true",
+      INVOICE_DETAILS: "Sez/GetGodownChargesInvoice",
+      CONTAINER_LIST: "Sez/GetContainerlistForLoadedContainerInvoice",
     }
   },
 };

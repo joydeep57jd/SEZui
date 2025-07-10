@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-select-obls',
@@ -10,5 +11,11 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectOblsComponent {
+  modal = inject(NgbActiveModal);
 
+  @Input() records = signal<any[]>([]);
+  @Input() selectedOblSet = signal<Set<string>>(new Set())
+  @Input() getContainerOblNo!: (record: any) => string;
+
+  @Output() selectionChange = new EventEmitter<any>();
 }

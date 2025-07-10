@@ -1,12 +1,12 @@
-<nav class="navbar d-flex justify-content-between align-items-center px-4 py-0">
+<nav class="navbar d-flex justify-content-between align-items-center">
   <div class="d-flex gap-3">
     <button (click)="toggleSideNav()" class="hamburger">
       <span id="Menu_btn" class="fa fa-2x fa fa-bars"></span>
     </button>
-    <div class="d-flex gap-2 align-items-center logo-container position-relative">
-      <img height="26" width="37" src="assets/images/CWCPDF.PNG">
+    <div class="d-flex align-items-center logo-container position-relative">
+      <img src="assets/images/CWCPDF.PNG">
       <span class="position-relative">|</span>
-      <div class="d-flex flex-column">
+      <div class="d-flex flex-column title-branch-container">
         <h6 class="title">Exim Management System</h6>
         <h4 class="branch">Patparganj</h4>
       </div>
@@ -23,8 +23,18 @@
     </li>
   </ul>
   <div [class.expanded]="!isSideNavCollapsed()" class="main-container">
-    <p class="page-heading">{{breadCrumbService.title$ | async}}</p>
+    <h4 class="page-heading">{{breadCrumbService.title$ | async}}</h4>
     <div class="main-content">
+      <div *ngIf="toastService.detailedError$ | async as error" class="validation-error d-flex justify-content-center">
+        <div class="alert alert-warning" role="alert">
+          <ul class="m-0">
+            <i (click)="toastService.detailedError$.next(null)" class="fa fa-times-circle"></i>
+            <li *ngFor="let error of getFormattedError(error)">
+              <span>{{error.key}}</span>: <span>{{error.error}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
       <router-outlet></router-outlet>
     </div>
   </div>

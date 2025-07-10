@@ -11,26 +11,33 @@ import {
 import {CommonModule, DatePipe} from '@angular/common';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ToastService} from "../../../services";
-import {DATA_TABLE_HEADERS} from "../../../lib";
+import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {DataTableComponent} from "../../../components";
 import {YARD_INVOICE_DATA} from "./yard-invoice-data";
 import {NgbInputDatepicker, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
-import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  forkJoin,
+  Observable,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap
+} from "rxjs";
 import {SelectContainersComponent} from "./select-containers/select-containers.component";
 import {TableComponent} from "../../../components/table/table.component";
 import {YardInvoiceHelper} from "./yard-invoice-helper";
 import {PrintService} from "../../../services/print.service";
-import {
-  PaymentReceiptInvoiceComponent
-} from "../../cash-management/payment-receipt/payment-receipt-invoice/payment-receipt-invoice.component";
 import {YardInvoiceVoucherComponent} from "./yard-invoice-voucher/yard-invoice-voucher.component";
 import {INVOICE_CSS} from "../../../lib/constants/invoice-css";
 
 @Component({
   selector: 'app-yard-invoice',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgbInputDatepicker, AutoCompleteComponent, TableComponent, DataTableComponent, PaymentReceiptInvoiceComponent, YardInvoiceVoucherComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgbInputDatepicker, AutoCompleteComponent, TableComponent, DataTableComponent, YardInvoiceVoucherComponent],
   templateUrl: './yard-invoice.component.html',
   styleUrls: ['./yard-invoice.component.scss'],
   providers: [DatePipe],
@@ -46,6 +53,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
   readonly invoiceTypes = YARD_INVOICE_DATA.invoiceTypes;
   readonly destuffingTypes = YARD_INVOICE_DATA.destuffingTypes;
   readonly examinationTypes = YARD_INVOICE_DATA.examinationTypes;
+  readonly sezTypes = YARD_INVOICE_DATA.sezTypes;
   readonly yardInvoicePreviewHeaders = DATA_TABLE_HEADERS.IMPORT.YARD_INVOICE.YARD_INVOICE_PREVIEW
   readonly headers = DATA_TABLE_HEADERS.IMPORT.YARD_INVOICE.MAIN
 
@@ -55,9 +63,6 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
   selectedContainerSet = signal<Set<string>>(new Set());
   insuredContainerSet = signal<Set<string>>(new Set());
   selectedContainerList = signal<any[]>([]);
-  chargeDetails = signal<any>({});
-  transportChargeDetails = signal<any>({});
-  totalCharges = signal<any>({});
   pdfData = signal<any>({});
   isViewMode = signal(false);
   isSaving = signal(false);
@@ -71,43 +76,56 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     super();
     this.setHeaderCallbacks()
     this.getChargeTypeList()
-    this.getContainerList()
+    this.getCustomAppraisementList()
     this.getPartyList();
     this.getEximTraderList();
     this.makeForm();
     this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
+    this.fetChargesCalculation()
   }
 
-  fetchCharges() {
-    const body = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
-    this.fetchTransportCharges();
-    if(!body) {
-      this.chargeDetails.set({});
-      this.totalCharges.set(this.getTotalCharges({}, this.transportChargeDetails()))
-      return;
-    }
-    this.apiService.post(this.apiUrls.CHARGE_DETAILS, body).subscribe({
+  fetChargesCalculation() {
+    this.fetchChargesParams$.pipe(
+      takeUntil(this.destroy$),
+      filter(payload => !!payload),
+      debounceTime(0),
+      distinctUntilChanged(),
+      tap(() => this.isChargesFetching.set(true)),
+      switchMap(params => this.getFetchChargesObservable(params)),
+    ).subscribe({
       next: (response: any) => {
-        this.chargeDetails.set(response.data[0])
-        this.totalCharges.set(this.getTotalCharges(response.data[0], this.transportChargeDetails()))
+        const entryCharge = response[0]?.data[0] ?? {};
+        this.chargeDetails.set(entryCharge)
+        if(this.fetchChargesParams$.value.transportParams) {
+          const transportCharge = response[1];
+          this.transportChargeDetails.set(transportCharge)
+        }
+        if(this.fetchChargesParams$.value.insuredParams) {
+          const insuranceCharge = response[response.length - 1]?.data[0];
+          this.insuranceChargeDetails.set(insuranceCharge)
+        }
+        this.totalCharges.set(this.getTotalCharges());
+        this.isChargesFetching.set(false);
+      }, error: () => {
+        this.isChargesFetching.set(false);
       }
     })
   }
 
-  fetchTransportCharges() {
-    const value = this.form.get("transportationChargeType")?.value;
-    const params = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
-    if(!value || !params) {
-      this.transportChargeDetails.set({})
-      this.totalCharges.set(this.getTotalCharges(this.chargeDetails(), {}));
-      return;
+  getFetchChargesObservable(params: any) {
+    const observables: Observable<any>[] = []
+    observables.push(this.apiService.post(this.apiUrls.IMPORT_CHARGES, params.entryParams))
+    if(params.transportParams) {
+      observables.push(this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, params.transportParams))
     }
-    this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, params).subscribe({
-      next: (response: any) => {
-        this.transportChargeDetails.set(response)
-        this.totalCharges.set(this.getTotalCharges(this.chargeDetails(), response));
-      }
-    })
+    if(params.insuredParams) {
+      observables.push(this.apiService.post(this.apiUrls.INSURANCE_CHARGE, params.insuredParams))
+    }
+    return forkJoin(observables);
+  }
+
+  get isInsuranceChargeHaveValues() {
+    return Object.keys(this.insuranceChargeDetails()).length;
   }
 
   makeForm() {
@@ -115,15 +133,15 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
       yardInvId: new FormControl(0, []),
       invoiceType: new FormControl(this.invoiceTypes[0].value, []),
       invoiceNo: new FormControl("", []),
-      deliveryDate: new FormControl(null, []),
+      deliveryDate: new FormControl({value: this.utilService.getNgbDateObject(new Date()), disabled: true}, []),
       applicationId: new FormControl(null, []),
-      invoiceDate: new FormControl(null, []),
+      invoiceDate: new FormControl({value: null, disabled: true}, []),
       partyId: new FormControl("", []),
       payeeId: new FormControl("", []),
       gstNo: new FormControl("", []),
       paymentMode: new FormControl("", []),
       destuffingType: new FormControl(this.destuffingTypes[0].value, []),
-      examinationType: new FormControl("", []),
+      examinationType: new FormControl(this.examinationTypes[0].value, []),
       placeOfSupply: new FormControl("", []),
       sezId: new FormControl("", []),
       otHours: new FormControl("", []),
@@ -141,8 +159,10 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
         const eximTrader = this.eximTraderMap().get(partyId);
         this.form.get("payeeId")?.setValue(partyId);
         this.form.get("gstNo")?.setValue(eximTrader?.gstNo ?? "");
-        this.fetchCharges()
+        this.form.get("placeOfSupply")?.setValue(eximTrader?.stateName ?? "");
+        this.updateFetchChargesParams(this.form.getRawValue(), this.selectedContainerList());
       })
+
       this.form.get("transportationChargeType")?.valueChanges
       .pipe(
         takeUntil(this.destroy$),
@@ -150,7 +170,23 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
         distinctUntilChanged()
       )
       .subscribe(() => {
-        this.fetchTransportCharges();
+        this.updateFetchChargesParams(this.form.getRawValue(), this.selectedContainerList());
+      })
+
+    this.form.get("applicationId")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe((applicationId) => {
+        const application = this.applicationList().find(application => application.id === applicationId);
+        this.form.get("invoiceDate")?.setValue(application ? this.utilService.getNgbDateObject(application?.appraisementDate) : null);
+        this.updateFetchChargesParams(this.form.getRawValue(), this.selectedContainerList());
+        this.getContainerList(application.appraisementNo);
+        this.selectedContainerSet().clear();
+        this.insuredContainerSet().clear();
+        this.selectedContainerList.set([]);
       })
   }
 
@@ -164,16 +200,20 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload(this.form.value, this.chargeDetails(), this.transportChargeDetails(), this.selectedContainerList(), this.partyList());
+      const data = this.makePayload(this.form.getRawValue(), this.selectedContainerList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Yard invoice saved successfully");
           this.table.reload();
           this.makeForm();
           this.chargeDetails.set({})
+          this.transportChargeDetails.set({})
           this.selectedContainerSet().clear();
           this.insuredContainerSet().clear();
           this.selectedContainerList.set([]);
+          this.getCustomAppraisementList()
+          this.containerList.set([])
+          this.totalCharges.set({});
           this.isSaving.set(false);
         }, error: () => {
           this.isSaving.set(false);
@@ -187,7 +227,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     return control?.touched && control.invalid;
   }
 
-  updateSelectedContainerList(isFetchChargeRequired = true) {
+  updateSelectedContainerList() {
     const selectedContainerList: any[] = [];
     this.containerList().forEach((container: any) => {
       if(this.selectedContainerSet().has(this.getContainerOblNo(container))) {
@@ -195,9 +235,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
       }
     })
     this.selectedContainerList.set(selectedContainerList);
-    if (isFetchChargeRequired) {
-      this.fetchCharges()
-    }
+    this.updateFetchChargesParams(this.form.getRawValue(), selectedContainerList);
   }
 
   openSelectContainersModal() {
@@ -222,7 +260,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
       } else {
         this.insuredContainerSet().add(containerOblNo);
       }
-      this.updateSelectedContainerList(false)
+      this.updateSelectedContainerList()
     })
   }
 
@@ -230,9 +268,12 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     if(this.printInProgress[record.yardInvId]) return;
     this.printInProgress[record.yardInvId] = true;
     this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
-    this.apiService.get(this.apiUrls.INVOICE_DETAILS, {InvoiceNo: record.invoiceNo}).subscribe({
-      next: (response: any) => {
-        this.pdfData.set(response.data);
+    forkJoin([
+      this.apiService.get(this.apiUrls.INVOICE_DETAILS, {InvoiceNo: record.invoiceNo}),
+      this.apiService.get(API.IMPORT.CUSTOM_APPRAISEMENT.LIST, {id: record.applicationId}),
+    ]).subscribe({
+      next: (responses: any) => {
+        this.pdfData.set({...responses[0].data, header: record, appraisement: responses[1].data[0]});
         setTimeout(() => {
           this.printInProgress[record.yardInvId] = false;
           this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}

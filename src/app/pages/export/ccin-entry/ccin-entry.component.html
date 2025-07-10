@@ -5,7 +5,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>CCIN App No:</label>
-          <input formControlName="ccinNo" placeholder="Enter CCIN App No" type="text">
+          <input formControlName="ccinNo" readonly placeholder="Enter CCIN App No" type="text">
           <ng-container *ngIf="hasError('ccinNo')">
             <span class="error">Required field</span>
           </ng-container>
@@ -16,7 +16,7 @@
         <div class="form-group">
           <label>CCIN App Date:</label>
           <div class="position-relative">
-            <input formControlName="ccinDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="ccinDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #ccinDatePicker="ngbDatepicker"
                    (click)="ccinDatePicker.open()" (dateSelect)="ccinDatePicker.close()" />
             <span (click)="ccinDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -53,7 +53,7 @@
         <div class="form-group">
           <label>SB Date:</label>
           <div class="position-relative">
-            <input formControlName="sbDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="sbDate" placeholder="dd-mm-yyyy" name="dp" ngbDatepicker container="body"
                    #sbDatePicker="ngbDatepicker"
                    (click)="sbDatePicker.open()" (dateSelect)="sbDatePicker.close()" />
             <span (click)="sbDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -131,11 +131,7 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Pack UQC:</label>
-          <input formControlName="packUQCCode" placeholder="Enter Pack UQC" type="text">
-          <ng-container *ngIf="hasError('packUQCCode')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="uqcCode" keyValue="uqcCode" label="Pack UQC:" placeholder="Select Pack UQC" title="List of Pack UQC" formControlName="packUQCCode" [options]="packUqcList()" />
         </div>
       </div>
 

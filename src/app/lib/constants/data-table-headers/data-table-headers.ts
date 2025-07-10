@@ -36,6 +36,10 @@ import {DeliveryApplicationHeaders} from "./delivery-application-header";
 import {DeliveryApplicationDetailsHeaders} from "./delivery-application-details-header";
 import {LoadContainerRequestHeaders} from "./load-container-request-header";
 import {LoadContainerRequestDetailsHeaders} from "./load-container-request-details-header";
+import {GodownInvoiceHeaders} from "./godown-invoice.header";
+import {GodownInvoicePreviewHeaders} from "./godown-invoice-preview.header";
+import {LoadContainerInvoiceHeaders} from "./load-container-invoice.header";
+import {LoadContainerInvoicePreviewHeaders} from "./load-container-invoice-preview.header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -89,6 +93,10 @@ export const DATA_TABLE_HEADERS = {
     DELIVERY_APPLICATION: {
       MAIN: DeliveryApplicationHeaders,
       DETAILS: DeliveryApplicationDetailsHeaders,
+    },
+    GODOWN_INVOICE: {
+      MAIN: GodownInvoiceHeaders,
+      GODOWN_INVOICE_PREVIEW: GodownInvoicePreviewHeaders,
     }
   },
   CASH_MANAGEMENT: {
@@ -104,6 +112,10 @@ export const DATA_TABLE_HEADERS = {
     LOAD_CONTAINER_REQUEST: {
       MAIN: LoadContainerRequestHeaders,
       DETAILS: LoadContainerRequestDetailsHeaders,
+    },
+    LOAD_CONTAINER_INVOICE: {
+      MAIN: LoadContainerInvoiceHeaders,
+      LOAD_CONTAINER_INVOICE_PREVIEW: LoadContainerInvoicePreviewHeaders,
     }
   },
 }

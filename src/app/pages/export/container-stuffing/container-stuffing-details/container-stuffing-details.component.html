@@ -16,7 +16,7 @@
         <div class="form-group">
           <label>Shipping Bill Date:</label>
           <div class="position-relative">
-            <input formControlName="shippingDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="shippingDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #shippingDatePicker="ngbDatepicker"
                    (click)="shippingDatePicker.open()" (dateSelect)="shippingDatePicker.close()" />
             <span (click)="shippingDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

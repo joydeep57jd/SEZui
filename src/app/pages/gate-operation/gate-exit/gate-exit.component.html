@@ -4,8 +4,8 @@
 
       <div class="col-md-4 col-sm-6">
         <div class="form-group">
-          <label>* Gate Exit No:</label>
-          <input formControlName="gateExitNo" placeholder="Enter Gate Exit No" type="text">
+          <label>Gate Exit No:</label>
+          <input formControlName="gateExitNo" readonly placeholder="Enter Gate Exit No" type="text">
           <ng-container *ngIf="hasError('gateExitNo')">
             <span class="error">Required field</span>
           </ng-container>
@@ -16,7 +16,7 @@
         <div class="form-group">
           <label>Gate Exit Date:</label>
           <div class="position-relative">
-            <input formControlName="gateExitDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="gateExitDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #gateExitDatePicker="ngbDatepicker"
                    (click)="gateExitDatePicker.open()" (dateSelect)="gateExitDatePicker.close()" />
             <span (click)="gateExitDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -45,7 +45,7 @@
         <div class="form-group">
           <label>Gate Pass Date:</label>
           <div class="position-relative">
-            <input formControlName="gatePassDate" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="gatePassDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #gatePassDatePicker="ngbDatepicker"
                    (click)="gatePassDatePicker.open()" (dateSelect)="gatePassDatePicker.close()" />
             <span (click)="gatePassDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
@@ -60,7 +60,7 @@
         <div class="form-group">
           <label>Expected Time Of Arrival:</label>
           <div class="position-relative">
-            <input formControlName="expectedTime" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker container="body"
+            <input formControlName="expectedTime" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
                    #expectedTimePicker="ngbDatepicker"
                    (click)="expectedTimePicker.open()" (dateSelect)="expectedTimePicker.close()" />
             <span (click)="expectedTimePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>

@@ -4,7 +4,7 @@ import {ElementRef, Injectable} from '@angular/core';
   providedIn: 'root'
 })
 export class PrintService {
-  print(invoiceSection: ElementRef, fileName: string, style?: string) {
+  print(invoiceSection: ElementRef, fileName: string, style: string = "") {
     const clone = invoiceSection.nativeElement.cloneNode(true) as HTMLElement;
     clone.style.display = 'block';
     const container = document.createElement('div');
@@ -34,7 +34,7 @@ export class PrintService {
         printWindow.close()
       };
     } else {
-      document.body.removeChild(container);
+      // document.body.removeChild(container);
     }
   }
 }

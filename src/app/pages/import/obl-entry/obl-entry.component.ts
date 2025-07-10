@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
-import {API, DATA_TABLE_HEADERS} from "../../../lib";
+import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
 import {NgbDatepickerModule} from "@ng-bootstrap/ng-bootstrap";
@@ -33,16 +33,47 @@ export class OblEntryComponent {
   isSaving = signal(false);
   portList = signal<any[]>([]);
   countryList = signal<any[]>([]);
+  shippingLineList = signal<any[]>([]);
   commodityList = signal<any[]>([]);
+  importerList = signal<any[]>([]);
+  containerCBTList = signal<any[]>([]);
+  currentRecord: any = null;
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
 
   constructor(private cdr: ChangeDetectorRef) {
     this.getPortList();
+    this.getShippingLineList()
     this.getCountryList();
     this.getCommodityList();
+    this.getImporterList()
+    this.getContainerCBTList()
     this.setHeaderCallbacks();
     this.makeForm();
+  }
+
+  getContainerCBTList() {
+    this.apiService.get(this.apiUrls.CONTAINER_LIST).subscribe({
+      next: (response: any) => {
+        this.containerCBTList.set(response.data)
+      }
+    })
+  }
+
+  getImporterList() {
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.IMPORTER}).subscribe({
+      next: (response: any) => {
+        this.importerList.set(response.data)
+      }
+    })
+  }
+
+  getShippingLineList() {
+    this.apiService.get(API.MASTER.PARTY.LIST, {partyType: PARTY_TYPE.SHIPPING_LINE}).subscribe({
+      next: (response: any) => {
+        this.shippingLineList.set(response.data)
+      }
+    })
   }
 
   getPortList() {
@@ -152,6 +183,10 @@ export class OblEntryComponent {
     return arr;
   }
 
+  addContainerOption(option: any) {
+    this.containerCBTList.update(data => [...data, option]);
+  }
+
   edit(record: any) {
     this.patchForm({...record}, false);
   }
@@ -163,12 +198,16 @@ export class OblEntryComponent {
   patchForm(record: any, isViewMode: boolean) {
     record.igmDate = this.utilService.getNgbDateObject(record.igmDate);
     record.tpDate = this.utilService.getNgbDateObject(record.tpDate);
+    this.currentRecord = record;
     this.resetRequestOblEntryAddDtls();
-    this.form.reset();
-    this.form.patchValue(record);
-    this.isViewMode.set(isViewMode);
-    isViewMode ? this.form.disable() : this.form.enable();
-    this.getAdditionalInfo(record.id);
+    this.updateContainerList()
+    setTimeout(() => {
+      this.form.reset();
+      this.form.patchValue(record);
+      this.isViewMode.set(isViewMode);
+      isViewMode ? this.form.disable() : this.form.enable();
+      this.getAdditionalInfo(record.id);
+    }, 10)
   }
 
   setEditMode(){
@@ -180,6 +219,16 @@ export class OblEntryComponent {
     this.form.reset();
     this.makeForm();
     this.isViewMode.set(false);
+    this.currentRecord = null;
+    this.updateContainerList()
+  }
+
+  updateContainerList() {
+    const list = [...this.containerCBTList()]
+    if(this.currentRecord && !list.find(container => container.containerNo === this.currentRecord.containerCBTNo)) {
+      list.push({containerNo: this.currentRecord.containerCBTNo})
+    }
+    this.containerCBTList.set(list)
   }
 
   submit() {
@@ -193,6 +242,8 @@ export class OblEntryComponent {
           this.table.reload();
           this.makeForm();
           this.isSaving.set(false);
+          this.currentRecord = null;
+          this.getContainerCBTList()
         }, error: () => {
           this.isSaving.set(false);
         }
