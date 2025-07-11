@@ -18,10 +18,12 @@ import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
   styleUrls: ['./gate-exit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GateExitComponent implements OnDestroy {
+export class GateExitComponent implements OnDestroy, OnDestroy {
   apiService = inject(ApiService);
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
+
+  private readonly destroy$ = new Subject<void>();
 
   readonly apiUrls = API.GATE_OPERATION.GATE_EXIT;
   readonly headers = DATA_TABLE_HEADERS.GATE_OPERATION.GATE_EXIT.MAIN;
@@ -32,10 +34,9 @@ export class GateExitComponent implements OnDestroy {
   shippingLineList = signal<any[]>([]);
   gatePassList = signal<any[]>([]);
   gateExitDetails = signal<any[]>([]);
+  containerList = signal<any[]>([]);
   isSaving = signal(false);
   isViewMode = signal(false);
-
-  private readonly destroy$ = new Subject<void>();
 
   @ViewChild(DataTableComponent) table!: DataTableComponent;
   @ViewChild(GateExitDetailsComponent) childComp!: GateExitDetailsComponent;
@@ -80,6 +81,21 @@ export class GateExitComponent implements OnDestroy {
     })
   }
 
+  getContainerList(gatePassId: number) {
+    this.apiService.get(API.GATE_OPERATION.GATE_PASS.GATE_PASS_DETAILS, {gatepassId: gatePassId}).subscribe({
+      next: (response: any) => {
+        this.containerList.set(response.data)
+      }
+    })
+  }
+
+  resetContainerDetails() {
+    this.containerList.set([])
+    this.form.get("size")?.setValue("");
+    this.form.get("shippingLine")?.setValue(null);
+    this.form.get("chaName")?.setValue(null);
+  }
+
   makeForm(){
     this.form = new FormGroup({
       exitIdHeaderId: new FormControl(0, []),
@@ -91,10 +107,10 @@ export class GateExitComponent implements OnDestroy {
       gatePassDate: new FormControl(null, []),
       expectedTime: new FormControl(null, []),
       cbtNo: new FormControl("", []),
-      size: new FormControl("", []),
-      shippingLine: new FormControl(null, []),
-      chaName: new FormControl(null, []),
-      cargoDescription: new FormControl("", []),
+      size: new FormControl({value: "", disabled: true}, []),
+      shippingLine: new FormControl({value: null, disabled: true}, []),
+      chaName: new FormControl({value: null, disabled: true}, []),
+      cargoDescription: new FormControl({value: "", disabled: true}, []),
     });
     this.form.get("gatePassId")?.valueChanges
       .pipe(
@@ -102,13 +118,27 @@ export class GateExitComponent implements OnDestroy {
         debounceTime(0),
         distinctUntilChanged()
       )
-      .subscribe(() => {
-        const gatePassHeader = this.gatePassList().find(gatePass => gatePass.gatePassId === this.form.get("gatePassId")?.value)
-        if(gatePassHeader) {
-          this.form.get("gatePassNo")?.setValue(gatePassHeader.gatePassNo)
-          this.form.get("gatePassDate")?.setValue(this.utilService.getNgbDateObject(gatePassHeader.gatePssDate))
-          this.form.get("expectedTime")?.setValue(this.utilService.getNgbDateObject(gatePassHeader.expDate))
-        }
+      .subscribe(gatePassId => {
+        this.resetContainerDetails()
+        const gatePassHeader = this.gatePassList().find(gatePass => gatePass.gatePassId === gatePassId)
+        this.form.get("gatePassNo")?.setValue(gatePassHeader?.gatePassNo)
+        this.form.get("gatePassDate")?.setValue(this.utilService.getNgbDateObject(gatePassHeader?.gatePssDate))
+        this.form.get("expectedTime")?.setValue(this.utilService.getNgbDateObject(gatePassHeader?.expDate))
+        this.getContainerList(gatePassId)
+      })
+      this.form.get("cbtNo")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe(cbtNo => {
+        const container = this.containerList().find(c => c.containerNo === cbtNo)
+        this.form.get("size")?.patchValue(container.containerSize)
+        this.form.get("chaName")?.patchValue(container.chaName)
+        this.form.get("shippingLine")?.patchValue(container.shipplingLine)
+        this.form.get("cargoDescription")?.patchValue(container.cargoDescription)
+        console.log(this.form.getRawValue())
       })
   }
 
@@ -163,7 +193,7 @@ export class GateExitComponent implements OnDestroy {
   }
 
   makePayload() {
-    const value = {...this.form.value};
+    const value = {...this.form.getRawValue()};
     const [hour, minute] = value.gateExitTime.split(":");
     value.gateExitDateTime = this.utilService.getDateObject(value.gateExitDate, hour, minute);
     value.gatePassDate = this.utilService.getDateObject(value.gatePassDate);

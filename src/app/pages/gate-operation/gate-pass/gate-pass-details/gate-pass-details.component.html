@@ -4,18 +4,18 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Container/OBL No:</label>
-          <input formControlName="containerNo" placeholder="Enter Container/OBL No" type="text">
-          <ng-container *ngIf="hasError('containerNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="containerNo" keyValue="containerNo" label="Container/OBL No:" placeholder="Select Container/OBL No" title="List of Container/OBL No" formControlName="containerNo" [options]="containerList" />
         </div>
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Size:</label>
-          <input formControlName="size" placeholder="Enter Size" type="text">
+          <label>Size :</label>
+          <select formControlName="size" class="dropdown">
+            <option value="">---Select---</option>
+            <option *ngFor="let size of sizes" [value]="size.value">{{size.label}}
+            </option>
+          </select>
           <ng-container *ngIf="hasError('size')">
             <span class="error">Required field</span>
           </ng-container>

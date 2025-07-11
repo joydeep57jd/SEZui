@@ -73,11 +73,7 @@
 
       <div class="col-sm-6">
         <div class="form-group">
-          <label>Container/CBT/Cargo No:</label>
-          <input formControlName="cbtNo" placeholder="Enter Container/CBT/Cargo No" type="text">
-          <ng-container *ngIf="hasError('cbtNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="containerNo" keyValue="containerNo" label="Container/CBT/Cargo No:" placeholder="Select Container/CBT/Cargo No" title="List of Container/CBT/Cargo No" formControlName="cbtNo" [options]="containerList()" />
         </div>
       </div>
 

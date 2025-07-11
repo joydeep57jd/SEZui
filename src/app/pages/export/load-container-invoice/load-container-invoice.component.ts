@@ -63,9 +63,11 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
       this.totalCharges.set(this.getTotalCharges(null, null, null))
       return;
     }
+    const application = this.containerRequestList().find(containerRequest => containerRequest.loadContReqId === this.form.value?.applicationId);
+    const containerObList = body.containerList.split(",").map((containerNo: string) => `${containerNo}#${application?.loadContReqNo ?? ""}`).join(",");
     forkJoin([
       this.apiService.get(this.apiUrls.IMPORT_CHARGES, body),
-      this.apiService.get(this.apiUrls.HANDLING_CHARGES, {...body, ContainerOBLList: body.containerList}),
+      this.apiService.get(this.apiUrls.HANDLING_CHARGES, {...body, ContainerOBLList: containerObList}),
       this.apiService.get(this.apiUrls.INSURANCE_CHARGE, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}),
     ]).subscribe({
       next: ([importCharges, handlingCharges, insuranceCharges]: any) => {
@@ -111,6 +113,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
       debounceTime(0),
       distinctUntilChanged()
     ).subscribe(applicationId => {
+      this.resetValue()
       const application = this.containerRequestList().find(containerRequest => containerRequest.loadContReqId === applicationId);
       this.getContainerList(application.loadContReqNo)
       this.form.get("deliveryDate")?.setValue(this.utilService.getNgbDateObject(application.loadContReqDate));
@@ -133,20 +136,24 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
           this.toasterService.showSuccess("Load container invoice saved successfully");
           this.table.reload();
           this.makeForm();
-          this.chargeDetails.set({})
-          this.handlingChargeDetails.set({})
-          this.insuranceChargeDetails.set({})
-          this.selectedContainerSet().clear();
-          this.selectedContainerList.set([]);
-          this.containerList.set([])
+          this.resetValue()
           this.getContainerRequestList()
-          this.totalCharges.set({});
           this.isSaving.set(false);
         }, error: () => {
           this.isSaving.set(false);
         }
       })
     }
+  }
+
+  resetValue() {
+    this.chargeDetails.set({})
+    this.handlingChargeDetails.set({})
+    this.insuranceChargeDetails.set({})
+    this.selectedContainerSet().clear();
+    this.selectedContainerList.set([]);
+    this.containerList.set([])
+    this.totalCharges.set({});
   }
 
   hasError(formControlName: string) {

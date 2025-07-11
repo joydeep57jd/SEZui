@@ -50,6 +50,7 @@ export class GatePassComponent implements OnDestroy {
   isSaving = signal(false);
   isViewMode = signal(false);
   pdfData = signal<any>({});
+  containerList = signal<any[]>([]);
   printInProgress: Record<string,boolean> = {};
   actionLoaders: Record<string, Record<string,boolean>> = {}
 
@@ -117,6 +118,18 @@ export class GatePassComponent implements OnDestroy {
     })
   }
 
+  getOblDetails(invoiceNo: string) {
+    this.apiService.get(this.apiUrls.OBL_DETAILS, {invoiceNo}).subscribe({
+      next: (response: any) => {
+        console.log(response)
+        this.form.get("shippingLineName")?.setValue(response.data.shippingLine ?? null);
+        this.form.get("impExpName")?.setValue(response.data.importerExporterName ?? null);
+        this.form.get("remarks")?.setValue(response.data.remarks ?? null);
+        this.containerList.set(response.data.containersDetails)
+      }
+    })
+  }
+
   makeForm(){
     this.form = new FormGroup({
       gatePassId: new FormControl(0, []),
@@ -139,16 +152,12 @@ export class GatePassComponent implements OnDestroy {
         distinctUntilChanged()
       )
       .subscribe((invoiceId) => {
+        this.containerList.set([])
         const invoice = this.invoiceList().find(invoice => invoice.yardInvId === invoiceId);
         const cha = this.chaList().find(cha => cha.partyId === invoice?.partyId);
-        const importer = this.chaList().find(cha => cha.partyId === invoice?.payeeId);
-        if(cha) {
-          this.form.get("chaName")?.setValue(cha?.partyName);
-        }
-        if(importer) {
-          this.form.get("impExpName")?.setValue(importer?.partyName);
-        }
+        this.form.get("chaName")?.setValue(cha?.partyName ?? null);
         this.form.get("expDate")?.setValue(invoice ? this.utilService.getNgbDateObject(invoice?.deliveryDate) : null);
+        this.getOblDetails(invoice?.invoiceNo ?? "");
       })
   }
 

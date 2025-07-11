@@ -84,6 +84,7 @@ export const API = {
       LIST: "Sez/GetPassHeader",
       SAVE: "Sez/CreateGatePass",
       GATE_PASS_DETAILS: "Sez/GetGatePassGateOut",
+      OBL_DETAILS: "Sez/GetGatePassDetailsStructured"
     },
     GATE_EXIT: {
       LIST: "Sez/GetExitThroughHeader",

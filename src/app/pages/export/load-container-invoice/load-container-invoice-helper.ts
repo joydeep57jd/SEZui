@@ -4,7 +4,6 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PrintService} from "../../../services/print.service";
 import {API, CHARGE_CODE, CHARGE_TYPE} from "../../../lib";
 import {LOAD_CONTAINER_INVOICE_DATA} from "./load-container-invoice-data";
-import {BehaviorSubject} from "rxjs";
 
 export class LoadContainerInvoiceHelper {
   apiService = inject(ApiService);
@@ -24,7 +23,6 @@ export class LoadContainerInvoiceHelper {
   containerRequestList = signal<any[]>([]);
   allChargeTypes = signal<any[]>([]);
   portList = signal<any[]>([]);
-  fetchChargesParams$ = new BehaviorSubject<any>(null);
 
   getContainerList(requestNo: string) {
     this.apiService.get(this.apiUrls.CONTAINER_LIST, {RequestNo: requestNo}).subscribe({

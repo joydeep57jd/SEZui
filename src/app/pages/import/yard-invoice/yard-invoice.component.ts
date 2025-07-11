@@ -184,9 +184,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
         this.form.get("invoiceDate")?.setValue(application ? this.utilService.getNgbDateObject(application?.appraisementDate) : null);
         this.updateFetchChargesParams(this.form.getRawValue(), this.selectedContainerList());
         this.getContainerList(application.appraisementNo);
-        this.selectedContainerSet().clear();
-        this.insuredContainerSet().clear();
-        this.selectedContainerList.set([]);
+        this.resetDetails()
       })
   }
 
@@ -206,20 +204,24 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
           this.toasterService.showSuccess("Yard invoice saved successfully");
           this.table.reload();
           this.makeForm();
-          this.chargeDetails.set({})
-          this.transportChargeDetails.set({})
-          this.selectedContainerSet().clear();
-          this.insuredContainerSet().clear();
-          this.selectedContainerList.set([]);
+          this.resetDetails()
           this.getCustomAppraisementList()
-          this.containerList.set([])
-          this.totalCharges.set({});
           this.isSaving.set(false);
         }, error: () => {
           this.isSaving.set(false);
         }
       })
     }
+  }
+
+  resetDetails() {
+    this.chargeDetails.set({})
+    this.transportChargeDetails.set({})
+    this.selectedContainerSet().clear();
+    this.insuredContainerSet().clear();
+    this.selectedContainerList.set([]);
+    this.containerList.set([])
+    this.totalCharges.set({});
   }
 
   hasError(formControlName: string) {

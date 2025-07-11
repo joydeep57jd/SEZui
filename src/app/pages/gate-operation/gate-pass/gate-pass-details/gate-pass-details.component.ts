@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Input, OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UtilService} from "../../../../services";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
@@ -6,6 +15,7 @@ import {DATA_TABLE_HEADERS} from "../../../../lib";
 import {GATE_PASS_DATA} from "../gate-pass-data";
 import {TableComponent} from "../../../../components/table/table.component";
 import {AutoCompleteComponent} from "../../../../components/auto-complete/auto-complete.component";
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-gate-pass-details',
@@ -15,16 +25,20 @@ import {AutoCompleteComponent} from "../../../../components/auto-complete/auto-c
   styleUrls: ['./gate-pass-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GatePassDetailsComponent {
+export class GatePassDetailsComponent implements OnChanges, OnDestroy {
   utilService = inject(UtilService);
 
   @Input() records!: any[];
+  @Input() containerList!: any[];
   @Input() portList!: any[];
   @Input() isViewMode!: boolean;
 
   @Output() changeGatePassDetails = new EventEmitter<any[]>();
 
+  private readonly destroy$ = new Subject<void>();
+
   readonly cargoTypes = GATE_PASS_DATA.cargoTypes;
+  readonly sizes = GATE_PASS_DATA.sizes;
 
   form!: FormGroup;
   headers = DATA_TABLE_HEADERS.GATE_OPERATION.GATE_PASS.GATE_PASS_DETAILS
@@ -62,6 +76,24 @@ export class GatePassDetailsComponent {
       isReefer: new FormControl(0, []),
     });
     this.updateFormViewMode()
+    this.form.get("containerNo")?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(0),
+        distinctUntilChanged()
+      )
+      .subscribe((containerNo) => {
+        const container = this.containerList.find(c => c.containerNo === containerNo);
+        console.log(container)
+        const port = this.portList.find(p => p.portId === container?.portId);
+        this.form.get("size")?.setValue(container?.size ?? "");
+        this.form.get("noOfUnits")?.setValue(container?.noofPackages ?? "");
+        this.form.get("weight")?.setValue(container?.grossWeight ?? "");
+        this.form.get("portOfDispatch")?.setValue(port?.portName ?? "");
+        this.form.get("vehicleNo")?.setValue(container?.vehichleNo ?? "");
+        this.form.get("cargeType")?.setValue(container?.cargoType ?? "");
+        this.form.get("cargoDescription")?.setValue(container?.cargoDescription ?? "");
+      })
   }
 
   updateFormViewMode() {
@@ -140,5 +172,10 @@ export class GatePassDetailsComponent {
       }
       return header;
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
