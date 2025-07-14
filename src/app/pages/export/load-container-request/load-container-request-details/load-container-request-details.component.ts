@@ -184,7 +184,7 @@ export class LoadContainerRequestDetailsComponent implements OnChanges, OnDestro
   }
 
   makePayload() {
-    const value = this.form.value;
+    const value = this.form.getRawValue();
     return  {
       ...value,
       shippingBillDate: this.utilService.getDateObject(value.shippingBillDate),

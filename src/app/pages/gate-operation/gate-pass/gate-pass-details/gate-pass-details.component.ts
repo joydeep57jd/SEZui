@@ -56,6 +56,16 @@ export class GatePassDetailsComponent implements OnChanges, OnDestroy {
     if(changes['isViewMode']) {
       this.updateFormViewMode()
     }
+    if(changes['containerList']) {
+      this.form.get("containerNo")?.setValue("");
+      this.form.get("size")?.setValue("");
+      this.form.get("noOfUnits")?.setValue(null);
+      this.form.get("weight")?.setValue(null);
+      this.form.get("portOfDispatch")?.setValue("");
+      this.form.get("vehicleNo")?.setValue("");
+      this.form.get("cargeType")?.setValue("");
+      this.form.get("cargoDescription")?.setValue("");
+    }
   }
 
   makeForm() {
@@ -64,12 +74,12 @@ export class GatePassDetailsComponent implements OnChanges, OnDestroy {
       gatepassId: new FormControl(0, []),
       containerNo: new FormControl("", []),
       size: new FormControl("", []),
-      elwbTareWeight: new FormControl("", []),
-      elwbCargoWeight: new FormControl("", []),
+      elwbTareWeight: new FormControl(null, []),
+      elwbCargoWeight: new FormControl(null, []),
       cargoDescription: new FormControl("", []),
       cargeType: new FormControl("", []),
       vehicleNo: new FormControl("", []),
-      noOfUnits: new FormControl("", []),
+      noOfUnits: new FormControl(null, []),
       weight: new FormControl(null, []),
       location: new FormControl("", []),
       portOfDispatch: new FormControl("", []),
@@ -84,11 +94,10 @@ export class GatePassDetailsComponent implements OnChanges, OnDestroy {
       )
       .subscribe((containerNo) => {
         const container = this.containerList.find(c => c.containerNo === containerNo);
-        console.log(container)
         const port = this.portList.find(p => p.portId === container?.portId);
         this.form.get("size")?.setValue(container?.size ?? "");
-        this.form.get("noOfUnits")?.setValue(container?.noofPackages ?? "");
-        this.form.get("weight")?.setValue(container?.grossWeight ?? "");
+        this.form.get("noOfUnits")?.setValue(container?.noofPackages ?? null);
+        this.form.get("weight")?.setValue(container?.grossWeight ?? null);
         this.form.get("portOfDispatch")?.setValue(port?.portName ?? "");
         this.form.get("vehicleNo")?.setValue(container?.vehichleNo ?? "");
         this.form.get("cargeType")?.setValue(container?.cargoType ?? "");
@@ -152,6 +161,21 @@ export class GatePassDetailsComponent implements OnChanges, OnDestroy {
 
   makePayload() {
     const value = this.form.value;
+    if(!value.elwbTareWeight) {
+      value.elwbTareWeight = 0;
+    }
+    if(!value.elwbCargoWeight) {
+      value.elwbCargoWeight = 0;
+    }
+    if(!value.noOfUnits) {
+      value.noOfUnits = 0;
+    }
+    if(!value.weight) {
+      value.weight = 0;
+    }
+    if(!value.cargeType) {
+      value.cargeType = 0;
+    }
     return  {...value, doValidDate: this.utilService.getDateObject(value.doValidDate)};
   }
 

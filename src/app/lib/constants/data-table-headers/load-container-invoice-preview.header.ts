@@ -19,14 +19,9 @@ export const LoadContainerInvoicePreviewHeaders: IDataTableHeader[] = [
     label: 'Container / CBT No',
     type: 'string',
   },
-  // {
-  //   field: 'size',
-  //   label: 'Size',
-  //   type: 'string',
-  // },
-  // {
-  //   field: 'doValidateDate',
-  //   label: 'DO Date',
-  //   type: 'date',
-  // },
+  {
+    field: 'isInsured',
+    label: 'Insured',
+    type: 'boolean',
+  },
 ];

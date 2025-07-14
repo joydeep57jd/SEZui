@@ -43,12 +43,12 @@ export class RegisterOfOutwardSupplyComponent {
       const params = {
         fromDate: this.utilService.getDateObject(value.fromDate),
         toDate: this.utilService.getDateObject(value.toDate),
+        invoiceType: this.types.find(type => type.value === value.invoiceType)?.invoiceType ?? "",
       }
       this.isPrinting.set(true);
       this.apiService.get(value.invoiceType, params).subscribe({
         next: (response: any) => {
           this.isPrinting.set(false);
-          // window.open(response.data, '_blank');
           this.download(response.data)
         }, error: () => {
           this.isPrinting.set(false);

@@ -198,6 +198,11 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 0 5px;
+  gap: 14px;
+}
+
+.total-row span:first-child {
+  min-width: fit-content;
 }
 
 .total-row.main {

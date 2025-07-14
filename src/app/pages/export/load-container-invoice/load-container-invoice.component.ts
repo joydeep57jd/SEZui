@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, ElementRef, OnDestroy, signal, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {DATA_TABLE_HEADERS} from "../../../lib";
+import {ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, signal, ViewChild} from '@angular/core';
+import {CommonModule, DatePipe} from '@angular/common';
+import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {debounceTime, distinctUntilChanged, forkJoin, Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
@@ -10,16 +10,21 @@ import {AutoCompleteComponent} from "../../../components/auto-complete/auto-comp
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
 import {TableComponent} from "../../../components/table/table.component";
 import {SelectContainersComponent} from "./select-containers/select-containers.component";
+import {
+  LoadContainerInvoiceVoucherComponent
+} from "./load-container-invoice-voucher/load-container-invoice-voucher.component";
 
 @Component({
   selector: 'app-load-container-invoice',
   standalone: true,
-  imports: [CommonModule, AutoCompleteComponent, DataTableComponent, NgbInputDatepicker, ReactiveFormsModule, TableComponent],
+  imports: [CommonModule, AutoCompleteComponent, DataTableComponent, NgbInputDatepicker, ReactiveFormsModule, TableComponent, LoadContainerInvoiceVoucherComponent],
   templateUrl: './load-container-invoice.component.html',
   styleUrls: ['./load-container-invoice.component.scss'],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper implements OnDestroy {
+  datePipe = inject(DatePipe);
 
   readonly headers = DATA_TABLE_HEADERS.EXPORT.LOAD_CONTAINER_INVOICE.MAIN
   readonly yardInvoicePreviewHeaders = DATA_TABLE_HEADERS.EXPORT.LOAD_CONTAINER_INVOICE.LOAD_CONTAINER_INVOICE_PREVIEW
@@ -27,6 +32,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
 
   form!: FormGroup;
   selectedContainerSet = signal<Set<string>>(new Set());
+  insuredContainerSet = signal<Set<string>>(new Set());
   selectedContainerList = signal<any[]>([]);
   chargeDetails = signal<any>({});
   handlingChargeDetails = signal<any>({});
@@ -55,6 +61,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
 
   fetchCharges() {
     const body = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
+    const insuranceBody = this.getFetchInsuranceChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
     const invoiceDate = this.form.get("invoiceDate")?.value;
     if(!body) {
       this.chargeDetails.set({});
@@ -65,12 +72,20 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     }
     const application = this.containerRequestList().find(containerRequest => containerRequest.loadContReqId === this.form.value?.applicationId);
     const containerObList = body.containerList.split(",").map((containerNo: string) => `${containerNo}#${application?.loadContReqNo ?? ""}`).join(",");
-    forkJoin([
+    const apiCalls = [
       this.apiService.get(this.apiUrls.IMPORT_CHARGES, body),
       this.apiService.get(this.apiUrls.HANDLING_CHARGES, {...body, ContainerOBLList: containerObList}),
-      this.apiService.get(this.apiUrls.INSURANCE_CHARGE, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}),
-    ]).subscribe({
-      next: ([importCharges, handlingCharges, insuranceCharges]: any) => {
+    ]
+    if(insuranceBody) {
+      apiCalls.push(
+        this.apiService.get(this.apiUrls.INSURANCE_CHARGE, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}),
+      )
+    }
+    forkJoin(apiCalls).subscribe({
+      next: (responses: any) => {
+        const importCharges = responses[0];
+        const handlingCharges = responses[1];
+        const insuranceCharges = insuranceBody ? responses[2] : {data: [{}]};
         this.chargeDetails.set(importCharges.data[0])
         this.handlingChargeDetails.set(handlingCharges.data)
         this.insuranceChargeDetails.set(insuranceCharges.data[0])
@@ -81,7 +96,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
 
   makeForm() {
     this.form = new FormGroup({
-      godownInvId: new FormControl(0, []),
+      yardInvId: new FormControl(0, []),
       invoiceType: new FormControl(this.invoiceTypes[0].value, []),
       invoiceNo: new FormControl("", []),
       deliveryDate: new FormControl(null, []),
@@ -151,6 +166,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     this.handlingChargeDetails.set({})
     this.insuranceChargeDetails.set({})
     this.selectedContainerSet().clear();
+    this.insuredContainerSet().clear();
     this.selectedContainerList.set([]);
     this.containerList.set([])
     this.totalCharges.set({});
@@ -165,7 +181,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     const selectedContainerList: any[] = [];
     this.containerList().forEach((container: any) => {
       if(this.selectedContainerSet().has(container.containerNo)) {
-        selectedContainerList.push(container);
+        selectedContainerList.push({...container, isInsured: this.insuredContainerSet().has(container.containerNo)});
       }
     })
     this.selectedContainerList.set(selectedContainerList);
@@ -178,6 +194,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     const modalRef = this.modalService.open(SelectContainersComponent, {modalDialogClass: 'list-container-modal', backdrop : 'static', keyboard : false});
     modalRef.componentInstance.records.set(this.containerList());
     modalRef.componentInstance.selectedContainerSet.set(this.selectedContainerSet());
+    modalRef.componentInstance.insuredContainerSet.set(this.insuredContainerSet());
     modalRef.componentInstance.selectionChange.subscribe((container: any) => {
       const containerNo = container.containerNo;
       if(this.selectedContainerSet().has(containerNo)) {
@@ -187,15 +204,27 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
       }
       this.updateSelectedContainerList()
     })
+    modalRef.componentInstance.updateInsured.subscribe((container: any) => {
+      const containerOblNo = container.containerNo;
+      if(this.insuredContainerSet().has(containerOblNo)) {
+        this.insuredContainerSet().delete(containerOblNo);
+      } else {
+        this.insuredContainerSet().add(containerOblNo);
+      }
+      this.updateSelectedContainerList()
+    })
   }
 
   print(record: any) {
     if(this.printInProgress[record.yardInvId]) return;
     this.printInProgress[record.yardInvId] = true;
     this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
-    this.apiService.get(this.apiUrls.INVOICE_DETAILS, {InvoiceNo: record.invoiceNo}).subscribe({
-      next: (response: any) => {
-        this.pdfData.set(response.data);
+    forkJoin([
+      this.apiService.get(this.apiUrls.INVOICE_DETAILS, {InvoiceNo: record.invoiceNo}),
+      this.apiService.get(API.EXPORT.LOAD_CONTAINER_REQUEST.LIST, {id: record.applicationId}),
+    ]).subscribe({
+      next: (responses: any) => {
+        this.pdfData.set({...responses[0].data, header: record, loadContainerRequest: responses[1].data[0]});
         setTimeout(() => {
           this.printInProgress[record.yardInvId] = false;
           this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
@@ -216,6 +245,10 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
         header.callback = this.print.bind(this);
       }
     });
+  }
+
+  get timeStamp() {
+    return  this.datePipe.transform(new Date(), 'MMMM d, y hh:mm:ss a');
   }
 
   ngOnDestroy(): void {

@@ -124,6 +124,8 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
         this.form.get("gatePassNo")?.setValue(gatePassHeader?.gatePassNo)
         this.form.get("gatePassDate")?.setValue(this.utilService.getNgbDateObject(gatePassHeader?.gatePssDate))
         this.form.get("expectedTime")?.setValue(this.utilService.getNgbDateObject(gatePassHeader?.expDate))
+        this.form.get("chaName")?.patchValue(gatePassHeader.chaName)
+        this.form.get("shippingLine")?.patchValue(gatePassHeader.shippingLineName)
         this.getContainerList(gatePassId)
       })
       this.form.get("cbtNo")?.valueChanges
@@ -134,9 +136,7 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
       )
       .subscribe(cbtNo => {
         const container = this.containerList().find(c => c.containerNo === cbtNo)
-        this.form.get("size")?.patchValue(container.containerSize)
-        this.form.get("chaName")?.patchValue(container.chaName)
-        this.form.get("shippingLine")?.patchValue(container.shipplingLine)
+        this.form.get("size")?.patchValue(container.size)
         this.form.get("cargoDescription")?.patchValue(container.cargoDescription)
         console.log(this.form.getRawValue())
       })

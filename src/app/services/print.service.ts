@@ -28,13 +28,13 @@ export class PrintService {
       `);
       printWindow.document.close();
       document.body.removeChild(container);
-      printWindow.onload = () => {
+    printWindow.onload = () => {
         printWindow.focus();
         printWindow.print();
         printWindow.close()
       };
     } else {
-      // document.body.removeChild(container);
+      document.body.removeChild(container);
     }
   }
 }

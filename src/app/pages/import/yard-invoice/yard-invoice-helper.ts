@@ -220,7 +220,7 @@ export class YardInvoiceHelper {
       })
     }
 
-    return {
+    const payload = {
       ...value,
       isLoadContainerInvoice: false,
       moveToId: 0,
@@ -230,8 +230,26 @@ export class YardInvoiceHelper {
       directDestuffing: !isFactoryDestuffing,
       deliveryDate: this.utilService.getDateObject(value.deliveryDate),
       invoiceDate: this.utilService.getDateObject(value.invoiceDate),
-      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName,
+      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName ?? "",
       jsonData: JSON.stringify(jsonData)
+    };
+
+    return {
+      ...payload,
+      applicationId: value.applicationId ?? 0,
+      partyId: value.partyId ?? 0,
+      payeeId: value.payeeId ?? 0,
+      gstNo: value.gstNo ?? "",
+      paymentMode: "",
+      placeOfSupply: value.placeOfSupply ?? "",
+      sezId: value.sezId ?? 0,
+      otHours: value.otHours ?? "",
+      container: value.container ?? "",
+      createdBy: 0,
+      updatedBy: 0,
+      payeeName: value.payeeName ?? "",
+      examinationChargeType: value.examinationChargeType ?? 0,
+      remarks: value.remarks ?? "",
     };
   }
 }

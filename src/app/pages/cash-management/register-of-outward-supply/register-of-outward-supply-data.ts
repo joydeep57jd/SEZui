@@ -2,11 +2,11 @@ import {API} from "../../../lib";
 
 export const REGISTER_OF_OUTWARD_SUPPLY_DATA = {
   types: [
-    { value: API.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY.REPORT_INVOICE, label: "Invoice" },
+    { value: API.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY.REPORT_INVOICE, label: "Invoice", invoiceType: "Invoice" },
     // { value: "2", label: "Credit" },
     // { value: "3", label: "Debit" },
     // { value: "4", label: "Unpaid" },
-    { value: API.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY.REPORT_CANCEL, label: "Cancel Invoice" },
+    { value: API.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY.REPORT_CANCEL, label: "Cancel Invoice", invoiceType: "Cancel Invoice" },
   ],
 
   excelHeaders: [

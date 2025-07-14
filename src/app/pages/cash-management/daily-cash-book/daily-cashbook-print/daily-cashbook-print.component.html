@@ -1,0 +1,104 @@
+<div class="invoice-container">
+  <div *ngIf="data.length" class="header">
+    <img src="assets/images/CWC.png" width="80" />
+    <h2>{{ data[0].companyName }}</h2>
+    <h3>{{ data[0].stateName }}</h3>
+  </div>
+
+  <div class="report-metadata">
+    Daily Cash Book From {{ pdfMetaData.fromDate | date : "dd/MM/yyyy" }} To {{ pdfMetaData.toDate | date : "dd/MM/yyyy" }}
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Sr. No.</th>
+      <th>DATE</th>
+      <th>INVOICE NO.</th>
+      <th>INVOICE TYPE</th>
+      <th>PARTY NAME</th>
+      <th>PAYEE NAME</th>
+      <th>MODE OF PAYMENT</th>
+      <th>CHQ NO</th>
+      <th>ENT</th>
+      <th>EXM</th>
+      <th>TRP</th>
+      <th>INS</th>
+      <th>HAN</th>
+      <th>OT</th>
+      <th>MISC BILL</th>
+      <th>CGST</th>
+      <th>SGST</th>
+      <th>IGST</th>
+      <th>TOTAL</th>
+      <th>CASH TOTAL</th>
+      <th>CHQ</th>
+      <th>Others</th>
+      <th>TOTAL PDA</th>
+      <th>TDS CR.</th>
+      <th>TDS</th>
+      <th>REMARKS</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr *ngFor="let row of data; let index = index">
+      <td>{{ index + 1 }}</td>
+      <td>{{ row.invDate | date : "dd/MM/yyyy" }}</td>
+      <td>{{ row.invNo }}</td>
+      <td>{{ row.invType }}</td>
+      <td>{{ row.eximTraderName }}</td>
+      <td>{{ row.customerName }}</td>
+      <td>{{ row.paymentMode }}</td>
+      <td>{{ row.chqNo }}</td>
+      <td>{{ row.enT_Taxable ?? 0 }}</td>
+      <td>{{ row.exM_Taxable ?? 0 }}</td>
+      <td>{{ row.trP_Taxable ?? 0 }}</td>
+      <td>{{ row.inS_Taxable ?? 0 }}</td>
+      <td>{{ row.haN_Taxable ?? 0 }}</td>
+      <td>{{ row.otH_Taxable ?? 0 }}</td>
+      <td></td>
+      <td>{{ row.cgstAmt }}</td>
+      <td>{{ row.sgstAmt }}</td>
+      <td>{{ row.igstAmt }}</td>
+      <td>{{ row.total }}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{row.remarks}}</td>
+    </tr>
+    <tr class="total-row">
+      <td>{{ data.length + 1 }}</td>
+      <td>Total</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{ totalData().enT_Taxable }}</td>
+      <td>{{ totalData().exM_Taxable }}</td>
+      <td>{{ totalData().trP_Taxable }}</td>
+      <td>{{ totalData().inS_Taxable }}</td>
+      <td>{{ totalData().haN_Taxable }}</td>
+      <td>{{ totalData().otH_Taxable }}</td>
+      <td></td>
+      <td>{{ totalData().cgst }}</td>
+      <td>{{ totalData().sgst }}</td>
+      <td>{{ totalData().igst }}</td>
+      <td>{{ totalData().total }}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+

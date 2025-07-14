@@ -15,6 +15,8 @@ export class SelectContainersComponent {
 
   @Input() records = signal<any[]>([]);
   @Input() selectedContainerSet = signal<Set<string>>(new Set())
+  @Input() insuredContainerSet = signal<Set<string>>(new Set())
 
   @Output() selectionChange = new EventEmitter<any>();
+  @Output() updateInsured = new EventEmitter<any>();
 }

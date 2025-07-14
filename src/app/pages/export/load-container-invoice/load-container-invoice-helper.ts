@@ -76,6 +76,25 @@ export class LoadContainerInvoiceHelper {
     })
   }
 
+  getFetchInsuranceChargesPayload(partyId: number, selectedContainerList: any[]) {
+    if(!partyId || !selectedContainerList.length) {
+      return;
+    }
+    const containerList = selectedContainerList.reduce((acc: any, container: any, index: number) => {
+      if(!container.isInsured) {
+        if(acc.length > 0) {
+          acc += ",";
+        }
+        acc += container.containerNo;
+      }
+      return acc;
+    }, "")
+    if(!containerList) {
+      return;
+    }
+    return { containerList: containerList, partyId, typeOfCharge: CHARGE_TYPE.IMPORT }
+  }
+
   getFetchChargesPayload(partyId: number, selectedContainerList: any[]) {
     if(!partyId || !selectedContainerList.length) {
       return;
@@ -108,79 +127,102 @@ export class LoadContainerInvoiceHelper {
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
     const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grWt + acc, 0);
     const rate = +(totalWeight / totalPackages).toFixed(2);
-    return {
+    const jsonData = [
+      {
+        "ChargesTypeId": entChargeDetails?.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": entChargeDetails?.chargeCode,
+        "ChargeName": entChargeDetails?.chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": chargeDetails.totalEntryValue,
+        "Discount": 0,
+        "Taxable": chargeDetails.totalEntryValue,
+        "IGSTPer": chargeDetails.igsTper,
+        "IGSTAmt": chargeDetails.entryIGSTAmount,
+        "CGSTPer": chargeDetails.cgsTper,
+        "CGSTAmt": chargeDetails.entryCGSTAmount,
+        "SGSTPer": chargeDetails.sgsTper,
+        "SGSTAmt": chargeDetails.entrySGSTAmount,
+        "Total": chargeDetails.totalEntryAmt,
+        "SACCode": chargeDetails.entrySacCode,
+      },
+      {
+        "ChargesTypeId": hanChargeDetails?.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": hanChargeDetails?.chargeCode,
+        "ChargeName": hanChargeDetails?.chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": handlingChargeDetails.totalValue,
+        "Discount": 0,
+        "Taxable": handlingChargeDetails.totalValue,
+        "IGSTPer": handlingChargeDetails.igst,
+        "IGSTAmt": handlingChargeDetails.igstAmount,
+        "CGSTPer": handlingChargeDetails.cgst,
+        "CGSTAmt": handlingChargeDetails.cgstAmount,
+        "SGSTPer": handlingChargeDetails.sgst,
+        "SGSTAmt": handlingChargeDetails.sgstAmount,
+        "Total": handlingChargeDetails.totalAmt,
+        "SACCode": handlingChargeDetails.sacCode,
+      },
+    ]
+    if (Object.keys(insuranceCharges).length) {
+      jsonData.push({
+        "ChargesTypeId": insChargeDetails?.chargeId,
+        "OperationId": 0,
+        "Clause": "",
+        "ChargeType": insChargeDetails?.chargeCode,
+        "ChargeName": insChargeDetails?.chargeName,
+        "Quantity": totalPackages,
+        "Rate": rate,
+        "Amount": insuranceCharges.totalInsuranceValue,
+        "Discount": 0,
+        "Taxable": insuranceCharges.totalInsuranceValue,
+        "IGSTPer": insuranceCharges.igst,
+        "IGSTAmt": insuranceCharges.igstAmount,
+        "CGSTPer": insuranceCharges.cgst,
+        "CGSTAmt": insuranceCharges.cgstAmount,
+        "SGSTPer": insuranceCharges.sgst,
+        "SGSTAmt": insuranceCharges.sgstAmount,
+        "Total": insuranceCharges.totalAmt,
+        "SACCode": insuranceCharges.sacCode,
+      })
+    }
+
+    const payload = {
       ...value,
+      moveToId: 0,
       isLoadContainerInvoice: true,
       taxInvoice: !!isTaxInvoice,
       billOfSupply: !isTaxInvoice,
       deliveryDate: this.utilService.getDateObject(value.deliveryDate),
       invoiceDate: this.utilService.getDateObject(value.invoiceDate),
-      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName,
+      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName ?? "",
       paymentMode: "",
       otHours: "",
       container: "",
-      jsonData: JSON.stringify([
-        {
-          "ChargesTypeId": entChargeDetails?.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": entChargeDetails?.chargeCode,
-          "ChargeName": entChargeDetails?.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": chargeDetails.totalEntryValue,
-          "Discount": 0,
-          "Taxable": chargeDetails.totalEntryValue,
-          "IGSTPer": chargeDetails.igsTper,
-          "IGSTAmt": chargeDetails.entryIGSTAmount,
-          "CGSTPer": chargeDetails.cgsTper,
-          "CGSTAmt": chargeDetails.entryCGSTAmount,
-          "SGSTPer": chargeDetails.sgsTper,
-          "SGSTAmt": chargeDetails.entrySGSTAmount,
-          "Total": chargeDetails.totalEntryAmt,
-          "SACCode": chargeDetails.entrySacCode,
-        },
-        {
-          "ChargesTypeId": hanChargeDetails?.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": hanChargeDetails?.chargeCode,
-          "ChargeName": hanChargeDetails?.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": handlingChargeDetails.totalValue,
-          "Discount": 0,
-          "Taxable": handlingChargeDetails.totalValue,
-          "IGSTPer": handlingChargeDetails.igst,
-          "IGSTAmt": handlingChargeDetails.igstAmount,
-          "CGSTPer": handlingChargeDetails.cgst,
-          "CGSTAmt": handlingChargeDetails.cgstAmount,
-          "SGSTPer": handlingChargeDetails.sgst,
-          "SGSTAmt": handlingChargeDetails.sgstAmount,
-          "Total": handlingChargeDetails.totalAmt,
-          "SACCode": handlingChargeDetails.sacCode,
-        },
-        {
-          "ChargesTypeId": insChargeDetails?.chargeId,
-          "OperationId": 0,
-          "Clause": "",
-          "ChargeType": insChargeDetails?.chargeCode,
-          "ChargeName": insChargeDetails?.chargeName,
-          "Quantity": totalPackages,
-          "Rate": rate,
-          "Amount": insuranceCharges.totalInsuranceValue,
-          "Discount": 0,
-          "Taxable": insuranceCharges.totalInsuranceValue,
-          "IGSTPer": insuranceCharges.igst,
-          "IGSTAmt": insuranceCharges.igstAmount,
-          "CGSTPer": insuranceCharges.cgst,
-          "CGSTAmt": insuranceCharges.cgstAmount,
-          "SGSTPer": insuranceCharges.sgst,
-          "SGSTAmt": insuranceCharges.sgstAmount,
-          "Total": insuranceCharges.totalAmt,
-          "SACCode": insuranceCharges.sacCode,
-        }
-      ])
+      jsonData: JSON.stringify(jsonData)
+    };
+
+    return {
+      ...payload,
+      applicationId: value.applicationId ?? 0,
+      partyId: value.partyId ?? 0,
+      payeeId: value.payeeId ?? 0,
+      gstNo: value.gstNo ?? "",
+      paymentMode: "",
+      placeOfSupply: value.placeOfSupply ?? "",
+      sezId: value.sezId ?? 0,
+      otHours: value.otHours ?? "",
+      container: value.container ?? "",
+      createdBy: 0,
+      updatedBy: 0,
+      payeeName: value.payeeName ?? "",
+      examinationChargeType: value.examinationChargeType ?? 0,
+      remarks: value.remarks ?? "",
     };
   }
 }

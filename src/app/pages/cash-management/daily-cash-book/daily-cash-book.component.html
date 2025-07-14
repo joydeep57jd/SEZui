@@ -39,5 +39,13 @@
   <hr />
   <div class="d-flex justify-content-center gap-2">
     <button [disabled]="isPrinting()" type="button" class="btn btn-primary form-btn" (click)="submit()">Print</button>
+    <button [disabled]="isPrinting()" type="button" class="btn btn-primary form-btn" (click)="submit(true)">Download Excel</button>
   </div>
+</div>
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-daily-cashbook-print [data]="pdfData()" [pdfMetaData]="pdfMetaData()" />
+<!--  <div class="print-footer" id="custom-footer">-->
+<!--    <div>Printed By: {{ "printedBy" }}</div>-->
+<!--    <div id="timestamp">{{"timeStamp"}}</div>-->
+<!--  </div>-->
 </div>

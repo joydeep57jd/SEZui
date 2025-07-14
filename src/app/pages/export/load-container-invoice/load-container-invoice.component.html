@@ -223,3 +223,10 @@
     <app-data-table idKey="yardInvId"  [headers]="headers" [url]="apiUrls.LIST" [actionLoaders]="actionLoaders"></app-data-table>
   </div>
 </div>
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-load-container-invoice-voucher [data]="pdfData" />
+  <div class="print-footer" id="custom-footer">
+    <div>Printed By: {{ pdfData()?.printedBy }}</div>
+    <div id="timestamp">{{timeStamp}}</div>
+  </div>
+</div>

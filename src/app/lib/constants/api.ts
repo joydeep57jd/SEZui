@@ -83,7 +83,7 @@ export const API = {
     GATE_PASS: {
       LIST: "Sez/GetPassHeader",
       SAVE: "Sez/CreateGatePass",
-      GATE_PASS_DETAILS: "Sez/GetGatePassGateOut",
+      GATE_PASS_DETAILS: "Sez/GetPassDetails",
       OBL_DETAILS: "Sez/GetGatePassDetailsStructured"
     },
     GATE_EXIT: {
@@ -182,7 +182,7 @@ export const API = {
       INSURANCE_CHARGE: "Sez/GetExportInsuranceChargesCalc",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
       LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=true",
-      INVOICE_DETAILS: "Sez/GetGodownChargesInvoice",
+      INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
       CONTAINER_LIST: "Sez/GetContainerlistForLoadedContainerInvoice",
     }
   },

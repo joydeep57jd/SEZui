@@ -1,0 +1,32 @@
+export const DAILY_CASHBOOK_DATA = {
+  excelHeaders : [
+    {label: "Sl. No.", key: "", type: "sl"},
+    {label: "DATE", key: "invDate", type: "date"},
+    {label: "INVOICE NO", key: "invNo"},
+    {label: "INVOICE TYPE", key: "invType"},
+    {label: "PARTY NAME", key: "eximTraderName"},
+    {label: "PAYEE NAME", key: "customerName"},
+    {label: "MODE OF PAYMENT", key: "paymentMode"},
+    {label: "CHQ NO", key: "chqNo"},
+    {label: "ENT", key: "enT_Taxable"},
+    {label: "EXM", key: "exM_Taxable"},
+    {label: "TRP", key: "trP_Taxable"},
+    {label: "INS", key: "inS_Taxable"},
+    {label: "HAN", key: "haN_Taxable"},
+    {label: "OT", key: "otH_Taxable"},
+    {label: "MISC BILL", key: "NONE"},
+    {label: "CGST", key: "cgstAmt"},
+    {label: "SGST", key: "sgstAmt"},
+    {label: "IGST", key: "igstAmt"},
+    {label: "TOTAL", key: "total"},
+    {label: "CASH TOTAL", key: "NONE"},
+    {label: "CHQ", key: "NONE"},
+    {label: "OTHERS", key: "NONE"},
+    {label: "TOTAL PDA", key: "NONE"},
+    {label: "TDS CR", key: "NONE"},
+    {label: "TDS", key: "NONE"},
+    {label: "REMARKS", key: "remarks"},
+  ],
+
+  shellNames: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+};

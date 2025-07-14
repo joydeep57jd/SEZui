@@ -9,13 +9,13 @@ export const LoadContainerInvoiceHeaders: IDataTableHeader[] = [
     valueClass: 'text-center',
     class: 'text-center',
   },
-  // {
-  //   field: 'print',
-  //   label: 'Print',
-  //   type: 'icon',
-  //   icon: 'fa fa-print',
-  //   class: 'text-center',
-  // },
+  {
+    field: 'print',
+    label: 'Print',
+    type: 'icon',
+    icon: 'fa fa-print',
+    class: 'text-center',
+  },
   // {
   //   field: 'containerNo',
   //   label: 'Container No',
