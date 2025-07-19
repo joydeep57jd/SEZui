@@ -84,7 +84,8 @@ export const API = {
       LIST: "Sez/GetPassHeader",
       SAVE: "Sez/CreateGatePass",
       GATE_PASS_DETAILS: "Sez/GetPassDetails",
-      OBL_DETAILS: "Sez/GetGatePassDetailsStructured"
+      OBL_DETAILS: "Sez/GetGatePassDetailsStructured",
+      YARD_INVOICE_LIST: "Sez/GetInvoiceDetails?ForGatePass=true",
     },
     GATE_EXIT: {
       LIST: "Sez/GetExitThroughHeader",
@@ -106,19 +107,20 @@ export const API = {
       TRANSPORTATION_CHARGES: "Sez/GetImportTransportChargesCalc",
       INSURANCE_CHARGE: "Sez/GetImportInsuranceChargesCalc",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
-      LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=false",
+      LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=false&isCancelled=false",
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
       APPLICATION_LIST: "Sez/GetCustomAppraisementApplicationHeader"
     },
     GODOWN_INVOICE: {
       SAVE: "Sez/AddGodownInvoice",
-      OBL_CONTAINER_LIST: "Sez/GetOBLContainerList",
+      OBL_CONTAINER_LIST: "Sez/GetImpDeliveryApplicationDtl",
       IMPORT_CHARGES: "Sez/GetImportCharges",
       STORAGE_CHARGES: "Sez/GetImportStorageChargesCalc",
       INSURANCE_CHARGE: "Sez/GetImportInsuranceChargesCalc",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
-      LIST: "Sez/GetGodownInvoice",
-      INVOICE_DETAILS: "Sez/GetGodownChargesInvoice",
+      LIST: "Sez/GetGodownInvoice?isImport=true",
+      INVOICE_DETAILS: "Sez/GetGodownChargesReport",
+      APPLICATION_LIST: "Sez/GetImpDeliveryApplicationHdr",
     },
     CUSTOM_APPRAISEMENT: {
       LIST: "Sez/GetCustomAppraisementApplicationHeader",
@@ -132,13 +134,13 @@ export const API = {
       LIST: "Sez/GetDestuffingEntryHdr",
       SAVE: "Sez/AddEditDestuffingEntry",
       ENTRY_DETAILS: "Sez/GetDestuffingEntryDtl",
-      CONTAINER_LIST: "Sez/GetCbtContainerDetailsList",
+      CONTAINER_LIST: "Sez/GetContainerlistByGetEntry",
     },
     DELIVERY_APPLICATION: {
       LIST: "Sez/GetImpDeliveryApplicationHdr",
       SAVE: "Sez/AddEditDeliveryApplication",
       ENTRY_DETAILS: "Sez/GetImpDeliveryApplicationDtl",
-      OBL_LIST: "Sez/GetOBLContainerList",
+      OBL_LIST: "Sez/GetDestuffingEntryDtl",
       DESTUFFING_LIST: "Sez/GetDestuffingEntryHdr",
     }
   },
@@ -156,6 +158,12 @@ export const API = {
     },
     DAILY_CASH_BOOK: {
       REPORT: "Sez/GetDailyCashBookReport",
+    },
+    CANCEL_INVOICE: {
+      INVOICE_LIST: "Sez/GetYardInvoice?isCancelled=false",
+      INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
+      SAVE: "Sez/CancellInoive",
+      LIST: "Sez/GetCancellInoive"
     }
   },
   EXPORT: {
@@ -167,6 +175,8 @@ export const API = {
       LIST: "Sez/GetContainerStuffingHdr",
       SAVE: "Sez/AddEditContainerStuffing",
       CONTAINER_STUFFING_DETAILS: "Sez/GetContainerStuffingDtl",
+      CONTAINER_LIST: "Sez/GetGetInContainerList",
+      SHIPPING_BILL_LIST: "Sez/GetCCINEntryBySBNo",
     },
     LOAD_CONTAINER_REQUEST: {
       LIST: "Sez/GetLoadContainerHeader",
@@ -177,13 +187,24 @@ export const API = {
     },
     LOAD_CONTAINER_INVOICE: {
       SAVE: "Sez/AddEditYardInvoice",
-      IMPORT_CHARGES: "Sez/GetExportEntryFeeChargesResponse",
+      ENTRY_CHARGES: "Sez/GetExportEntryFeeChargesResponse",
       HANDLING_CHARGES: "Sez/GetHandlingChargesCalc",
       INSURANCE_CHARGE: "Sez/GetExportInsuranceChargesCalc",
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
-      LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=true",
+      LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=true&isCancelled=false",
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
       CONTAINER_LIST: "Sez/GetContainerlistForLoadedContainerInvoice",
-    }
+    },
+    GODOWN_INVOICE: {
+      SAVE: "Sez/AddGodownInvoice",
+      SHIPPING_CONTAINER_LIST: "Sez/GetContainerStuffingDtl",
+      ENTRY_CHARGES: "Sez/GetExportEntryFeeChargesResponse",
+      HANDLING_CHARGES: "Sez/GetExGodownHandlingChargesCalc",
+      INSURANCE_CHARGE: "Sez/GetExportInsuranceChargesCalc",
+      CHARGE_TYPE: "Sez/GetAllChargesTypes",
+      LIST: "Sez/GetGodownInvoice?isImport=false",
+      INVOICE_DETAILS: "Sez/GetGodownChargesReport",
+      APPLICATION_LIST: "Sez/GetContainerStuffingHdr",
+    },
   },
 };

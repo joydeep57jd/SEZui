@@ -2,7 +2,7 @@ import {ChangeDetectorRef, inject, signal} from "@angular/core";
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PrintService} from "../../../services/print.service";
-import {API, CHARGE_CODE, CHARGE_TYPE} from "../../../lib";
+import {API, CHARGE_CODE} from "../../../lib";
 import {LOAD_CONTAINER_INVOICE_DATA} from "./load-container-invoice-data";
 
 export class LoadContainerInvoiceHelper {
@@ -92,7 +92,7 @@ export class LoadContainerInvoiceHelper {
     if(!containerList) {
       return;
     }
-    return { containerList: containerList, partyId, typeOfCharge: CHARGE_TYPE.IMPORT }
+    return { containerList: containerList, partyId }
   }
 
   getFetchChargesPayload(partyId: number, selectedContainerList: any[]) {
@@ -106,7 +106,7 @@ export class LoadContainerInvoiceHelper {
       }
       return acc;
     }, "")
-    return { containerList: containerList, partyId, typeOfCharge: CHARGE_TYPE.IMPORT }
+    return { containerList: containerList, partyId }
   }
 
   getTotalCharges(importCharges: any, handlingCharges: any, insuranceCharges: any) {
@@ -200,7 +200,7 @@ export class LoadContainerInvoiceHelper {
       billOfSupply: !isTaxInvoice,
       deliveryDate: this.utilService.getDateObject(value.deliveryDate),
       invoiceDate: this.utilService.getDateObject(value.invoiceDate),
-      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName ?? "",
+      payeeName: partyList.find(party => party.partyId == value.partyId)?.partyName ?? "",
       paymentMode: "",
       otHours: "",
       container: "",
@@ -209,20 +209,20 @@ export class LoadContainerInvoiceHelper {
 
     return {
       ...payload,
-      applicationId: value.applicationId ?? 0,
-      partyId: value.partyId ?? 0,
-      payeeId: value.payeeId ?? 0,
-      gstNo: value.gstNo ?? "",
+      applicationId: payload.applicationId ?? 0,
+      partyId: payload.partyId ?? 0,
+      payeeId: payload.payeeId ?? 0,
+      gstNo: payload.gstNo ?? "",
       paymentMode: "",
-      placeOfSupply: value.placeOfSupply ?? "",
-      sezId: value.sezId ?? 0,
-      otHours: value.otHours ?? "",
-      container: value.container ?? "",
+      placeOfSupply: payload.placeOfSupply ?? "",
+      sezId: payload.sezId ?? 0,
+      otHours: payload.otHours ?? "",
+      container: payload.container ?? "",
       createdBy: 0,
       updatedBy: 0,
-      payeeName: value.payeeName ?? "",
-      examinationChargeType: value.examinationChargeType ?? 0,
-      remarks: value.remarks ?? "",
+      payeeName: payload.payeeName ?? "",
+      examinationChargeType: payload.examinationChargeType ?? 0,
+      remarks: payload.remarks ?? "",
     };
   }
 }

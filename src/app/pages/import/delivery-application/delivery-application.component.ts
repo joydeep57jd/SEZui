@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS, PARTY_TYPE} from "../../../lib";
@@ -8,6 +8,7 @@ import {
   DeliveryApplicationDetailsComponent
 } from "./delivery-application-details/delivery-application-details.component";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-delivery-application',
@@ -17,13 +18,15 @@ import {AutoCompleteComponent} from "../../../components/auto-complete/auto-comp
   styleUrls: ['./delivery-application.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DeliveryApplicationComponent {
+export class DeliveryApplicationComponent implements OnDestroy {
   apiService = inject(ApiService);
   utilService = inject(UtilService);
   toasterService = inject(ToastService);
 
   readonly headers = DATA_TABLE_HEADERS.IMPORT.DELIVERY_APPLICATION.MAIN
   readonly apiUrls = API.IMPORT.DELIVERY_APPLICATION;
+
+  private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
   isViewMode = signal(false);
@@ -39,7 +42,6 @@ export class DeliveryApplicationComponent {
   constructor() {
     this.getImporterLineList()
     this.getChaList()
-    this.getOblList()
     this.getDestuffingList()
     this.setHeaderCallbacks();
     this.makeForm();
@@ -61,8 +63,9 @@ export class DeliveryApplicationComponent {
     })
   }
 
-  getOblList() {
-    this.apiService.get(this.apiUrls.OBL_LIST).subscribe({
+  getOblList(id: number) {
+    this.oblList.set([])
+    this.apiService.get(this.apiUrls.OBL_LIST, {DestuffingEntryId: id}).subscribe({
       next: (response: any) => {
         this.oblList.set(response.data)
       }
@@ -78,7 +81,7 @@ export class DeliveryApplicationComponent {
   }
 
   getEntryDetails(stuffingId: number) {
-    this.apiService.get(this.apiUrls.ENTRY_DETAILS, {StuffingId: stuffingId}).subscribe({
+    this.apiService.get(this.apiUrls.ENTRY_DETAILS, {DeliveryId: stuffingId}).subscribe({
       next: (response: any) => {
         this.entryDetails.set(response.data);
       }
@@ -88,10 +91,19 @@ export class DeliveryApplicationComponent {
   makeForm() {
     this.form = new FormGroup({
       deliveryId: new FormControl(0, []),
-      deliveryNo: new FormControl("", []),
+      deliveryNo: new FormControl({value: "", disabled: true}, []),
       destuffingId: new FormControl(null, []),
-      chaId: new FormControl(null, []),
+      chaId: new FormControl({value: null, disabled: true}, []),
     })
+    this.form.get("destuffingId")?.valueChanges.pipe(
+      takeUntil(this.destroy$),
+      debounceTime(0),
+      distinctUntilChanged()
+    ).subscribe(destuffingId => {
+      const destuffing = this.destuffingList().find(destuffing => destuffing.destuffingEntryId === destuffingId)
+      this.form.get("chaId")?.setValue(destuffing?.chaId)
+      this.getOblList(destuffingId)
+    });
   }
 
   edit(record: any) {
@@ -107,7 +119,7 @@ export class DeliveryApplicationComponent {
     this.form.patchValue(record);
     this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
-    this.getEntryDetails(record.stuffingReqId)
+    this.getEntryDetails(record.deliveryId)
   }
 
   setEditMode(){
@@ -142,7 +154,7 @@ export class DeliveryApplicationComponent {
   }
 
   makePayload() {
-    const value = {...this.form.value};
+    const value = {...this.form.getRawValue()};
     return  {
       impDeliveryApplicationHdr: {
         ...value,
@@ -174,5 +186,10 @@ export class DeliveryApplicationComponent {
 
   changeEntryDetails(records: any[]) {
     this.entryDetails.set(records);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

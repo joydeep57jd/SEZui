@@ -32,7 +32,7 @@ export class GatePassPrintComponent implements OnChanges {
   }
 
   get containerDetails() {
-    return this.pdfData?.details && `${this.pdfData?.details[0]?.containerNo}-${this.pdfData?.details[0]?.containerSize}`;
+    return this.pdfData?.details && `${this.pdfData?.details[0]?.containerNo}-${this.pdfData?.details[0]?.size}`;
   }
 
   get customerSealNo() {

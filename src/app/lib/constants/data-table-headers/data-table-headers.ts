@@ -40,6 +40,9 @@ import {GodownInvoiceHeaders} from "./godown-invoice.header";
 import {GodownInvoicePreviewHeaders} from "./godown-invoice-preview.header";
 import {LoadContainerInvoiceHeaders} from "./load-container-invoice.header";
 import {LoadContainerInvoicePreviewHeaders} from "./load-container-invoice-preview.header";
+import {CancelledInvoiceHeaders} from "./cancelled-invoice.header";
+import {ExportGodownInvoiceHeaders} from "./export-godown-invoice.header";
+import {ExportGodownInvoicePreviewHeaders} from "./export-godown-invoice-preview.header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -102,6 +105,7 @@ export const DATA_TABLE_HEADERS = {
   CASH_MANAGEMENT: {
     PAYMENT_RECEIPT_INVOICE: PaymentReceiptInvoiceHeaders,
     PAYMENT_RECEIPT: PaymentReceiptHeaders,
+    CANCEL_INVOICE: CancelledInvoiceHeaders,
   },
   EXPORT: {
     CCIN_ENTRY: CcinEntryHeaders,
@@ -116,6 +120,10 @@ export const DATA_TABLE_HEADERS = {
     LOAD_CONTAINER_INVOICE: {
       MAIN: LoadContainerInvoiceHeaders,
       LOAD_CONTAINER_INVOICE_PREVIEW: LoadContainerInvoicePreviewHeaders,
+    },
+    GODOWN_INVOICE: {
+      MAIN: ExportGodownInvoiceHeaders,
+      GODOWN_INVOICE_PREVIEW: ExportGodownInvoicePreviewHeaders,
     }
   },
 }

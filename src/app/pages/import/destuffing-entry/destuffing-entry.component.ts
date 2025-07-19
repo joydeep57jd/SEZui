@@ -99,8 +99,8 @@ export class DestuffingEntryComponent {
       destuffingEntryId: new FormControl(0, []),
       containerNo: new FormControl(null, []),
       startDate: new FormControl(null, []),
-      destuffingEntryNo: new FormControl("", []),
-      destuffingEntryDate: new FormControl(null, []),
+      destuffingEntryNo: new FormControl({value: "", disabled: true}, []),
+      destuffingEntryDate: new FormControl({value: this.utilService.getNgbDateObject(new Date()), disabled: true}, []),
       shippingLineId: new FormControl(null, []),
       chaId: new FormControl(null, []),
       rotation: new FormControl("", []),
@@ -119,6 +119,12 @@ export class DestuffingEntryComponent {
   patchForm(record: any, isViewMode: boolean) {
     record.startDate = this.utilService.getNgbDateObject(record.startDate);
     record.destuffingEntryDate = this.utilService.getNgbDateObject(record.destuffingEntryDate);
+    if(!this.containerList().some(container => container.containerNo === record.containerNo)) {
+      this.containerList.update(list => [...list, {containerNo: record.containerNo}])
+      setTimeout(() => {
+        this.form.get("containerNo")?.patchValue(record.containerNo);
+      }, 10)
+    }
     this.form.reset();
     this.form.patchValue(record);
     this.isViewMode.set(isViewMode);
@@ -158,11 +164,12 @@ export class DestuffingEntryComponent {
   }
 
   makePayload() {
+    const value = {...this.form.getRawValue()};
     return  {
       destuffingEntryHdr: {
-      ...this.form.value,
-      startDate: this.utilService.getDateObject(this.form.value.startDate),
-      destuffingEntryDate: this.utilService.getDateObject(this.form.value.destuffingEntryDate),
+      ...value,
+      startDate: this.utilService.getDateObject(value.startDate),
+      destuffingEntryDate: this.utilService.getDateObject(value.destuffingEntryDate),
       },
       destuffingEntryDtl: this.entryDetails(),
     };

@@ -24,24 +24,19 @@ export const DeliveryApplicationDetailsHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
-    label: 'Container No',
-    field: 'containerNo',
-    type: 'string',
-  },
-  {
-    label: 'Size',
-    field: 'size',
-    type: 'string',
-  },
-  {
-    label: 'ICD Code',
-    field: 'icd',
-    type: 'string',
-  },
-  {
     label: 'OBL/HBL-Line No',
     field: 'obl',
     type: 'string',
+  },
+  {
+    label: 'BOE No',
+    field: 'boE_NO',
+    type: 'string',
+  },
+  {
+    label: 'BOE Date',
+    field: 'boE_DATE',
+    type: 'date',
   },
   {
     label: 'Weight(Kg)',

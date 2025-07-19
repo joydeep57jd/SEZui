@@ -100,7 +100,6 @@ export class LoadContainerRequestDetailsComponent implements OnChanges, OnDestro
       .subscribe(shippingBillNo => {
         const ccinEntry = this.shippingBillList.find((ccin: any) => ccin.sbNo === shippingBillNo);
         if (ccinEntry) {
-          console.log(ccinEntry)
           this.form.get("shippingBillDate")?.setValue(this.utilService.getNgbDateObject(ccinEntry.sbDate));
           this.form.get("commodityId")?.patchValue(ccinEntry.commodityId);
           this.form.get("sez")?.setValue(!!ccinEntry.sez);

@@ -15,7 +15,15 @@ import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 export class EximTraderComponent {
   readonly url = API.MASTER.EXIM_TRADER.LIST;
   readonly headers = DATA_TABLE_HEADERS.MASTER.EXIM_TRADER
-  readonly operationTypes = ["Importer", "Exporter", "Shipping Line", "CHA", "Forwarder", "Rent", "Bidder"]
+  readonly operationTypes = [
+    {label: "Importer", formControlName: "isImporter"},
+    {label: "Exporter", formControlName: "isExporter"},
+    {label: "Shipping Line", formControlName: "isShipline"},
+    {label: "CHA", formControlName: "isCHA"},
+    {label: "Forwarder", formControlName: "isForWarder"},
+    {label: "Rent", formControlName: "isRent"},
+    {label: "Bidder", formControlName: "isBidder"},
+  ]
 
   form!: FormGroup;
 
@@ -32,6 +40,13 @@ export class EximTraderComponent {
 
   makeForm() {
     this.form = new FormGroup({
+      isBidder: new FormControl(false, []),
+      isCHA: new FormControl(false, []),
+      isExporter: new FormControl(false, []),
+      isForWarder: new FormControl(false, []),
+      isImporter: new FormControl(false, []),
+      isRent: new FormControl(false, []),
+      isShipline: new FormControl(false, []),
       operationType: new FormControl("", []),
       eximTraderName: new FormControl("", []),
       partyCode: new FormControl("", []),

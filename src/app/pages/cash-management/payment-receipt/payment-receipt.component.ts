@@ -107,7 +107,7 @@ export class PaymentReceiptComponent implements OnDestroy{
       cashReceiptId: new FormControl(0, []),
       branchId: new FormControl(0, []),
       receiptNo: new FormControl("", []),
-      receiptDate: new FormControl(null, []),
+      receiptDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       partyId: new FormControl(null, []),
       tdsAmount: new FormControl(null, []),
       invoiceValue: new FormControl(null, []),
@@ -272,7 +272,6 @@ export class PaymentReceiptComponent implements OnDestroy{
       }
       return acc;
     }, 0)
-    console.log(roundedTotal, this.invoiceList(), this.selectedInvoiceIds())
     this.form.get("invoiceValue")?.setValue(roundedTotal)
     this.updateTotalPayableAmount()
   }

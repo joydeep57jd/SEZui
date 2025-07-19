@@ -4,10 +4,10 @@
     <div class="d-flex column-gap-2 column-gap-md-5 flex-wrap">
       <div *ngFor="let operationType of operationTypes" class="form-group">
         <div class="checkbox-container">
-          <input id="isTaxExempted" [checked]="isChecked(operationType)" disabled hidden type="checkbox">
+          <input id="isTaxExempted" [formControlName]="operationType.formControlName" [disabled]="true" hidden type="checkbox">
           <label for="isTaxExempted">
             <i class="square"></i>
-            <span>{{ operationType }}</span>
+            <span>{{ operationType.label }}</span>
           </label>
         </div>
       </div>

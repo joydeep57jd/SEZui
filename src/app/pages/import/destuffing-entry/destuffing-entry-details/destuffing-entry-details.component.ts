@@ -131,7 +131,7 @@ export class DestuffingEntryDetailsComponent {
   }
 
   makePayload() {
-    const value = this.form.value;
+    const value = this.form.getRawValue();
     const location = this.godownList.find(godown=>godown.godownId == value.locationId)?.locationAlias ?? ""
     return  {
       ...value,

@@ -11,7 +11,7 @@
         <div class="col-md-4 col-lg-3 col-sm-6">
           <div class="form-group">
             <label>Delivery Application No:</label>
-            <input formControlName="deliveryNo" placeholder="Enter Delivery Application No" type="text">
+            <input formControlName="deliveryNo" readonly placeholder="Enter Delivery Application No" type="text">
             <ng-container *ngIf="hasError('deliveryNo')">
               <span class="error">Required field</span>
             </ng-container>

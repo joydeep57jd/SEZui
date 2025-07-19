@@ -3,7 +3,7 @@
     <div class="row">
 
       <div class="col-md-4 col-lg-3 col-sm-6">
-        <app-auto-complete keyName="containerCBTNo" keyValue="containerCBTNo" label="Container / CBT No:" placeholder="Select Container / CBT No" title="List of Container / CBT No" formControlName="containerNo" [options]="containerList()" />
+        <app-auto-complete keyName="containerNo" keyValue="containerNo" label="Container / CBT No:" placeholder="Select Container / CBT No" title="List of Container / CBT No" formControlName="containerNo" [canAdd]="true" [options]="containerList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
@@ -24,7 +24,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Destuffing No:</label>
-          <input formControlName="destuffingEntryNo" placeholder="Enter Destuffing No" type="text">
+          <input formControlName="destuffingEntryNo" readonly placeholder="Enter Destuffing No" type="text">
           <ng-container *ngIf="hasError('destuffingEntryNo')">
             <span class="error">Required field</span>
           </ng-container>

@@ -174,7 +174,7 @@ export class GateInComponent implements OnDestroy {
   }
 
   makePayload() {
-    const value = {...this.form.value};
+    const value = {...this.form.getRawValue()};
     const [hour, minute] = value.gateinTime.split(":");
     value.gateinDate = this.utilService.getDateObject(value.gateinDate, hour, minute);
     return value;

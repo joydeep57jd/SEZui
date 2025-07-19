@@ -1,4 +1,3 @@
-
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PrintService} from "../../../services/print.service";
@@ -7,7 +6,6 @@ import {API, CHARGE_CODE, CHARGE_TYPE} from "../../../lib";
 import {GODOWN_INVOICE_DATA} from "./godown-invoice-data";
 
 export class GodownInvoiceHelper {
-
   apiService = inject(ApiService);
   utilService = inject(UtilService)
   toasterService = inject(ToastService);
@@ -20,11 +18,20 @@ export class GodownInvoiceHelper {
 
   eximTraderMap = signal<Map<number, any>>(new Map());
   partyList = signal<any[]>([]);
+  applicationList = signal<any[]>([])
   oblList = signal<any[]>([]);
   allChargeTypes = signal<any[]>([]);
 
-  getOblList() {
-    this.apiService.get(this.apiUrls.OBL_CONTAINER_LIST).subscribe({
+  getCustomAppraisementList () {
+    this.apiService.get(this.apiUrls.APPLICATION_LIST, {isInvoiceCheck: true}).subscribe({
+      next: (response: any) => {
+        this.applicationList.set(response.data)
+      }
+    })
+  }
+
+  getOblList(deliveryId: number) {
+    this.apiService.get(this.apiUrls.OBL_CONTAINER_LIST, {DeliveryId: deliveryId}).subscribe({
       next: (response: any) => {
         this.oblList.set(response.data)
       }
@@ -59,6 +66,25 @@ export class GodownInvoiceHelper {
     })
   }
 
+  getFetchInsuranceChargesPayload(partyId: number, selectedContainerList: any[]) {
+    if(!partyId || !selectedContainerList.length) {
+      return;
+    }
+    const containerList = selectedContainerList.reduce((acc: any, container: any) => {
+      if(!container.isInsured) {
+        if(acc.length > 0) {
+          acc += ",";
+        }
+        acc += this.getContainerOblNo(container);
+      }
+      return acc;
+    }, "")
+    if(!containerList) {
+      return;
+    }
+    return { containerList: containerList, partyId, typeOfCharge: CHARGE_TYPE.IMPORT }
+  }
+
   getFetchChargesPayload(partyId: number, selectedContainerList: any[]) {
     if(!partyId || !selectedContainerList.length) {
       return;
@@ -84,27 +110,29 @@ export class GodownInvoiceHelper {
   }
 
   getContainerOblNo(container: any) {
-    return `${container.containerCBTNo}#${container.obL_HBL_No}`;
+    return `${container.containerNo}#${container.obl}`;
   }
 
   makePayload(value: any, chargeDetails: any, storageChargeDetails: any,insuranceChargeDetails: any, selectedContainerList: any[], partyList: any[]) {
-    const isTaxInvoice = value.invoiceType;
+    const isTaxInvoice = value.invoiceType == 1;
     const isFactoryDestuffing = value.destuffingType;
     const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
     const stoChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.STORAGE);
     const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
-    const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
-    const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grWt + acc, 0);
+    const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackages + acc, 0);
+    const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grossWt + acc, 0);
     const rate = +(totalWeight / totalPackages).toFixed(2);
     return {
       ...value,
-      taxInvoice: isTaxInvoice,
-      billOfSupply: !isTaxInvoice,
+      isTaxInvoice: isTaxInvoice,
+      isBillOfSupply: !isTaxInvoice,
       factoryDestuffing: isFactoryDestuffing,
       directDestuffing: !isFactoryDestuffing,
       deliveryDate: this.utilService.getDateObject(value.deliveryDate),
       invoiceDate: this.utilService.getDateObject(value.invoiceDate),
-      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName,
+      payeeName: partyList.find(party => party.partyId === value.payeeId)?.partyName,
+      partyName: partyList.find(party => party.partyId === value.partyId)?.partyName,
+      isImport: true,
       jsonData: JSON.stringify([
         {
           "ChargesTypeId": entChargeDetails?.chargeId,

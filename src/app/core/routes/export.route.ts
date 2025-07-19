@@ -22,4 +22,9 @@ export const EXPORT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.LoadContainerInvoiceComponent),
     data: { title: "Payment Sheet / Invoice"}
   },
+  {
+    path: PATHS.EXPORT.GODOWN_INVOICE,
+    loadComponent: () => import('../..').then((c) => c.ExportGodownInvoiceComponent),
+    data: { title: "Payment Sheet / Invoice"}
+  },
 ];

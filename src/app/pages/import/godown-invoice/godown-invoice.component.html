@@ -41,11 +41,7 @@
 
       <div class="col-md-6 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Application No:</label>
-          <input formControlName="applicationNo" placeholder="Enter Application No" type="number">
-          <ng-container *ngIf="hasError('applicationNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="deliveryNo" keyValue="deliveryNo" label="Application No:" title="List of Custom Application No" placeholder="Select Application No" formControlName="applicationNo" [options]="applicationList()" />
         </div>
       </div>
 
@@ -107,7 +103,7 @@
       </div>
 
       <div class="mt-2 d-flex flex-column gap-2">
-        <app-table [headers]="yardInvoicePreviewHeaders" [records]="selectedOblList()"></app-table>
+        <app-table [headers]="godownInvoicePreviewHeaders" [records]="selectedOblList()"></app-table>
       </div>
 
       <div class="form-group">
@@ -216,6 +212,13 @@
   </form>
 
   <div class="mt-2 d-flex flex-column gap-2">
-    <app-data-table idKey="yardInvId"  [headers]="headers" [url]="apiUrls.LIST" [actionLoaders]="actionLoaders"></app-data-table>
+    <app-data-table idKey="godownInvId"  [headers]="headers" [url]="apiUrls.LIST" [actionLoaders]="actionLoaders"></app-data-table>
+  </div>
+</div>
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-godown-invoice-voucher [data]="pdfData" />
+  <div class="print-footer" id="custom-footer">
+    <div>Printed By: {{ pdfData()?.printedBy }}</div>
+    <div id="timestamp">{{timeStamp}}</div>
   </div>
 </div>

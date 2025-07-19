@@ -18,7 +18,7 @@
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Stuffing No:</label>
-          <input formControlName="stuffingNo" placeholder="Enter Stuffing No" type="text">
+          <input formControlName="stuffingNo" readonly placeholder="Enter Stuffing No" type="text">
           <ng-container *ngIf="hasError('stuffingNo')">
             <span class="error">Required field</span>
           </ng-container>
@@ -42,11 +42,12 @@
 
       <div class="ol-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Container/CBT No:</label>
-          <input formControlName="containerNo" placeholder="Enter Container/CBT No" type="text">
-          <ng-container *ngIf="hasError('containerNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="containerNo" keyValue="containerNo" label="Container / CBT No:" placeholder="Select Container / CBT No" title="List of Container / CBT No" formControlName="containerNo" [options]="containerList()" />
+          <!--          <label>Container/CBT No:</label>-->
+<!--          <input formControlName="containerNo" placeholder="Enter Container/CBT No" type="text">-->
+<!--          <ng-container *ngIf="hasError('containerNo')">-->
+<!--            <span class="error">Required field</span>-->
+<!--          </ng-container>-->
         </div>
       </div>
 
@@ -106,7 +107,7 @@
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
-        <app-auto-complete keyName="portName" keyValue="portId" label="POD:" placeholder="Select POD" title="List of POD" formControlName="contPOLId" [options]="portList()" />
+        <app-auto-complete keyName="portName" keyValue="portId" label="POL:" placeholder="Select POL" title="List of POL" formControlName="contPOLId" [options]="portList()" />
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
@@ -200,7 +201,8 @@
         </div>
       </div>
 
-      <app-container-stuffing-details [records]="entryDetails()" [chaList]="chaList()" [exporterList]="exporterList()" [headerFormValue]="form.value"
+      <app-container-stuffing-details [records]="entryDetails()" [chaList]="chaList()" [exporterList]="exporterList()"
+                                      [shippingBillList]="shippingBillList()" [headerFormValue]="form.value"
                                       [isViewMode]="isViewMode()" (changeEntryDetails)="changeEntryDetails($event)" />
 
     </div>

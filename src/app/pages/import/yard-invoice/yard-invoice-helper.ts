@@ -22,6 +22,7 @@ export class YardInvoiceHelper {
   fetchChargesParams$ = new BehaviorSubject<any>(null);
 
   getCustomAppraisementList () {
+    this.applicationList.set([])
     this.apiService.get(this.apiUrls.APPLICATION_LIST, {isInvoiceCheck: true}).subscribe({
       next: (response: any) => {
         this.applicationList.set(response.data)
@@ -230,26 +231,26 @@ export class YardInvoiceHelper {
       directDestuffing: !isFactoryDestuffing,
       deliveryDate: this.utilService.getDateObject(value.deliveryDate),
       invoiceDate: this.utilService.getDateObject(value.invoiceDate),
-      payeeName: partyList.find(party => party.partyId === value.partyId)?.partyName ?? "",
+      payeeName: partyList.find(party => party.partyId == value.payeeId)?.partyName ?? "",
       jsonData: JSON.stringify(jsonData)
     };
 
     return {
       ...payload,
-      applicationId: value.applicationId ?? 0,
-      partyId: value.partyId ?? 0,
-      payeeId: value.payeeId ?? 0,
-      gstNo: value.gstNo ?? "",
+      applicationId: payload.applicationId ?? 0,
+      partyId: payload.partyId ?? 0,
+      payeeId: payload.payeeId ?? 0,
+      gstNo: payload.gstNo ?? "",
       paymentMode: "",
-      placeOfSupply: value.placeOfSupply ?? "",
-      sezId: value.sezId ?? 0,
-      otHours: value.otHours ?? "",
-      container: value.container ?? "",
+      placeOfSupply: payload.placeOfSupply ?? "",
+      sezId: payload.sezId ?? 0,
+      otHours: payload.otHours ?? "",
+      container: payload.container ?? "",
       createdBy: 0,
       updatedBy: 0,
-      payeeName: value.payeeName ?? "",
-      examinationChargeType: value.examinationChargeType ?? 0,
-      remarks: value.remarks ?? "",
+      payeeName: payload.payeeName ?? "",
+      examinationChargeType: payload.examinationChargeType ?? 0,
+      remarks: payload.remarks ?? "",
     };
   }
 }

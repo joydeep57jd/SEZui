@@ -1,0 +1,224 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-12">
+        <div class="form-group">
+          <div>
+            <label *ngFor="let invoiceType of invoiceTypes" class="radio-container">
+              {{invoiceType.label}}
+              <input type="radio" formControlName="invoiceType" [value]="invoiceType.value">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Invoice No:</label>
+          <input formControlName="invoiceNo" placeholder="Enter Invoice No" type="text">
+          <ng-container *ngIf="hasError('invoiceNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Delivery Date:</label>
+          <div class="position-relative">
+            <input formControlName="deliveryDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
+                   #deliveryDatePicker="ngbDatepicker"
+                   (click)="deliveryDatePicker.open()" (dateSelect)="deliveryDatePicker.close()"/>
+            <span (click)="deliveryDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('deliveryDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <app-auto-complete keyName="stuffingReqNo" keyValue="stuffingReqNo" label="Stuffing Request No:" title="List of Stuffing Request No" placeholder="Select Stuffing Request No" formControlName="applicationNo" [options]="applicationList()" />
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Date:</label>
+          <div class="position-relative">
+            <input formControlName="invoiceDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
+                   #invoiceDatePicker="ngbDatepicker"
+                   (click)="invoiceDatePicker.open()" (dateSelect)="invoiceDatePicker.close()"/>
+            <span (click)="invoiceDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('invoiceDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Party Name:" title="List of Party" placeholder="Select Party Name" formControlName="partyId" [options]="partyList()" />
+      </div>
+
+      <div class="col-sm-6">
+        <app-auto-complete keyName="partyName" keyValue="partyId" label="Payee Name:" title="List of Payee" placeholder="Select Payee Name" formControlName="payeeId" [options]="partyList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>GST No:</label>
+          <input formControlName="gstNo" readonly placeholder="Enter GST No" type="text">
+          <ng-container *ngIf="hasError('gstNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>OT Hours:</label>
+          <input formControlName="otHours" placeholder="Enter OT Hours" type="text">
+          <ng-container *ngIf="hasError('otHours')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Payment Mode:</label>
+          <input formControlName="paymentMode" placeholder="Enter Payment Mode" type="text">
+          <ng-container *ngIf="hasError('paymentMode')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6 mt-4 d-flex align-items-center">
+        <button type="button" class="btn btn-primary" (click)="openSelectContainersModal()">Shipping Bill Details</button>
+      </div>
+
+      <div class="mt-2 d-flex flex-column gap-2">
+        <app-table [headers]="godownInvoicePreviewHeaders" [records]="selectedShippingBillList()"></app-table>
+      </div>
+
+      <div class="form-group">
+        <div class="secondary-form-container px-2 pb-0">
+          <div class="primary-heading-container">
+            <p>CWC Charges</p>
+          </div>
+          <div class="p-2 pb-0 calculation-table">
+            <table class="table table-bordered">
+              <thead>
+              <tr class="border-0">
+                <th class="text-left" rowspan="2">Charges</th>
+                <th rowspan="2">Value</th>
+                <th colspan="2" class="text-center">IGST</th>
+                <th colspan="2" class="text-center">CGST</th>
+                <th colspan="2" class="text-center">SGST</th>
+                <th rowspan="2">Total</th>
+              </tr>
+              <tr class="border-0">
+                <th>%</th>
+                <th>Amt</th>
+                <th>%</th>
+                <th>Amt</th>
+                <th>%</th>
+                <th>Amt</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="text-left">ENT. Entry Charges</td>
+                <td>{{ utilService.formatCurrency(entryChargeDetails().totalEntryValue) }}</td>
+                <td>{{ (entryChargeDetails().igsTper) }}</td>
+                <td>{{ utilService.formatCurrency(entryChargeDetails().entryIGSTAmount) }}</td>
+                <td>{{ (entryChargeDetails().cgsTper) }}</td>
+                <td>{{ utilService.formatCurrency(entryChargeDetails().entryCGSTAmount) }}</td>
+                <td>{{ (entryChargeDetails().sgsTper) }}</td>
+                <td>{{ utilService.formatCurrency(entryChargeDetails().entrySGSTAmount) }}</td>
+                <td>{{ utilService.formatCurrency(entryChargeDetails().totalEntryAmt) }}</td>
+              </tr>
+              <tr>
+                <td class="text-left">HAN. Storage</td>
+                <td>{{ utilService.formatCurrency(handlingChargeDetails().totalValue) }}</td>
+                <td>{{ (handlingChargeDetails().igst) }}</td>
+                <td>{{ utilService.formatCurrency(handlingChargeDetails().igstAmount) }}</td>
+                <td>{{ (handlingChargeDetails().cgst) }}</td>
+                <td>{{ utilService.formatCurrency(handlingChargeDetails().cgstAmount) }}</td>
+                <td>{{ (handlingChargeDetails().sgst) }}</td>
+                <td>{{ utilService.formatCurrency(handlingChargeDetails().sgstAmount) }}</td>
+                <td>{{ utilService.formatCurrency(handlingChargeDetails().totalAmt) }}</td>
+              </tr>
+              <tr>
+                <td class="text-left">INS. Insurance</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalInsuranceValue) }}</td>
+                <td>{{ (insuranceChargeDetails().igst) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().igstAmount) }}</td>
+                <td>{{ (insuranceChargeDetails().cgst) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().cgstAmount) }}</td>
+                <td>{{ (insuranceChargeDetails().sgst) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().sgstAmount) }}</td>
+                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalAmt) }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="secondary-form-container px-2 pb-0">
+          <div class="primary-heading-container">
+            <p>Total Charges</p>
+          </div>
+          <div class="p-2 pb-0">
+            <table class="table table-bordered calculation-table">
+              <tfoot>
+              <tr class="border-0">
+                <th colspan="8">Total Value:</th>
+                <th>{{ utilService.formatCurrency(totalCharges().total) }}</th>
+              </tr>
+              <tr class="border-0">
+                <th colspan="8">Round Up:</th>
+                <th>{{ utilService.formatCurrency(totalCharges().added) }}</th>
+              </tr>
+              <tr class="border-0">
+                <th colspan="8">Total Invoice Amount:</th>
+                <th>{{ utilService.formatCurrency(totalCharges().totalInvoice) }}</th>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Remarks:</label>
+          <textarea formControlName="remarks" placeholder="Enter Remarks" rows="4"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table idKey="godownInvId"  [headers]="headers" [url]="apiUrls.LIST" [actionLoaders]="actionLoaders"></app-data-table>
+  </div>
+</div>
+<div #invoiceSection id="hidden-invoice" style="display: none;">
+  <app-export-godown-invoice-voucher [data]="pdfData" />
+  <div class="print-footer" id="custom-footer">
+    <div>Printed By: {{ pdfData()?.printedBy }}</div>
+    <div id="timestamp">{{timeStamp}}</div>
+  </div>
+</div>

@@ -109,7 +109,7 @@ export class GateExitDetailsComponent implements OnChanges {
   }
 
   makePayload() {
-    return  {...this.form.value};
+    return  {...this.form.getRawValue()};
   }
 
   hasError(formControlName: string) {

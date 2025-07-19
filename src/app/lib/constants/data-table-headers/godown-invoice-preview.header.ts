@@ -10,27 +10,22 @@ export const GodownInvoicePreviewHeaders: IDataTableHeader[] = [
     class: 'text-center',
   },
   {
-    field: 'containerCBTNo',
+    field: 'containerNo',
     label: 'Container / CBT No',
     type: 'string',
   },
   {
-    field: 'obL_HBL_No',
+    field: 'obl',
     label: 'OBL/HBL No',
     type: 'string',
   },
   {
-    field: 'cargoType',
-    label: 'Cargo Type',
-    type: 'string',
-  },
-  {
-    field: 'noOfPackage',
+    field: 'noOfPackages',
     label: 'No Of Packet',
     type: 'number',
   },
   {
-    field: 'grWt',
+    field: 'grossWt',
     label: 'Gross Weight',
     type: 'number',
   },

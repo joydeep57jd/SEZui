@@ -15,7 +15,9 @@ export class SelectOblsComponent {
 
   @Input() records = signal<any[]>([]);
   @Input() selectedOblSet = signal<Set<string>>(new Set())
+  @Input() insuredOblSet = signal<Set<string>>(new Set())
   @Input() getContainerOblNo!: (record: any) => string;
 
   @Output() selectionChange = new EventEmitter<any>();
+  @Output() updateInsured = new EventEmitter<any>();
 }

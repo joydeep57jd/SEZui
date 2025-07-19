@@ -160,7 +160,7 @@ export class GatePassDetailsComponent implements OnChanges, OnDestroy {
   }
 
   makePayload() {
-    const value = this.form.value;
+    const value = this.form.getRawValue();
     if(!value.elwbTareWeight) {
       value.elwbTareWeight = 0;
     }

@@ -68,7 +68,8 @@ export class GatePassComponent implements OnDestroy {
   }
 
   getInvoiceList() {
-    this.apiService.get(API.IMPORT.YARD_INVOICE.LIST).subscribe({
+    this.invoiceList.set([])
+    this.apiService.get(this.apiUrls.YARD_INVOICE_LIST).subscribe({
       next: (response: any) => {
         this.invoiceList.set(response.data)
       }
@@ -121,7 +122,6 @@ export class GatePassComponent implements OnDestroy {
   getOblDetails(invoiceNo: string) {
     this.apiService.get(this.apiUrls.OBL_DETAILS, {invoiceNo}).subscribe({
       next: (response: any) => {
-        console.log(response)
         this.form.get("shippingLineName")?.setValue(response.data.shippingLine ?? null);
         this.form.get("impExpName")?.setValue(response.data.importerExporterName ?? null);
         this.form.get("remarks")?.setValue(response.data.remarks ?? null);
@@ -153,10 +153,11 @@ export class GatePassComponent implements OnDestroy {
       )
       .subscribe((invoiceId) => {
         this.containerList.set([])
-        const invoice = this.invoiceList().find(invoice => invoice.yardInvId === invoiceId);
+        const invoice = this.invoiceList().find(invoice => invoice.invoiceId === invoiceId);
+        console.log(invoice)
         const cha = this.chaList().find(cha => cha.partyId === invoice?.partyId);
         this.form.get("chaName")?.setValue(cha?.partyName ?? null);
-        this.form.get("expDate")?.setValue(invoice ? this.utilService.getNgbDateObject(invoice?.deliveryDate) : null);
+        this.form.get("expDate")?.setValue(invoice ? this.utilService.getNgbDateObject(invoice?.invoiceDate) : null);
         this.getOblDetails(invoice?.invoiceNo ?? "");
       })
   }
@@ -174,6 +175,7 @@ export class GatePassComponent implements OnDestroy {
     record.expDate = this.utilService.getNgbDateObject(record.expDate);
     record.arrivalDate = this.utilService.getNgbDateObject(record.arrivalDate);
     record.departureDate = this.utilService.getNgbDateObject(record.departureDate);
+
     this.form.reset();
     this.form.patchValue(record);
     this.isViewMode.set(isViewMode);
@@ -204,6 +206,7 @@ export class GatePassComponent implements OnDestroy {
           this.table.reload();
           this.gatePassDetails.set([])
           this.makeForm();
+          this.getInvoiceList()
           this.isSaving.set(false);
         }, error: () => {
           this.isSaving.set(false);
@@ -213,7 +216,7 @@ export class GatePassComponent implements OnDestroy {
   }
 
   makePayload() {
-    const value = {...this.form.value};
+    const value = {...this.form.getRawValue()};
     value.gatePssDate = this.utilService.getDateObject(value.gatePssDate);
     value.expDate = this.utilService.getDateObject(value.expDate);
     value.arrivalDate = this.utilService.getDateObject(value.arrivalDate);
@@ -263,9 +266,6 @@ export class GatePassComponent implements OnDestroy {
       }
       if(header.field === "print") {
         header.callback = this.print.bind(this);
-      }
-      if(header.field === "invoiceNo") {
-        header.valueGetter = (record: any) => this.invoiceList().find(invoice => invoice.yardInvId === record.invoiceId)?.invoiceNo;
       }
     });
   }

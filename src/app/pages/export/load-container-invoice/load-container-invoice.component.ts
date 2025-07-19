@@ -73,7 +73,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     const application = this.containerRequestList().find(containerRequest => containerRequest.loadContReqId === this.form.value?.applicationId);
     const containerObList = body.containerList.split(",").map((containerNo: string) => `${containerNo}#${application?.loadContReqNo ?? ""}`).join(",");
     const apiCalls = [
-      this.apiService.get(this.apiUrls.IMPORT_CHARGES, body),
+      this.apiService.get(this.apiUrls.ENTRY_CHARGES, body),
       this.apiService.get(this.apiUrls.HANDLING_CHARGES, {...body, ContainerOBLList: containerObList}),
     ]
     if(insuranceBody) {
@@ -83,13 +83,13 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     }
     forkJoin(apiCalls).subscribe({
       next: (responses: any) => {
-        const importCharges = responses[0];
+        const entryCharges = responses[0];
         const handlingCharges = responses[1];
         const insuranceCharges = insuranceBody ? responses[2] : {data: [{}]};
-        this.chargeDetails.set(importCharges.data[0])
+        this.chargeDetails.set(entryCharges.data[0])
         this.handlingChargeDetails.set(handlingCharges.data)
         this.insuranceChargeDetails.set(insuranceCharges.data[0])
-        this.totalCharges.set(this.getTotalCharges(importCharges.data[0], handlingCharges.data, insuranceCharges.data[0]))
+        this.totalCharges.set(this.getTotalCharges(entryCharges.data[0], handlingCharges.data, insuranceCharges.data[0]))
       }
     })
   }

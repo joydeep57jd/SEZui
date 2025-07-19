@@ -4,11 +4,13 @@
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <label>Shipping Bill No:</label>
-          <input formControlName="shippingBillNo" placeholder="Enter Shipping Bill No" type="text">
-          <ng-container *ngIf="hasError('shippingBillNo')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <app-auto-complete keyName="sbNo" keyValue="sbNo" label="Shipping Bill No:" placeholder="Select Shipping Bill No" title="List of Shipping Bill No" formControlName="shippingBillNo" [options]="shippingBillList" />
+
+          <!--          <label>Shipping Bill No:</label>-->
+<!--          <input formControlName="shippingBillNo" placeholder="Enter Shipping Bill No" type="text">-->
+<!--          <ng-container *ngIf="hasError('shippingBillNo')">-->
+<!--            <span class="error">Required field</span>-->
+<!--          </ng-container>-->
         </div>
       </div>
 

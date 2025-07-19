@@ -14,11 +14,11 @@ input,
 select,
 textarea,
 {
-  font-size: 0.58rem;
+  font-size: 0.58rem !important;
   color: #1c1c1c;
   border: 1px solid $disabled-color;
   border-radius: 4px;
-  padding: 6px 8px;
+  padding: 6px 8px !important;
   width: 100%;
   &:hover,
   &:focus {
@@ -29,16 +29,22 @@ textarea,
 
 input[disabled] ~ .input_icon {
   cursor: default;
+  display: none;
 }
 .input_icon {
   position: absolute;
   right: 7px;
   top: 0;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   height: 100%;
   display: flex;
   align-items: center;
+  .fa-calendar:before {
+    background-image: url('../images/calendar.png');
+    background-size: cover;
+    color: transparent;
+  }
 }
 
 input[disabled],

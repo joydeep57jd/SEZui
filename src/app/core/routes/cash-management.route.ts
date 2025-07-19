@@ -8,6 +8,11 @@ export const CASH_MANAGEMENT_ROUTES: Route[] = [
     data: {title: "Payment Receipt"}
   },
   {
+    path: PATHS.CASH_MANAGEMENT.CANCEL_INVOICE,
+    loadComponent: () => import('../..').then((c) => c.CancelInvoiceComponent),
+    data: {title: "Cancel Invoice"}
+  },
+  {
     path: PATHS.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY,
     loadComponent: () => import('../..').then((c) => c.RegisterOfOutwardSupplyComponent),
     data: {title: "Register of Outward Supply"}

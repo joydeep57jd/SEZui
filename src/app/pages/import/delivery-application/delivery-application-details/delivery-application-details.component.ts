@@ -4,7 +4,7 @@ import {
   EventEmitter,
   inject,
   Input,
-  OnChanges,
+  OnChanges, OnDestroy,
   Output, signal,
   SimpleChanges
 } from '@angular/core';
@@ -15,6 +15,7 @@ import {DATA_TABLE_HEADERS} from "../../../../lib";
 import {AutoCompleteComponent} from "../../../../components/auto-complete/auto-complete.component";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
 import {TableComponent} from "../../../../components/table/table.component";
+import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-delivery-application-details',
@@ -24,7 +25,7 @@ import {TableComponent} from "../../../../components/table/table.component";
   styleUrls: ['./delivery-application-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DeliveryApplicationDetailsComponent implements OnChanges {
+export class DeliveryApplicationDetailsComponent implements OnChanges, OnDestroy {
   utilService = inject(UtilService);
 
   @Input() records!: any[];
@@ -33,6 +34,8 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
   @Input() isViewMode!: boolean;
 
   @Output() changeEntryDetails = new EventEmitter<any[]>();
+
+  private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
   headers = DATA_TABLE_HEADERS.IMPORT.DELIVERY_APPLICATION.DETAILS
@@ -69,16 +72,16 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
       deliveryId: new FormControl(0, []),
       destuffingEntryDtlId: new FormControl(0, []),
       obl: new FormControl(null, []),
-      boE_NO: new FormControl("", []),
-      boE_DATE: new FormControl(null, []),
-      cargoDescription: new FormControl("", []),
+      boE_NO: new FormControl({value: "", disabled: true}, []),
+      boE_DATE: new FormControl({value: null, disabled: true}, []),
+      cargoDescription: new FormControl({value: "", disabled: true}, []),
       importerId: new FormControl(null, []),
-      noOfPackages: new FormControl(null, []),
-      grossWt: new FormControl("", []),
+      noOfPackages: new FormControl({value: null, disabled: true}, []),
+      grossWt: new FormControl({value: "", disabled: true}, []),
       sqm: new FormControl(null, []),
       cum: new FormControl(null, []),
-      cif: new FormControl(null, []),
-      duty: new FormControl(null, []),
+      cif: new FormControl({value: null, disabled: true}, []),
+      duty: new FormControl({value: null, disabled: true}, []),
       delNoOfPackages: new FormControl(null, []),
       delGrossWt: new FormControl("", []),
       delSQM: new FormControl(null, []),
@@ -86,7 +89,33 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
       delCIF: new FormControl(null, []),
       delDuty: new FormControl(null, []),
     });
+    this.form.get("obl")?.valueChanges.pipe(
+      takeUntil(this.destroy$),
+      debounceTime(0),
+      distinctUntilChanged()
+    ).subscribe(oblNo => {
+      const obl = this.oblList.find(o => o.oblHblNo === oblNo)
+      this.form.get("destuffingEntryDtlId")?.patchValue(obl?.destuffingEntryDtlId)
+      this.form.get("boE_NO")?.patchValue(obl?.boeNo)
+      this.form.get("boE_DATE")?.patchValue(this.utilService.getNgbDateObject(obl?.boeDate))
+      this.form.get("cargoDescription")?.patchValue(obl?.cargoDescription)
+      this.form.get("noOfPackages")?.patchValue(obl?.noOfPackages)
+      this.form.get("grossWt")?.patchValue(obl?.grossWeight)
+      this.form.get("cif")?.patchValue(obl?.cifValue)
+      this.form.get("duty")?.patchValue(obl?.grossDuty)
+    });
+    this.setDisableField()
     this.updateFormViewMode()
+  }
+
+  setDisableField() {
+    this.form.get("boE_NO")?.disable()
+    this.form.get("boE_DATE")?.disable()
+    this.form.get("cargoDescription")?.disable()
+    this.form.get("noOfPackages")?.disable()
+    this.form.get("grossWt")?.disable()
+    this.form.get("cif")?.disable()
+    this.form.get("duty")?.disable()
   }
 
   updateFormViewMode() {
@@ -96,6 +125,9 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
       this.form.enable()
     }
     this.setHeaderCallbacks()
+    setTimeout(() => {
+      this.setDisableField()
+    })
   }
 
   edit(record: any, index?: number) {
@@ -113,6 +145,7 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
     this.form.reset();
     this.form.patchValue(record);
     isViewMode ? this.form.disable() : this.form.enable();
+    this.setDisableField()
   }
 
   reset() {
@@ -144,7 +177,7 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
   }
 
   makePayload() {
-    const value = this.form.value;
+    const value = this.form.getRawValue();
     return  {
       ...value,
       boE_DATE: this.utilService.getDateObject(value.boE_DATE),
@@ -183,5 +216,10 @@ export class DeliveryApplicationDetailsComponent implements OnChanges {
       }
       return header;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

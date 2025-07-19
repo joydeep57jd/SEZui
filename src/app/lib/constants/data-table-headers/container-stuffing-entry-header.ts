@@ -24,13 +24,13 @@ export const ContainerStuffingEntryHeaders: IDataTableHeader[] = [
     icon: 'fa fa-eye',
     class: 'text-center',
   },
-  {
-    field: 'print',
-    label: 'Print',
-    type: 'icon',
-    icon: 'fa fa-print',
-    class: 'text-center',
-  },
+  // {
+  //   field: 'print',
+  //   label: 'Print',
+  //   type: 'icon',
+  //   icon: 'fa fa-print',
+  //   class: 'text-center',
+  // },
   {
     label: 'Stuffing No',
     field: 'stuffingNo',

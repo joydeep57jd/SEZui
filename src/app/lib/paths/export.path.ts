@@ -3,4 +3,5 @@ export const EXPORT_PATHS = {
   CONTAINER_STUFFING: "container-stuffing",
   LOAD_CONTAINER_REQUEST: "load-container-request",
   LOAD_CONTAINER_INVOICE: "load-container-invoice",
+  GODOWN_INVOICE: "export-godown-invoice",
 };

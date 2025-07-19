@@ -66,7 +66,8 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
   }
 
   getGatePassList() {
-    this.apiService.get(API.GATE_OPERATION.GATE_PASS.LIST).subscribe({
+    this.gatePassList.set([])
+    this.apiService.get(API.GATE_OPERATION.GATE_PASS.LIST, {ForGateExit: true}).subscribe({
       next: (response: any) => {
         this.gatePassList.set(response.data)
       }
@@ -84,12 +85,22 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
   getContainerList(gatePassId: number) {
     this.apiService.get(API.GATE_OPERATION.GATE_PASS.GATE_PASS_DETAILS, {gatepassId: gatePassId}).subscribe({
       next: (response: any) => {
-        this.containerList.set(response.data)
+        const containerNo = this.form.get("cbtNo")?.value
+        if(response.data.some((data: any) => data.containerNo === containerNo)) {
+          this.containerList.set(response.data)
+          this.form.get("cbtNo")?.patchValue(null)
+          setTimeout(() => {
+            this.form.get("cbtNo")?.patchValue(containerNo)
+          }, 10)
+        }
       }
     })
   }
 
   resetContainerDetails() {
+    if(this.form.get("exitIdHeaderId")?.value) {
+      return
+    }
     this.containerList.set([])
     this.form.get("size")?.setValue("");
     this.form.get("shippingLine")?.setValue(null);
@@ -124,9 +135,11 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
         this.form.get("gatePassNo")?.setValue(gatePassHeader?.gatePassNo)
         this.form.get("gatePassDate")?.setValue(this.utilService.getNgbDateObject(gatePassHeader?.gatePssDate))
         this.form.get("expectedTime")?.setValue(this.utilService.getNgbDateObject(gatePassHeader?.expDate))
-        this.form.get("chaName")?.patchValue(gatePassHeader.chaName)
-        this.form.get("shippingLine")?.patchValue(gatePassHeader.shippingLineName)
-        this.getContainerList(gatePassId)
+        this.form.get("chaName")?.patchValue(gatePassHeader?.chaName)
+        this.form.get("shippingLine")?.patchValue(gatePassHeader?.shippingLineName)
+        if(gatePassId) {
+          this.getContainerList(gatePassId)
+        }
       })
       this.form.get("cbtNo")?.valueChanges
       .pipe(
@@ -136,10 +149,10 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
       )
       .subscribe(cbtNo => {
         const container = this.containerList().find(c => c.containerNo === cbtNo)
-        this.form.get("size")?.patchValue(container.size)
-        this.form.get("cargoDescription")?.patchValue(container.cargoDescription)
-        console.log(this.form.getRawValue())
+        this.form.get("size")?.patchValue(container?.size ?? "")
+        this.form.get("cargoDescription")?.patchValue(container?.cargoDescription ?? "")
       })
+    this.disabledFields()
   }
 
   edit(record: any) {
@@ -154,11 +167,33 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
     const dateTime = this.utilService.getNgbDateObject(record.gateExitDateTime);
     record.gateExitDate = {day: dateTime?.day, month: dateTime?.month, year: dateTime?.year};
     record.gateExitTime = `${dateTime?.hour.toString().padStart(2, "0")}:${dateTime?.minute.toString().padStart(2, "0")}`
+    const isGatePassExist = this.gatePassList().some(data => data.gatePassId == record.gatePassId)
+    if(!isGatePassExist) {
+      this.apiService.get(API.GATE_OPERATION.GATE_PASS.LIST, {id: record.gatePassId}).subscribe({
+        next: (response: any) => {
+          if(response.data[0]) {
+            this.form.get("gatePassId")?.patchValue(null)
+            this.gatePassList.update(list=> [...list, response.data[0]]);
+            setTimeout(() => {
+              this.form.get("gatePassId")?.patchValue(record.gatePassId)
+            }, 10)
+          }
+        }
+      })
+    }
     this.form.reset();
     this.form.patchValue(record);
     this.isViewMode.set(isViewMode);
     isViewMode ? this.form.disable() : this.form.enable();
     this.getGateExitDetails(record);
+    this.disabledFields()
+  }
+
+  disabledFields() {
+    this.form.get("size")?.disable()
+    this.form.get("shippingLine")?.disable()
+    this.form.get("chaName")?.disable()
+    this.form.get("cargoDescription")?.disable()
   }
 
   setEditMode(){
@@ -182,6 +217,7 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
         next:() => {
           this.toasterService.showSuccess("Gate exit saved successfully");
           this.table.reload();
+          this.gatePassList();
           this.gateExitDetails.set([])
           this.makeForm();
           this.isSaving.set(false);
@@ -245,6 +281,5 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-    console.log("destroyed")
   }
 }

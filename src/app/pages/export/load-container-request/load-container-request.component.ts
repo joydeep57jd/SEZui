@@ -193,7 +193,7 @@ export class LoadContainerRequestComponent {
   }
 
   makePayload() {
-    const value = {...this.form.value};
+    const value = {...this.form.getRawValue()};
     return  {
       loadContainerHeader: {
         ...value,

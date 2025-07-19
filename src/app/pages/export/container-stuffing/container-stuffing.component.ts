@@ -38,7 +38,9 @@ export class ContainerStuffingComponent {
   isSaving = signal(false);
   exporterList = signal<any[]>([])
   chaList = signal<any[]>([])
+  containerList = signal<any[]>([])
   shippingList = signal<any[]>([])
+  shippingBillList = signal<any[]>([])
   godownList = signal<any[]>([])
   portList = signal<any[]>([])
   entryDetails = signal<any[]>([])
@@ -52,7 +54,25 @@ export class ContainerStuffingComponent {
     this.getGodownList()
     this.getShippingList()
     this.setHeaderCallbacks();
+    this.getContainerList()
+    this.getShippingBillList()
     this.makeForm();
+  }
+
+  getContainerList() {
+    this.apiService.get(this.apiUrls.CONTAINER_LIST).subscribe({
+      next: (response: any) => {
+        this.containerList.set(response.data)
+      }
+    })
+  }
+
+  getShippingBillList() {
+    this.apiService.get(this.apiUrls.SHIPPING_BILL_LIST).subscribe({
+      next: (response: any) => {
+        this.shippingBillList.set(response.data)
+      }
+    })
   }
 
   getPortList() {
@@ -108,7 +128,7 @@ export class ContainerStuffingComponent {
       stuffingReqId: new FormControl(0, []),
       transportMode: new FormControl(this.transportModes[0].value, []),
       stuffingNo: new FormControl("", []),
-      stuffingDate: new FormControl(null, []),
+      stuffingDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       containerNo: new FormControl("", []),
       icdCode: new FormControl("", []),
       containerSize: new FormControl("", []),
@@ -181,7 +201,7 @@ export class ContainerStuffingComponent {
   }
 
   makePayload() {
-    const value = {...this.form.value};
+    const value = {...this.form.getRawValue()};
     const isTrain = value.transportMode == this.transportModes[0].value;
     const isFcl = value.fclLcl == this.fclLclList[0].value;
     const pod = this.portList().find(port => port.portId === value.podId)?.portName ?? "";
