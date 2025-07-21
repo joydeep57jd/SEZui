@@ -56,7 +56,7 @@ export class GodownInvoiceComponent extends GodownInvoiceHelper implements OnDes
     super()
     this.setHeaderCallbacks()
     this.getChargeTypeList()
-    this.getCustomAppraisementList()
+    this.getDeliveryApplicationList()
     this.getEximTraderList();
     this.getPartyList();
     this.makeForm();
@@ -153,6 +153,7 @@ export class GodownInvoiceComponent extends GodownInvoiceHelper implements OnDes
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Godown invoice saved successfully");
+          this.getDeliveryApplicationList()
           this.table.reload();
           this.makeForm();
           this.resetDetails()

@@ -243,7 +243,7 @@ export class YardInvoiceHelper {
       gstNo: payload.gstNo ?? "",
       paymentMode: "",
       placeOfSupply: payload.placeOfSupply ?? "",
-      sezId: payload.sezId ?? 0,
+      sezId: payload.sezId || 0,
       otHours: payload.otHours ?? "",
       container: payload.container ?? "",
       createdBy: 0,

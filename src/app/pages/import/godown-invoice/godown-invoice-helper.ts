@@ -22,7 +22,7 @@ export class GodownInvoiceHelper {
   oblList = signal<any[]>([]);
   allChargeTypes = signal<any[]>([]);
 
-  getCustomAppraisementList () {
+  getDeliveryApplicationList () {
     this.apiService.get(this.apiUrls.APPLICATION_LIST, {isInvoiceCheck: true}).subscribe({
       next: (response: any) => {
         this.applicationList.set(response.data)

@@ -82,7 +82,7 @@ export class PaymentReceiptComponent implements OnDestroy{
     const payeeName = this.payeeList().find((payee: any) => payee.partyId == partyId)?.partyName;
     this.apiService.get(this.apiUrls.INVOICE_LIST, {PayeeName: payeeName}).subscribe({
       next: (response: any) => {
-        const group = response.data.reduce((acc: any, group: any) => {
+        const group = response.data.yardInvoice.reduce((acc: any, group: any) => {
           if(!acc[group.yardInvId]) {
             acc[group.yardInvId] = []
           }
@@ -90,12 +90,26 @@ export class PaymentReceiptComponent implements OnDestroy{
           return acc;
         }, {})
 
+        const group1 = response.data.godownInvoice.reduce((acc: any, group: any) => {
+          if(!acc[group.godownInvId]) {
+            acc[group.godownInvId] = []
+          }
+          acc[group.godownInvId].push({...group, yardInvId: group.godownInvId})
+          return acc;
+        }, {})
+
         const invoiceList: any[] = []
         Object.keys(group).forEach(key => {
-          const total = +group[key].reduce((acc: any, invoice: any) => acc + invoice.total, 0).toFixed(2)
+          const total = +group[key].reduce((acc: any, invoice: any) => acc + invoice.totalAmount, 0).toFixed(2)
           const roundedTotal = Math.ceil(total)
           const added = +(roundedTotal  -  total).toFixed(2)
           invoiceList.push({...group[key][0], roundedTotal, added, total})
+        })
+        Object.keys(group1).forEach(key => {
+          const total = +group1[key].reduce((acc: any, invoice: any) => acc + invoice.totalAmount, 0).toFixed(2)
+          const roundedTotal = Math.ceil(total)
+          const added = +(roundedTotal  -  total).toFixed(2)
+          invoiceList.push({...group1[key][0], roundedTotal, added, total})
         })
         this.invoiceList.set(invoiceList)
       }
@@ -232,7 +246,7 @@ export class PaymentReceiptComponent implements OnDestroy{
           acc.push({
               "cashRcptInvDtlsId": 0,
               "cashReceiptId": 0,
-              "partyId": record.payeeId,
+              "partyId": this.form.get("partyId")?.value ?? 0,
               "invoiceId": record.yardInvId,
               "invoiceNo": record.invoiceNo,
               "invoiceDate": record.invoiceDate,

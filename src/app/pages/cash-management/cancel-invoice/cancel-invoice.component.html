@@ -1,10 +1,78 @@
 <div class="card">
-  <form [formGroup]="form">
+
+  <ng-template #editModeForm>
+    <form [formGroup]="form">
+      <div class="row">
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <app-auto-complete keyName="invoiceNo" keyValue="yardInvId" label="Invoice No:" title="List of Invoice No" placeholder="Select Invoice No" formControlName="invId" [options]="invoiceList()" />
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Invoice Date:</label>
+            <div class="position-relative">
+              <input formControlName="invoiceDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
+                     #invoiceDatePicker="ngbDatepicker"
+                     (click)="invoiceDatePicker.open()"  (dateSelect)="invoiceDatePicker.close()" />
+              <span (click)="invoiceDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+            </div>
+            <ng-container *ngIf="hasError('invoiceDate')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Amount:</label>
+            <input formControlName="amount" placeholder="" type="number">
+            <ng-container *ngIf="hasError('amount')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <app-auto-complete keyName="partyName" keyValue="partyId" label="Party Name:" title="List of Custom Party Name" placeholder="Select Party Name" formControlName="partyId" [options]="partyList()" />
+          </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3 col-sm-6">
+          <div class="form-group">
+            <label>Cancel Reason :</label>
+            <select formControlName="cancelReason" class="dropdown">
+              <option value="">---Select---</option>
+              <option *ngFor="let cancelReason of cancelReasons" [value]="cancelReason.value">{{cancelReason.label}}
+              </option>
+            </select>
+            <ng-container *ngIf="hasError('cancelReason')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Remarks:</label>
+            <textarea formControlName="remarks" placeholder="Enter Remarks" rows="4"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </ng-template>
+
+  <form *ngIf="isViewMode(); else editModeForm" [formGroup]="viewForm">
     <div class="row">
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <app-auto-complete keyName="invoiceNo" keyValue="yardInvId" label="Invoice No:" title="List of Invoice No" placeholder="Select Invoice No" formControlName="invId" [options]="invoiceList()" />
+          <label>Invoice No:</label>
+          <input formControlName="invoiceNo" placeholder="" type="text">
         </div>
       </div>
 
@@ -17,25 +85,20 @@
                    (click)="invoiceDatePicker.open()"  (dateSelect)="invoiceDatePicker.close()" />
             <span (click)="invoiceDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
-          <ng-container *ngIf="hasError('invoiceDate')">
-            <span class="error">Required field</span>
-          </ng-container>
         </div>
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
           <label>Amount:</label>
-          <input formControlName="amount" placeholder="" type="number">
-          <ng-container *ngIf="hasError('amount')">
-            <span class="error">Required field</span>
-          </ng-container>
+          <input formControlName="amount" placeholder="" type="text">
         </div>
       </div>
 
       <div class="col-md-4 col-lg-3 col-sm-6">
         <div class="form-group">
-          <app-auto-complete keyName="partyName" keyValue="partyId" label="Party Name:" title="List of Custom Party Name" placeholder="Select Party Name" formControlName="partyId" [options]="partyList()" />
+          <label>Party Name:</label>
+          <input formControlName="partyName" placeholder="" type="text">
         </div>
       </div>
 

@@ -148,7 +148,7 @@ export const API = {
     PAYMENT_RECEIPT: {
       LIST: "Sez/GetPaymentReceiptHeader",
       SAVE: "Sez/AddEditPaymentReceipt",
-      INVOICE_LIST: "Sez/GetPaymentReceiptInvoiceDetails",
+      INVOICE_LIST: "Sez/GetPaymentInvoiceDetailsByPayee",
       PAYMENT_RECEIPT_DETAILS: "Sez/GetPaymentDetails",
     },
     REGISTER_OF_OUTWARD_SUPPLY: {

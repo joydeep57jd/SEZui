@@ -29,6 +29,7 @@ export class CancelInvoiceComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
+  viewForm!: FormGroup;
   invoiceList = signal<any[]>([]);
   partyList = signal<any[]>([]);
   isViewMode = signal(false);
@@ -60,6 +61,14 @@ export class CancelInvoiceComponent implements OnDestroy {
   }
 
   makeForm() {
+    this.viewForm = new FormGroup({
+      invoiceDate: new FormControl({value: "", disabled: true}, []),
+      invoiceNo: new FormControl({value: "", disabled: true}, []),
+      partyName: new FormControl({value: null, disabled: true}, []),
+      amount: new FormControl({value: null, disabled: true}, []),
+      cancelReason: new FormControl({value: "", disabled: true}, []),
+      remarks: new FormControl({value: "", disabled: true}, []),
+    })
     this.form = new FormGroup({
       invId: new FormControl(0, []),
       invoiceDate: new FormControl({value: "", disabled: true}, []),
@@ -94,10 +103,9 @@ export class CancelInvoiceComponent implements OnDestroy {
   }
 
   patchForm(record: any, isViewMode: boolean) {
-    this.form.reset();
-    this.form.patchValue(record);
+    record.invoiceDate = this.utilService.getNgbDateObject(record.invoiceDate);
+    this.viewForm.patchValue(record);
     this.isViewMode.set(isViewMode);
-    isViewMode ? this.form.disable() : this.form.enable();
   }
 
   reset() {
