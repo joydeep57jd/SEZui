@@ -83,15 +83,18 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
   }
 
   getContainerList(gatePassId: number) {
+    this.containerList.set([])
     this.apiService.get(API.GATE_OPERATION.GATE_PASS.GATE_PASS_DETAILS, {gatepassId: gatePassId}).subscribe({
       next: (response: any) => {
         const containerNo = this.form.get("cbtNo")?.value
+        this.containerList.set(response.data)
         if(response.data.some((data: any) => data.containerNo === containerNo)) {
-          this.containerList.set(response.data)
           this.form.get("cbtNo")?.patchValue(null)
           setTimeout(() => {
             this.form.get("cbtNo")?.patchValue(containerNo)
           }, 10)
+        } else {
+          this.form.get("cbtNo")?.patchValue(null)
         }
       }
     })
@@ -176,6 +179,7 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
             this.gatePassList.update(list=> [...list, response.data[0]]);
             setTimeout(() => {
               this.form.get("gatePassId")?.patchValue(record.gatePassId)
+
             }, 10)
           }
         }

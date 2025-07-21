@@ -120,6 +120,7 @@ export class GatePassComponent implements OnDestroy {
   }
 
   getOblDetails(invoiceNo: string) {
+    this.containerList.set([])
     this.apiService.get(this.apiUrls.OBL_DETAILS, {invoiceNo}).subscribe({
       next: (response: any) => {
         this.form.get("shippingLineName")?.setValue(response.data.shippingLine ?? null);
@@ -136,6 +137,7 @@ export class GatePassComponent implements OnDestroy {
       gatePassNo: new FormControl("", []),
       gatePssDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       invoiceId: new FormControl(null, []),
+      invoiceNo: new FormControl("", []),
       expDate: new FormControl(null, []),
       chaName: new FormControl(null, []),
       impExpName: new FormControl(null, []),
@@ -145,20 +147,20 @@ export class GatePassComponent implements OnDestroy {
       remarks: new FormControl("", []),
     });
 
-    this.form.get("invoiceId")?.valueChanges
+    this.form.get("invoiceNo")?.valueChanges
       .pipe(
         takeUntil(this.destroy$),
         debounceTime(0),
         distinctUntilChanged()
       )
-      .subscribe((invoiceId) => {
+      .subscribe((invoiceNo) => {
         this.containerList.set([])
-        const invoice = this.invoiceList().find(invoice => invoice.invoiceId === invoiceId);
-        console.log(invoice)
+        const invoice = this.invoiceList().find(invoice => invoice.invoiceNo === invoiceNo);
+        this.form.get("invoiceId")?.setValue(invoice.invoiceId ?? '');
         const cha = this.chaList().find(cha => cha.partyId === invoice?.partyId);
         this.form.get("chaName")?.setValue(cha?.partyName ?? null);
         this.form.get("expDate")?.setValue(invoice ? this.utilService.getNgbDateObject(invoice?.invoiceDate) : null);
-        this.getOblDetails(invoice?.invoiceNo ?? "");
+        this.getOblDetails(invoiceNo);
       })
   }
 
