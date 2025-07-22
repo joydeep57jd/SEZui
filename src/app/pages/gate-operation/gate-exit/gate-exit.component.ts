@@ -221,7 +221,7 @@ export class GateExitComponent implements OnDestroy, OnDestroy {
         next:() => {
           this.toasterService.showSuccess("Gate exit saved successfully");
           this.table.reload();
-          this.gatePassList();
+          this.getGatePassList();
           this.gateExitDetails.set([])
           this.makeForm();
           this.isSaving.set(false);
