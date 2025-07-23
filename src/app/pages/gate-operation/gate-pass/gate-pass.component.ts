@@ -238,10 +238,10 @@ export class GatePassComponent implements OnDestroy {
     if(this.printInProgress[record.gatePassId]) return;
     this.printInProgress[record.gatePassId] = true;
     this.actionLoaders = {...this.actionLoaders, print: this.printInProgress}
-    this.apiService.get(this.apiUrls.GATE_PASS_DETAILS, {GatePassDtlId: record.gatePassId}).subscribe({
+    this.apiService.get(this.apiUrls.GATE_PASS_DETAILS, {gatepassId: record.gatePassId}).subscribe({
       next: (response: any) => {
         this.pdfData.set({
-          header: {...record, invoiceNo: this.invoiceList().find(invoice => invoice.yardInvId === record.invoiceId)?.invoiceNo},
+          header: {...record},
           details: response.data
         })
         setTimeout(() => {

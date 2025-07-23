@@ -4,6 +4,7 @@ import {PrintService} from "../../../services/print.service";
 import {ChangeDetectorRef, inject, signal} from "@angular/core";
 import {API, CHARGE_CODE} from "../../../lib";
 import {EXPORT_GODOWN_INVOICE_DATA} from "./export-godown-invoice-data";
+import {firstValueFrom, forkJoin} from "rxjs";
 
 export class ExportGodownInvoiceHelper {
   apiService = inject(ApiService);
@@ -127,15 +128,27 @@ export class ExportGodownInvoiceHelper {
     return `${container.containerNo}#${container.shippingBillNo}`;
   }
 
-  makePayload(value: any, chargeDetails: any, handlingChargeDetails: any,insuranceChargeDetails: any, selectedContainerList: any[], partyList: any[]) {
+  async makePayload(value: any, chargeDetails: any, handlingChargeDetails: any,insuranceChargeDetails: any, selectedContainerList: any[], partyList: any[]) {
     const isTaxInvoice = value.invoiceType == 1;
     const isFactoryDestuffing = value.destuffingType;
     const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
     const hanChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.HANDLING);
     const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackages + acc, 0);
-    const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grossWt + acc, 0);
-    const rate = +(totalWeight / totalPackages).toFixed(2);
+
+    const rateApis = [
+      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.ENTRY, sacCode: chargeDetails.entrySacCode, isImport: 'Export', ishigh: true}),
+      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.HANDLING, sacCode: handlingChargeDetails.sacCode, isImport: 'Export', ishigh: true}),
+    ]
+
+    if(Object.keys(insuranceChargeDetails).length) {
+      rateApis.push(
+        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.INSURANCE, sacCode: insuranceChargeDetails.sacCode, isImport: 'Export', ishigh: true})
+      )
+    }
+
+    const res: any[] = await firstValueFrom(forkJoin(rateApis))
+
     const jsonData = [
       {
         "ChargesTypeId": entChargeDetails?.chargeId,
@@ -144,7 +157,7 @@ export class ExportGodownInvoiceHelper {
         "ChargeType": entChargeDetails?.chargeCode,
         "ChargeName": entChargeDetails?.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[0].data.rate,
         "Amount": chargeDetails.totalEntryValue,
         "Discount": 0,
         "Taxable": chargeDetails.totalEntryValue,
@@ -164,7 +177,7 @@ export class ExportGodownInvoiceHelper {
         "ChargeType": hanChargeDetails?.chargeCode,
         "ChargeName": hanChargeDetails?.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[1].data.rate,
         "Amount": handlingChargeDetails.totalValue,
         "Discount": 0,
         "Taxable": handlingChargeDetails.totalValue,
@@ -188,7 +201,7 @@ export class ExportGodownInvoiceHelper {
           "ChargeType": insChargeDetails?.chargeCode,
           "ChargeName": insChargeDetails?.chargeName,
           "Quantity": totalPackages,
-          "Rate": rate,
+          "Rate": res[2].data.rate,
           "Amount": insuranceChargeDetails.totalInsuranceValue,
           "Discount": 0,
           "Taxable": insuranceChargeDetails.totalInsuranceValue,

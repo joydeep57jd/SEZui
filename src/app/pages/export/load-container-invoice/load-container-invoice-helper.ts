@@ -4,6 +4,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PrintService} from "../../../services/print.service";
 import {API, CHARGE_CODE} from "../../../lib";
 import {LOAD_CONTAINER_INVOICE_DATA} from "./load-container-invoice-data";
+import {firstValueFrom, forkJoin} from "rxjs";
 
 export class LoadContainerInvoiceHelper {
   apiService = inject(ApiService);
@@ -119,14 +120,26 @@ export class LoadContainerInvoiceHelper {
     return { total, totalInvoice, added }
   }
 
-  makePayload(value: any, chargeDetails: any, handlingChargeDetails: any, insuranceCharges: any, selectedContainerList: any[], partyList: any[]) {
+  async makePayload(value: any, chargeDetails: any, handlingChargeDetails: any, insuranceCharges: any, selectedContainerList: any[], partyList: any[]) {
     const isTaxInvoice = value.invoiceType;
     const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
     const hanChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.HANDLING);
     const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
-    const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grWt + acc, 0);
-    const rate = +(totalWeight / totalPackages).toFixed(2);
+
+    const rateApis = [
+      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.ENTRY, sacCode: chargeDetails.entrySacCode, isImport: 'Export', ishigh: true}),
+      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.HANDLING, sacCode: handlingChargeDetails.sacCode, isImport: 'Export', ishigh: true}),
+    ]
+
+    if(Object.keys(insuranceCharges).length) {
+      rateApis.push(
+        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.INSURANCE, sacCode: insuranceCharges.sacCode, isImport: 'Export', ishigh: true})
+      )
+    }
+
+    const res: any[] = await firstValueFrom(forkJoin(rateApis))
+
     const jsonData = [
       {
         "ChargesTypeId": entChargeDetails?.chargeId,
@@ -135,7 +148,7 @@ export class LoadContainerInvoiceHelper {
         "ChargeType": entChargeDetails?.chargeCode,
         "ChargeName": entChargeDetails?.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[0].data.rate,
         "Amount": chargeDetails.totalEntryValue,
         "Discount": 0,
         "Taxable": chargeDetails.totalEntryValue,
@@ -155,7 +168,7 @@ export class LoadContainerInvoiceHelper {
         "ChargeType": hanChargeDetails?.chargeCode,
         "ChargeName": hanChargeDetails?.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[1].data.rate,
         "Amount": handlingChargeDetails.totalValue,
         "Discount": 0,
         "Taxable": handlingChargeDetails.totalValue,
@@ -177,7 +190,7 @@ export class LoadContainerInvoiceHelper {
         "ChargeType": insChargeDetails?.chargeCode,
         "ChargeName": insChargeDetails?.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[2].data.rate,
         "Amount": insuranceCharges.totalInsuranceValue,
         "Discount": 0,
         "Taxable": insuranceCharges.totalInsuranceValue,

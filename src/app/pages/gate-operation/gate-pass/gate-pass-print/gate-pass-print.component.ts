@@ -24,7 +24,7 @@ export class GatePassPrintComponent implements OnChanges {
   }
 
   get boeNo() {
-    return this.pdfData?.details && this.pdfData?.details[0]?.boeNo
+    return this.pdfData?.header?.boeNo
   }
 
   get vehicleNo() {
@@ -39,6 +39,10 @@ export class GatePassPrintComponent implements OnChanges {
     return this.pdfData?.details && this.pdfData?.details[0]?.customerSealNo
   }
 
+  get validityDate() {
+    return this.pdfData?.header?.expDate ? this.datePipe.transform(new Date(this.pdfData?.header?.expDate), 'dd/MM/yy') : ''
+  }
+
   prepareData() {
     const data = []
     data.push({ labelLeft: 'Gate Pass No.', valueLeft: this.pdfData.header.gatePassNo, labelRight: 'Gate Pass Date', valueRight: this.datePipe.transform(new Date(this.pdfData.header.gatePssDate), 'dd/MM/yy') });
@@ -46,7 +50,7 @@ export class GatePassPrintComponent implements OnChanges {
     data.push({ labelLeft: 'Importer/Exporter', valueLeft: this.pdfData.header.impExpName, labelRight: 'CHA Name', valueRight: this.pdfData.header.chaName });
     data.push({ labelLeft: 'Shipping Line', valueLeft: this.pdfData.header.shippingLineName, labelRight: 'BOE No./S.B. No./WR No.', valueRight: this.boeNo });
     data.push({ labelLeft: 'Customs Seal No', valueLeft: this.customerSealNo, labelRight: 'Invoice No', valueRight: this.pdfData.header.invoiceNo });
-    data.push({ labelLeft: 'Gate Pass Time', valueLeft: this.datePipe.transform(new Date(this.pdfData.header.createdOn), 'hh:mm'), labelRight: 'Gate Pass Validity Date Time', valueRight: '' });
+    data.push({ labelLeft: 'Gate Pass Time', valueLeft: this.datePipe.transform(new Date(this.pdfData.header.createdOn), 'hh:mm'), labelRight: 'Gate Pass Validity Date Time', valueRight: this.validityDate });
     data.push({ labelLeft: 'Remarks', valueLeft: this.pdfData.header.remarks, labelRight: '', valueRight: '', leftColSpan: 12, rightColSpan: 0 });
     this.data = data
   }

@@ -25,7 +25,7 @@ export const IMPORT_ROUTES: Route[] = [
   {
     path: PATHS.IMPORT.DELIVERY_APPLICATION,
     loadComponent: () => import('../..').then((c) => c.DeliveryApplicationComponent),
-    data: { title: "Merge DeliApp PaymentSheet IssueSlip Application" }
+    data: { title: "DeliApp PaymentSheet IssueSlip Application" }
   },
   {
     path: PATHS.IMPORT.GODOWN_INVOICE,

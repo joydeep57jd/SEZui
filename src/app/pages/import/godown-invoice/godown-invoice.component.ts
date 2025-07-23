@@ -145,11 +145,11 @@ export class GodownInvoiceComponent extends GodownInvoiceHelper implements OnDes
     this.isViewMode.set(false);
   }
 
-  submit() {
+  async submit() {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload(this.form.getRawValue(), this.chargeDetails(), this.storageChargeDetails(), this.insuranceChargeDetails(), this.selectedOblList(), this.partyList());
+      const data = await this.makePayload(this.form.getRawValue(), this.chargeDetails(), this.storageChargeDetails(), this.insuranceChargeDetails(), this.selectedOblList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Godown invoice saved successfully");

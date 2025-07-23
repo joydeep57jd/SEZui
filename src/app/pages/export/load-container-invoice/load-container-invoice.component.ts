@@ -141,11 +141,11 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     this.isViewMode.set(false);
   }
 
-  submit() {
+  async submit() {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload(this.form.getRawValue(), this.chargeDetails(), this.handlingChargeDetails(), this.insuranceChargeDetails(), this.selectedContainerList(), this.partyList());
+      const data = await this.makePayload(this.form.getRawValue(), this.chargeDetails(), this.handlingChargeDetails(), this.insuranceChargeDetails(), this.selectedContainerList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Load container invoice saved successfully");

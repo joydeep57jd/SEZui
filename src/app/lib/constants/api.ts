@@ -207,4 +207,5 @@ export const API = {
       APPLICATION_LIST: "Sez/GetContainerStuffingHdr",
     },
   },
+  CHARGE_RATE: "Sez/GetChargesRateBySacCode"
 };

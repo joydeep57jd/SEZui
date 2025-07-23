@@ -1,7 +1,7 @@
 import {API, CHARGE_CODE, CHARGE_TYPE} from "../../../lib";
 import {inject, signal} from "@angular/core";
 import {ApiService, UtilService} from "../../../services";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, firstValueFrom, forkJoin} from "rxjs";
 
 export class YardInvoiceHelper {
   apiService = inject(ApiService);
@@ -121,7 +121,7 @@ export class YardInvoiceHelper {
     return `${container.containerCBTNo}#${container.obL_HBL_No}`;
   }
 
-  makePayload(value: any, selectedContainerList: any[], partyList: any[]) {
+  async makePayload(value: any, selectedContainerList: any[], partyList: any[]) {
     const isTaxInvoice = value.invoiceType;
     const isFactoryDestuffing = value.destuffingType;
     const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
@@ -129,8 +129,25 @@ export class YardInvoiceHelper {
     const trpChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.TRANSPORTATION);
     const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
-    const totalWeight = selectedContainerList.reduce((acc: number, container: any) => container.grWt + acc, 0);
-    const rate = +(totalWeight / totalPackages).toFixed(2);
+
+    const rateApis = [
+      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.ENTRY, sacCode: this.chargeDetails().entrySacCode, isImport: 'Import', ishigh: true}),
+      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.EXAMINATION, sacCode: this.chargeDetails().examinationSacCode, isImport: 'Import', ishigh: true}),
+    ]
+
+    if(Object.keys(this.insuranceChargeDetails()).length) {
+      rateApis.push(
+        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.INSURANCE, sacCode: this.insuranceChargeDetails().sacCode, isImport: 'Import', ishigh: true})
+      )
+    }
+
+    if(Object.keys(this.transportChargeDetails()).length) {
+      rateApis.push(
+        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.TRANSPORTATION, sacCode: this.transportChargeDetails().sacCode, isImport: 'Import', ishigh: this.transportChargeDetails().chargeName == "High Value"})
+      )
+    }
+
+    const res: any[] = await firstValueFrom(forkJoin(rateApis))
 
     const jsonData = [
       {
@@ -140,7 +157,7 @@ export class YardInvoiceHelper {
         "ChargeType": entChargeDetails.chargeCode,
         "ChargeName": entChargeDetails.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[0].data.rate,
         "Amount": this.chargeDetails().totalEntryValue,
         "Discount": 0,
         "Taxable": this.chargeDetails().totalEntryValue,
@@ -160,7 +177,7 @@ export class YardInvoiceHelper {
         "ChargeType": exmChargeDetails.chargeCode,
         "ChargeName": exmChargeDetails.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[1].data.rate,
         "Amount": this.chargeDetails().totalExamValue,
         "Discount": 0,
         "Taxable": this.chargeDetails().totalExamValue,
@@ -183,7 +200,7 @@ export class YardInvoiceHelper {
         "ChargeType": insChargeDetails?.chargeCode,
         "ChargeName": insChargeDetails?.chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[2].data.rate,
         "Amount": this.insuranceChargeDetails().totalInsuranceValue,
         "Taxable": this.insuranceChargeDetails().totalInsuranceValue,
         "IGSTPer": this.insuranceChargeDetails().igst,
@@ -206,7 +223,7 @@ export class YardInvoiceHelper {
         "ChargeType": trpChargeDetails.chargeCode,
         "ChargeName": this.transportChargeDetails().chargeName,
         "Quantity": totalPackages,
-        "Rate": rate,
+        "Rate": res[res.length - 1].data.rate,
         "Amount": this.transportChargeDetails().totalValue,
         "Discount": 0,
         "Taxable": this.transportChargeDetails().totalValue,

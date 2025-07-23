@@ -194,11 +194,11 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     this.isViewMode.set(false);
   }
 
-  submit() {
+  async submit() {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload(this.form.getRawValue(), this.selectedContainerList(), this.partyList());
+      const data = await this.makePayload(this.form.getRawValue(), this.selectedContainerList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Yard invoice saved successfully");
