@@ -80,7 +80,7 @@ export class GodownInvoiceComponent extends GodownInvoiceHelper implements OnDes
       this.apiService.post(this.apiUrls.STORAGE_CHARGES, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}),
     ]
     if(insuranceChargeBody) {
-      apiCalls.push(this.apiService.post(this.apiUrls.INSURANCE_CHARGE, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}))
+      apiCalls.push(this.apiService.post(this.apiUrls.INSURANCE_CHARGE, {...body, isYardInvoice: false, invoiceDate: this.utilService.getDateObject(invoiceDate)}))
     }
     forkJoin(apiCalls).subscribe({
       next: ([importCharges, storageCharges, insuranceCharges]: any) => {

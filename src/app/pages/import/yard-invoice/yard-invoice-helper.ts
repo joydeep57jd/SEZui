@@ -96,7 +96,7 @@ export class YardInvoiceHelper {
     const params = {
       entryParams: {...baseParams, typeOfCharge: CHARGE_TYPE.IMPORT},
       transportParams: formValue.transportationChargeType && {...baseParams},
-      insuredParams: (containerOblList.insured && formValue.invoiceDate) && {containerOblList: containerOblList.insured, partyId, invoiceDate: this.utilService.getDateObject(formValue.invoiceDate)}
+      insuredParams: (containerOblList.insured && formValue.invoiceDate) && {containerOblList: containerOblList.insured, partyId, isYardInvoice: true, invoiceDate: this.utilService.getDateObject(formValue.invoiceDate)}
     }
     if(!params.transportParams) {
       this.transportChargeDetails.set({});
