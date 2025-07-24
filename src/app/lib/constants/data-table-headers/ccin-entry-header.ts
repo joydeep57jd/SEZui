@@ -41,7 +41,7 @@ export const CcinEntryHeaders: IDataTableHeader[] = [
   },
   {
     field: 'sbDate',
-    label: 'SB No',
+    label: 'SB Date',
     type: 'date',
   },
 ];

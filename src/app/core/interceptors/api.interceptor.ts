@@ -14,7 +14,7 @@ export const apiInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ) => {
   const toastService = inject(ToastService);
-  const baseUrl = 'http://103.205.66.15:84' || environment.apiBaseUrl;
+  const baseUrl = environment.apiBaseUrl;
 
   const updatedReq = req.clone({
     url: `${baseUrl}/${req.url}`,
@@ -28,7 +28,6 @@ export const apiInterceptor: HttpInterceptorFn = (
         url: error.url,
       });
 
-      // Optionally: handle specific status codes
       if (error.status === 401) {
         // redirectToLogin();
       } else {
@@ -36,7 +35,9 @@ export const apiInterceptor: HttpInterceptorFn = (
         if (errorObj) {
           toastService.detailedError$.next(errorObj);
         }
-        toastService.showError(error.error?.message ?? error.error?.title ?? 'Something went wrong');
+        if(error.status !== 404) {
+          toastService.showError(error.error?.message ?? error.error?.title ?? 'Something went wrong');
+        }
       }
       return throwError(() => error);
     })

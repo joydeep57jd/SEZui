@@ -7,6 +7,7 @@ import {DataTableComponent} from "../../../components";
 import {CCIN_ENTRY_DATA} from "./ccin-entry-data";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-ccin-entry',
@@ -165,11 +166,23 @@ export class CcinEntryComponent {
     this.isViewMode.set(false);
   }
 
-  submit() {
+  async submit() {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = this.makePayload();
+      const value = {...this.form.value};
+      try {
+        const res: any = await firstValueFrom(this.apiService.get(this.apiUrls.LIST, {SBNo: value.sbNo, SBDate: this.utilService.getDateObject(value.sbDate)}));
+        const hasSameSbNo = res.data?.some((entry: any) => entry.ccinId !== value.ccinId);
+        if(hasSameSbNo) {
+          this.toasterService.showError("CCIN entry with same SB No and SB Date already exists");
+          this.isSaving.set(false);
+          return;
+        }
+      } catch (e) {
+        //
+      }
+      const data = await this.makePayload();
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next: () => {
           this.toasterService.showSuccess("CCIN entry saved successfully");
@@ -183,7 +196,8 @@ export class CcinEntryComponent {
     }
   }
 
-  makePayload() {
+  async makePayload() {
+    const value = {...this.form.value};
     const defaultValue = {
       "stateId": 0,
       "cityId": 0,
@@ -201,7 +215,6 @@ export class CcinEntryComponent {
       "eximappID": 0,
       "packUQCDesc": ""
     }
-    const value = {...this.form.value};
     return {
       ...value, ...defaultValue, sez: value.sez ? 1 : 0,
       ccinDate: this.utilService.getDateObject(value.ccinDate), sbDate: this.utilService.getDateObject(value.sbDate)
