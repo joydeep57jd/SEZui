@@ -144,11 +144,11 @@
         <app-table [headers]="yardInvoicePreviewHeaders" [records]="selectedContainerList()"></app-table>
       </div>
 
-      <div class="form-group position-relative">
+      <div class="form-group position-relative" *ngIf="gateInDetails().operationType === operationTypes[2].value || gateInDetails().operationType === operationTypes[1].value">
         <div *ngIf="isChargesFetching()" class="invoice-loader">
           <img src="assets/gifs/loader.gif" alt="loader" />
         </div>
-        <div class="secondary-form-container px-2 pb-0">
+        <div *ngIf="gateInDetails().operationType === operationTypes[1].value" class="secondary-form-container px-2 pb-0">
           <div class="primary-heading-container">
             <p>Charges</p>
           </div>
@@ -173,17 +173,17 @@
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <td class="text-left">Entry  Charges [ENT]</td>
-                <td>{{ utilService.formatCurrency(chargeDetails().totalEntryValue) }}</td>
-                <td>{{ (chargeDetails().igsTper) }}</td>
-                <td>{{ utilService.formatCurrency(chargeDetails().entryIGSTAmount) }}</td>
-                <td>{{ (chargeDetails().cgsTper) }}</td>
-                <td>{{ utilService.formatCurrency(chargeDetails().entryCGSTAmount) }}</td>
-                <td>{{ (chargeDetails().sgsTper) }}</td>
-                <td>{{ utilService.formatCurrency(chargeDetails().entrySGSTAmount) }}</td>
-                <td>{{ utilService.formatCurrency(chargeDetails().totalEntryAmt) }}</td>
-              </tr>
+<!--              <tr>-->
+<!--                <td class="text-left">Entry  Charges [ENT]</td>-->
+<!--                <td>{{ utilService.formatCurrency(chargeDetails().totalEntryValue) }}</td>-->
+<!--                <td>{{ (chargeDetails().igsTper) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(chargeDetails().entryIGSTAmount) }}</td>-->
+<!--                <td>{{ (chargeDetails().cgsTper) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(chargeDetails().entryCGSTAmount) }}</td>-->
+<!--                <td>{{ (chargeDetails().sgsTper) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(chargeDetails().entrySGSTAmount) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(chargeDetails().totalEntryAmt) }}</td>-->
+<!--              </tr>-->
               <tr>
                 <td class="text-left">Examination Charges [EXM]</td>
                 <td>{{ utilService.formatCurrency(chargeDetails().totalExamValue) }}</td>
@@ -195,33 +195,25 @@
                 <td>{{ utilService.formatCurrency(chargeDetails().examSGSTAmount) }}</td>
                 <td>{{ utilService.formatCurrency(chargeDetails().totalExamAmt) }}</td>
               </tr>
-              <tr *ngIf="isInsuranceChargeHaveValues">
-                <td class="text-left">Insurance [INS]</td>
-                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalInsuranceValue) }}</td>
-                <td>{{ (insuranceChargeDetails().igst) }}</td>
-                <td>{{ utilService.formatCurrency(insuranceChargeDetails().igstAmount) }}</td>
-                <td>{{ (insuranceChargeDetails().cgst) }}</td>
-                <td>{{ utilService.formatCurrency(insuranceChargeDetails().cgstAmount) }}</td>
-                <td>{{ (insuranceChargeDetails().sgst) }}</td>
-                <td>{{ utilService.formatCurrency(insuranceChargeDetails().sgstAmount) }}</td>
-                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalAmt) }}</td>
-              </tr>
+<!--              <tr *ngIf="isInsuranceChargeHaveValues">-->
+<!--                <td class="text-left">Insurance [INS]</td>-->
+<!--                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalInsuranceValue) }}</td>-->
+<!--                <td>{{ (insuranceChargeDetails().igst) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(insuranceChargeDetails().igstAmount) }}</td>-->
+<!--                <td>{{ (insuranceChargeDetails().cgst) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(insuranceChargeDetails().cgstAmount) }}</td>-->
+<!--                <td>{{ (insuranceChargeDetails().sgst) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(insuranceChargeDetails().sgstAmount) }}</td>-->
+<!--                <td>{{ utilService.formatCurrency(insuranceChargeDetails().totalAmt) }}</td>-->
+<!--              </tr>-->
               </tbody>
             </table>
           </div>
         </div>
 
-        <div class="secondary-form-container px-2 pb-0">
+        <div *ngIf="gateInDetails().operationType === operationTypes[2].value" class="secondary-form-container px-2 pb-0">
           <div class="primary-heading-container">
             <p>Transportation Charges</p>
-          </div>
-          <div class="col-md-4 col-lg-3 col-sm-6">
-            <div class="form-group my-2">
-              <select formControlName="transportationChargeType" class="dropdown">
-                <option value="">---Select---</option>
-                <option value="transportation">Transportation</option>
-              </select>
-            </div>
           </div>
           <div *ngIf="transportChargeDetails().chargeName" class="p-2 pb-0 calculation-table">
             <table class="table table-bordered">

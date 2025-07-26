@@ -145,6 +145,10 @@ export class OblEntryComponent {
       icesContId: new FormControl(detail?.icesContId ?? 0, []),
       obL_HBL_No: new FormControl(detail?.obL_HBL_No ?? "", []),
       obL_HBL_Date: new FormControl(this.utilService.getNgbDateObject(detail?.obL_HBL_Date), []),
+      boeNo: new FormControl(detail?.boeNo ?? "", []),
+      boeDate: new FormControl(this.utilService.getNgbDateObject(detail?.boeDate), []),
+      cifValue: new FormControl(detail?.cifValue ?? 0, []),
+      duty: new FormControl(detail?.duty ?? 0, []),
       smtP_No: new FormControl(detail?.smtP_No ?? "", []),
       smtP_Date: new FormControl(this.utilService.getNgbDateObject(detail?.smtP_Date), []),
       cargo_Desc: new FormControl(detail?.cargo_Desc ?? "", []),
@@ -259,6 +263,7 @@ export class OblEntryComponent {
       ...item,
       obL_HBL_Date: this.utilService.getDateObject(item.obL_HBL_Date),
       smtP_Date: this.utilService.getDateObject(item.smtP_Date),
+      boeDate: this.utilService.getDateObject(item.boeDate),
     }));
 
     return value;

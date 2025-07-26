@@ -20,13 +20,21 @@
       <app-auto-complete keyName="sacCode" keyValue="sacId" label="* SAC Code:" title="List of SAC Code" placeholder="Enter SAC" formControlName="sacCodeId" [options]="sacList()" />
     </div>
 
-    <div class="col-md-4 col-lg-3 col-sm-6">
+    <div class="col-sm-6 col-md-8 col-lg-6">
       <div class="form-group">
         <label>* Rate:</label>
-        <input formControlName="rate" placeholder="Enter Rate" type="number">
-        <ng-container *ngIf="hasError('rate')">
-          <span class="error">Required field</span>
-        </ng-container>
+        <div class="d-flex align-items-center gap-2">
+          <div class="w-100">
+            <input formControlName="rate" placeholder="Enter Rate" type="number">
+            <ng-container *ngIf="hasError('rate')">
+              <span class="error">Required field</span>
+            </ng-container>
+          </div>
+          <div>
+            <label style="width: max-content;">/1000/Week in Paisa</label>
+          </div>
+        </div>
+
       </div>
     </div>
 

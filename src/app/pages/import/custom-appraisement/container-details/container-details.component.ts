@@ -68,8 +68,17 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
 
   getOblList(containerNo: string) {
     if(!containerNo) return;
+    this.oblList.set([])
     this.apiService.get(this.apiUrls.OBL_LIST, {containerNo}).subscribe({
       next: (response: any) => {
+        const oblId = this.form.get("oblNoId")?.value
+        console.log(response.data.some((x:any)=>x.id == oblId))
+        if(!response.data.some((x:any)=>x.id == oblId)) {
+          this.form.get("oblNoId")?.patchValue("")
+        } else {
+          this.form.get("oblNoId")?.patchValue(null)
+          setTimeout(() => this.form.get("oblNoId")?.patchValue(oblId), 10)
+        }
         this.oblList.set(response.data)
       }
     })
@@ -107,6 +116,7 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
         distinctUntilChanged()
       )
       .subscribe((value: string) => {
+        console.log(value)
         this.fetchContainerDetails()
         this.getOblList(value)
       })
@@ -146,10 +156,15 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
     this.form.get("grossWeightKg")?.setValue(oblDetails?.gR_WT_Kg)
     this.form.get("cargoType")?.setValue(oblDetails?.cargo_Type)
     this.form.get("fcL_LCL")?.setValue(oblDetails?.movementType)
+    this.form.get("boeNo")?.setValue(oblDetails?.boeNo)
+    this.form.get("boeDate")?.setValue(this.utilService.getNgbDateObject(oblDetails?.boeDate))
+    this.form.get("cifValue")?.setValue(oblDetails?.cifValue)
+    this.form.get("duty")?.setValue(oblDetails?.duty)
   }
 
   makeFormControlsDisabled() {
-    ["icdCode", "size", "fcL_LCL", "containerCBTType", "cargoType", "oblDate", "cargoDescription", "noOfPackages", "grossWeightKg"].forEach(control => {
+    ["icdCode", "size", "fcL_LCL", "containerCBTType", "cargoType", "oblDate", "cargoDescription", "noOfPackages", "grossWeightKg",
+    "boeNo", "boeDate", "cifValue", "duty"].forEach(control => {
       this.form.get(control)?.disable();
     })
   }

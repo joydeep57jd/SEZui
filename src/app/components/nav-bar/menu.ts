@@ -50,6 +50,7 @@ export const MENU = [
       { label: 'Cancel Invoice', path: PATHS.CASH_MANAGEMENT.CANCEL_INVOICE, },
       { label: 'Register Of Outward Supply', path: PATHS.CASH_MANAGEMENT.REGISTER_OF_OUTWARD_SUPPLY, },
       { label: 'Daily Cash Book', path: PATHS.CASH_MANAGEMENT.DAILY_CASH_BOOK, },
+      { label: 'Credit Note', path: PATHS.CASH_MANAGEMENT.CREDIT_NOTE, },
     ],
   },
 ]

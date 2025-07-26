@@ -1,13 +1,15 @@
 import {API, CHARGE_CODE, CHARGE_TYPE} from "../../../lib";
 import {inject, signal} from "@angular/core";
 import {ApiService, UtilService} from "../../../services";
-import {BehaviorSubject, firstValueFrom, forkJoin} from "rxjs";
+import {BehaviorSubject, firstValueFrom, forkJoin, of} from "rxjs";
+import {GATE_IN_DATA} from "../../gate-operation/gate-in/gate-in-data";
 
 export class YardInvoiceHelper {
   apiService = inject(ApiService);
   utilService = inject(UtilService)
 
   readonly apiUrls = API.IMPORT.YARD_INVOICE;
+  readonly operationTypes = GATE_IN_DATA.operationTypes
 
   eximTraderMap = signal<Map<number, any>>(new Map());
   partyList = signal<any[]>([]);
@@ -19,6 +21,7 @@ export class YardInvoiceHelper {
   insuranceChargeDetails = signal<any>({});
   totalCharges = signal<any>({});
   isChargesFetching = signal<boolean>(false);
+  gateInDetails = signal<any>({});
   fetchChargesParams$ = new BehaviorSubject<any>(null);
 
   getCustomAppraisementList () {
@@ -77,44 +80,47 @@ export class YardInvoiceHelper {
       return
     }
 
-    const containerOblList = selectedContainerList.reduce((acc: any, container: any, index: number) => {
-      const containerObl = this.getContainerOblNo(container);
-      acc.all += containerObl;
-      if(index !== selectedContainerList.length - 1) {
-        acc.all += ",";
-      }
-      if(!container.isInsured) {
-        if(acc.insured.length > 0) {
-          acc.insured += ",";
-        }
-        acc.insured += containerObl;
-      }
-      return acc;
-    }, {all: "", insured: ""})
+    this.apiService.get(this.apiUrls.GATE_IN_DETAILS, {containerNo: selectedContainerList[0].containerCBTNo}).subscribe({
+      next: (response: any) => {
+        this.gateInDetails.set(response.data[0])
+        const containerOblList = selectedContainerList.reduce((acc: any, container: any, index: number) => {
+          const containerObl = this.getContainerOblNo(container);
+          acc.all += containerObl;
+          if(index !== selectedContainerList.length - 1) {
+            acc.all += ",";
+          }
+          if(!container.isInsured) {
+            if(acc.insured.length > 0) {
+              acc.insured += ",";
+            }
+            acc.insured += containerObl;
+          }
+          return acc;
+        }, {all: "", insured: ""})
 
-    const baseParams = { containerOBLList: containerOblList.all, partyId }
-    const params = {
-      entryParams: {...baseParams, typeOfCharge: CHARGE_TYPE.IMPORT},
-      transportParams: formValue.transportationChargeType && {...baseParams},
-      insuredParams: (containerOblList.insured && formValue.invoiceDate) && {containerOblList: containerOblList.insured, partyId, isYardInvoice: true, invoiceDate: this.utilService.getDateObject(formValue.invoiceDate)}
-    }
-    if(!params.transportParams) {
-      this.transportChargeDetails.set({});
-    }
-    if(!params.insuredParams) {
-      this.insuranceChargeDetails.set({});
-    }
-    this.fetchChargesParams$.next(params)
+        const baseParams = { containerOBLList: containerOblList.all, partyId }
+        const params = {
+          entryParams: {...baseParams, typeOfCharge: CHARGE_TYPE.IMPORT},
+          transportParams:  {...baseParams}, // formValue.transportationChargeType &&
+          insuredParams: (containerOblList.insured && formValue.invoiceDate) && {containerOblList: containerOblList.insured, partyId, isYardInvoice: true, invoiceDate: this.utilService.getDateObject(formValue.invoiceDate)}
+        }
+        if(!params.transportParams) {
+          this.transportChargeDetails.set({});
+        }
+        if(!params.insuredParams) {
+          this.insuranceChargeDetails.set({});
+        }
+        this.fetchChargesParams$.next(params)
+      },
+    })
+
   }
 
   getTotalCharges() {
-    if(!Object.keys(this.chargeDetails())) {
-      return {}
-    }
     const total = (this.chargeDetails().totalEntryAmt ?? 0) + (this.chargeDetails().totalExamAmt ?? 0) + (this.transportChargeDetails().totalAmt ?? 0) + (this.insuranceChargeDetails().totalAmt ?? 0);
     const totalInvoice = Math.ceil(total);
     const added = totalInvoice - total;
-    return { total, totalInvoice, added }
+    return total ? { total, totalInvoice, added } : {}
   }
 
   getContainerOblNo(container: any) {
@@ -124,98 +130,106 @@ export class YardInvoiceHelper {
   async makePayload(value: any, selectedContainerList: any[], partyList: any[]) {
     const isTaxInvoice = value.invoiceType;
     const isFactoryDestuffing = value.destuffingType;
-    const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
+    // const entChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.ENTRY);
     const exmChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.EXAMINATION);
     const trpChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.TRANSPORTATION);
-    const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
+    // const insChargeDetails = this.allChargeTypes().find(chargeType => chargeType.chargeCode === CHARGE_CODE.INSURANCE);
     const totalPackages = selectedContainerList.reduce((acc: number, container: any) => container.noOfPackage + acc, 0);
 
-    const rateApis = [
-      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.ENTRY, sacCode: this.chargeDetails().entrySacCode, isImport: 'Import', ishigh: true}),
-      this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.EXAMINATION, sacCode: this.chargeDetails().examinationSacCode, isImport: 'Import', ishigh: true}),
-    ]
-
-    if(Object.keys(this.insuranceChargeDetails()).length) {
+    const rateApis: any = [];
+      // this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.ENTRY, sacCode: this.chargeDetails().entrySacCode, isImport: 'Import', ishigh: true}),
+    if(this.gateInDetails().operationType === this.operationTypes[1].value)  {
       rateApis.push(
-        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.INSURANCE, sacCode: this.insuranceChargeDetails().sacCode, isImport: 'Import', ishigh: true})
+        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.EXAMINATION, sacCode: this.chargeDetails().examinationSacCode, isImport: 'Import', ishigh: this.gateInDetails().materialType === "High Value"}),
       )
     }
 
-    if(Object.keys(this.transportChargeDetails()).length) {
+
+    // if(Object.keys(this.insuranceChargeDetails()).length) {
+    //   rateApis.push(
+    //     this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.INSURANCE, sacCode: this.insuranceChargeDetails().sacCode, isImport: 'Import', ishigh: true})
+    //   )
+    // }
+
+    if(this.gateInDetails().operationType === this.operationTypes[2].value) {
       rateApis.push(
-        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.TRANSPORTATION, sacCode: this.transportChargeDetails().sacCode, isImport: 'Import', ishigh: this.transportChargeDetails().chargeName == "High Value"})
+        this.apiService.get(API.CHARGE_RATE, {chargeType: CHARGE_CODE.TRANSPORTATION, sacCode: this.transportChargeDetails().sacCode, isImport: 'Import', ishigh: this.gateInDetails().materialType == "High Value"})
       )
     }
 
-    const res: any[] = await firstValueFrom(forkJoin(rateApis))
+    const res: any = await firstValueFrom(forkJoin(rateApis.length ? rateApis : of([])))
 
-    const jsonData = [
-      {
-        "ChargesTypeId": entChargeDetails.chargeId,
-        "OperationId": 0,
-        "Clause": "",
-        "ChargeType": entChargeDetails.chargeCode,
-        "ChargeName": entChargeDetails.chargeName,
-        "Quantity": totalPackages,
-        "Rate": res[0].data.rate,
-        "Amount": this.chargeDetails().totalEntryValue,
-        "Discount": 0,
-        "Taxable": this.chargeDetails().totalEntryValue,
-        "IGSTPer": this.chargeDetails().igsTper,
-        "IGSTAmt": this.chargeDetails().entryIGSTAmount,
-        "CGSTPer": this.chargeDetails().cgsTper,
-        "CGSTAmt": this.chargeDetails().entryCGSTAmount,
-        "SGSTPer": this.chargeDetails().sgsTper,
-        "SGSTAmt": this.chargeDetails().entrySGSTAmount,
-        "Total": this.chargeDetails().totalEntryAmt,
-        "SACCode": this.chargeDetails().entrySacCode,
-      },
-      {
-        "ChargesTypeId": exmChargeDetails.chargeId,
-        "OperationId": 0,
-        "Clause": "",
-        "ChargeType": exmChargeDetails.chargeCode,
-        "ChargeName": exmChargeDetails.chargeName,
-        "Quantity": totalPackages,
-        "Rate": res[1].data.rate,
-        "Amount": this.chargeDetails().totalExamValue,
-        "Discount": 0,
-        "Taxable": this.chargeDetails().totalExamValue,
-        "IGSTPer": this.chargeDetails().igsTperExam,
-        "IGSTAmt": this.chargeDetails().examIGSTAmount,
-        "CGSTPer": this.chargeDetails().cgsTperExam,
-        "CGSTAmt": this.chargeDetails().examCGSTAmount,
-        "SGSTPer": this.chargeDetails().sgsTperExam,
-        "SGSTAmt": this.chargeDetails().examSGSTAmount,
-        "Total": this.chargeDetails().totalExamAmt,
-        "SACCode": this.chargeDetails().examinationSacCode,
-      }
-    ]
+    const jsonData = [];
+      // {
+      //   "ChargesTypeId": entChargeDetails.chargeId,
+      //   "OperationId": 0,
+      //   "Clause": "",
+      //   "ChargeType": entChargeDetails.chargeCode,
+      //   "ChargeName": entChargeDetails.chargeName,
+      //   "Quantity": totalPackages,
+      //   "Rate": res[0].data.rate,
+      //   "Amount": this.chargeDetails().totalEntryValue,
+      //   "Discount": 0,
+      //   "Taxable": this.chargeDetails().totalEntryValue,
+      //   "IGSTPer": this.chargeDetails().igsTper,
+      //   "IGSTAmt": this.chargeDetails().entryIGSTAmount,
+      //   "CGSTPer": this.chargeDetails().cgsTper,
+      //   "CGSTAmt": this.chargeDetails().entryCGSTAmount,
+      //   "SGSTPer": this.chargeDetails().sgsTper,
+      //   "SGSTAmt": this.chargeDetails().entrySGSTAmount,
+      //   "Total": this.chargeDetails().totalEntryAmt,
+      //   "SACCode": this.chargeDetails().entrySacCode,
+      // },
 
-    if(Object.keys(this.insuranceChargeDetails()).length) {
-      jsonData.push({
-        "ChargesTypeId": insChargeDetails?.chargeId,
-        "OperationId": 0,
-        "Clause": "",
-        "ChargeType": insChargeDetails?.chargeCode,
-        "ChargeName": insChargeDetails?.chargeName,
-        "Quantity": totalPackages,
-        "Rate": res[2].data.rate,
-        "Amount": this.insuranceChargeDetails().totalInsuranceValue,
-        "Taxable": this.insuranceChargeDetails().totalInsuranceValue,
-        "IGSTPer": this.insuranceChargeDetails().igst,
-        "IGSTAmt": this.insuranceChargeDetails().igstAmount,
-        "CGSTPer": this.insuranceChargeDetails().cgst,
-        "CGSTAmt": this.insuranceChargeDetails().cgstAmount,
-        "SGSTPer": this.insuranceChargeDetails().sgst,
-        "SGSTAmt": this.insuranceChargeDetails().sgstAmount,
-        "Total": this.insuranceChargeDetails().totalAmt,
-        "Discount": 0,
-        "SACCode": this.insuranceChargeDetails().sacCode,
-      })
+    if(this.gateInDetails().operationType === this.operationTypes[1].value) {
+      jsonData.push(
+        {
+          "ChargesTypeId": exmChargeDetails.chargeId,
+          "OperationId": 0,
+          "Clause": "",
+          "ChargeType": exmChargeDetails.chargeCode,
+          "ChargeName": exmChargeDetails.chargeName,
+          "Quantity": totalPackages,
+          "Rate": res[0].data.rate,
+          "Amount": this.chargeDetails().totalExamValue,
+          "Discount": 0,
+          "Taxable": this.chargeDetails().totalExamValue,
+          "IGSTPer": this.chargeDetails().igsTperExam,
+          "IGSTAmt": this.chargeDetails().examIGSTAmount,
+          "CGSTPer": this.chargeDetails().cgsTperExam,
+          "CGSTAmt": this.chargeDetails().examCGSTAmount,
+          "SGSTPer": this.chargeDetails().sgsTperExam,
+          "SGSTAmt": this.chargeDetails().examSGSTAmount,
+          "Total": this.chargeDetails().totalExamAmt,
+          "SACCode": this.chargeDetails().examinationSacCode,
+        }
+      )
     }
 
-    if (Object.keys(this.transportChargeDetails()).length) {
+    // if(Object.keys(this.insuranceChargeDetails()).length) {
+    //   jsonData.push({
+    //     "ChargesTypeId": insChargeDetails?.chargeId,
+    //     "OperationId": 0,
+    //     "Clause": "",
+    //     "ChargeType": insChargeDetails?.chargeCode,
+    //     "ChargeName": insChargeDetails?.chargeName,
+    //     "Quantity": totalPackages,
+    //     "Rate": res[2].data.rate,
+    //     "Amount": this.insuranceChargeDetails().totalInsuranceValue,
+    //     "Taxable": this.insuranceChargeDetails().totalInsuranceValue,
+    //     "IGSTPer": this.insuranceChargeDetails().igst,
+    //     "IGSTAmt": this.insuranceChargeDetails().igstAmount,
+    //     "CGSTPer": this.insuranceChargeDetails().cgst,
+    //     "CGSTAmt": this.insuranceChargeDetails().cgstAmount,
+    //     "SGSTPer": this.insuranceChargeDetails().sgst,
+    //     "SGSTAmt": this.insuranceChargeDetails().sgstAmount,
+    //     "Total": this.insuranceChargeDetails().totalAmt,
+    //     "Discount": 0,
+    //     "SACCode": this.insuranceChargeDetails().sacCode,
+    //   })
+    // }
+
+    if (this.gateInDetails().operationType === this.operationTypes[2].value) {
       jsonData.push({
         "ChargesTypeId": trpChargeDetails.chargeId,
         "OperationId": 0,
@@ -223,7 +237,7 @@ export class YardInvoiceHelper {
         "ChargeType": trpChargeDetails.chargeCode,
         "ChargeName": this.transportChargeDetails().chargeName,
         "Quantity": totalPackages,
-        "Rate": res[res.length - 1].data.rate,
+        "Rate": res[0].data.rate,
         "Amount": this.transportChargeDetails().totalValue,
         "Discount": 0,
         "Taxable": this.transportChargeDetails().totalValue,

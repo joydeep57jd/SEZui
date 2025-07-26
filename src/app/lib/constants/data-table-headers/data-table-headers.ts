@@ -43,6 +43,7 @@ import {LoadContainerInvoicePreviewHeaders} from "./load-container-invoice-previ
 import {CancelledInvoiceHeaders} from "./cancelled-invoice.header";
 import {ExportGodownInvoiceHeaders} from "./export-godown-invoice.header";
 import {ExportGodownInvoicePreviewHeaders} from "./export-godown-invoice-preview.header";
+import {CreditNoteHeaders} from "./credit-note.header";
 
 export const DATA_TABLE_HEADERS = {
   GATE_OPERATION: {
@@ -106,6 +107,7 @@ export const DATA_TABLE_HEADERS = {
     PAYMENT_RECEIPT_INVOICE: PaymentReceiptInvoiceHeaders,
     PAYMENT_RECEIPT: PaymentReceiptHeaders,
     CANCEL_INVOICE: CancelledInvoiceHeaders,
+    CREDIT_NOTE: CreditNoteHeaders
   },
   EXPORT: {
     CCIN_ENTRY: CcinEntryHeaders,

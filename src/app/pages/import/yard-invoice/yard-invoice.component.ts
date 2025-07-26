@@ -21,7 +21,7 @@ import {
   distinctUntilChanged,
   filter,
   forkJoin,
-  Observable,
+  Observable, of,
   Subject,
   switchMap,
   takeUntil,
@@ -94,16 +94,28 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
       switchMap(params => this.getFetchChargesObservable(params)),
     ).subscribe({
       next: (response: any) => {
-        const entryCharge = response[0]?.data[0] ?? {};
-        this.chargeDetails.set(entryCharge)
-        if(this.fetchChargesParams$.value.transportParams) {
-          const transportCharge = response[1];
-          this.transportChargeDetails.set(transportCharge)
+        switch (this.gateInDetails().operationType) {
+          case this.operationTypes[1].value:
+            const entryCharge = response[0]?.data[0] ?? {};
+            this.chargeDetails.set(entryCharge)
+            break;
+          case this.operationTypes[2].value:
+              const transportCharge = response[0];
+              this.transportChargeDetails.set(transportCharge)
+            break;
+          default:
+            break;
         }
-        if(this.fetchChargesParams$.value.insuredParams) {
-          const insuranceCharge = response[response.length - 1]?.data[0];
-          this.insuranceChargeDetails.set(insuranceCharge)
-        }
+        // const entryCharge = response[0]?.data[0] ?? {};
+        // this.chargeDetails.set(entryCharge)
+        // if(this.fetchChargesParams$.value.transportParams) {
+        //   const transportCharge = response[1];
+        //   this.transportChargeDetails.set(transportCharge)
+        // }
+        // if(this.fetchChargesParams$.value.insuredParams) {
+        //   const insuranceCharge = response[response.length - 1]?.data[0];
+        //   this.insuranceChargeDetails.set(insuranceCharge)
+        // }
         this.totalCharges.set(this.getTotalCharges());
         this.isChargesFetching.set(false);
       }, error: () => {
@@ -114,14 +126,28 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
 
   getFetchChargesObservable(params: any) {
     const observables: Observable<any>[] = []
-    observables.push(this.apiService.post(this.apiUrls.IMPORT_CHARGES, params.entryParams))
-    if(params.transportParams) {
-      observables.push(this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, params.transportParams))
+    this.chargeDetails.set({})
+    this.insuranceChargeDetails.set({})
+    this.transportChargeDetails.set({})
+    console.log(this.gateInDetails().operationType)
+    switch (this.gateInDetails().operationType) {
+      case this.operationTypes[1].value:
+        observables.push(this.apiService.post(this.apiUrls.IMPORT_CHARGES, params.entryParams))
+        break;
+      case this.operationTypes[2].value:
+        observables.push(this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, params.transportParams))
+        break;
+      default:
+        break;
     }
-    if(params.insuredParams) {
-      observables.push(this.apiService.post(this.apiUrls.INSURANCE_CHARGE, params.insuredParams))
-    }
-    return forkJoin(observables);
+    // observables.push(this.apiService.post(this.apiUrls.IMPORT_CHARGES, params.entryParams))
+    // if(params.transportParams) {
+    //   observables.push(this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, params.transportParams))
+    // }
+    // if(params.insuredParams) {
+    //   observables.push(this.apiService.post(this.apiUrls.INSURANCE_CHARGE, params.insuredParams))
+    // }
+    return observables.length > 0 ? forkJoin(observables) : of([]);
   }
 
   get isInsuranceChargeHaveValues() {

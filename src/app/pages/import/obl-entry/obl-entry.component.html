@@ -131,6 +131,10 @@
             <th>Action</th>
             <th>OBL / HBL No</th>
             <th>OBL / HBL Date</th>
+            <th>BOE number</th>
+            <th>BOE date</th>
+            <th>Value</th>
+            <th>Duty</th>
             <th>SMTP No.</th>
             <th>SMTP Date</th>
             <th>Cargo Desc</th>
@@ -167,6 +171,43 @@
                   <span (click)="oblHblDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                 </div>
                 <ng-container *ngIf="hasError('obL_HBL_Date')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="boeNo" placeholder="Enter BOE No" type="text">
+                <ng-container *ngIf="hasError('boeNo')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <div class="position-relative">
+                  <input formControlName="boeDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
+                         #boeDatePicker="ngbDatepicker"
+                         (click)="boeDatePicker.open()" (dateSelect)="boeDatePicker.close()" />
+                  <span (click)="boeDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                </div>
+                <ng-container *ngIf="hasError('boeDate')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="cifValue" placeholder="Enter Value" type="number">
+                <ng-container *ngIf="hasError('cifValue')">
+                  <span class="error">Required field</span>
+                </ng-container>
+              </div>
+            </td>
+            <td>
+              <div class="form-group bottom-0">
+                <input formControlName="duty" placeholder="Enter Duty" type="number">
+                <ng-container *ngIf="hasError('duty')">
                   <span class="error">Required field</span>
                 </ng-container>
               </div>

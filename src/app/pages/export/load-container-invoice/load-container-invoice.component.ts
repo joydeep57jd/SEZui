@@ -34,9 +34,6 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
   selectedContainerSet = signal<Set<string>>(new Set());
   insuredContainerSet = signal<Set<string>>(new Set());
   selectedContainerList = signal<any[]>([]);
-  chargeDetails = signal<any>({});
-  handlingChargeDetails = signal<any>({});
-  insuranceChargeDetails = signal<any>({});
   totalCharges = signal<any>({});
   pdfData = signal<any>({});
   isViewMode = signal(false);
@@ -61,35 +58,66 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
 
   fetchCharges() {
     const body = this.getFetchChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
-    const insuranceBody = this.getFetchInsuranceChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
-    const invoiceDate = this.form.get("invoiceDate")?.value;
+    // const insuranceBody = this.getFetchInsuranceChargesPayload(this.form.get("partyId")?.value, this.selectedContainerList());
+    // const invoiceDate = this.form.get("invoiceDate")?.value;
+    this.chargeDetails.set({});
+    this.handlingChargeDetails.set({});
+    this.insuranceChargeDetails.set({});
+    this.totalCharges.set(this.getTotalCharges())
     if(!body) {
-      this.chargeDetails.set({});
-      this.handlingChargeDetails.set({});
-      this.insuranceChargeDetails.set({});
-      this.totalCharges.set(this.getTotalCharges(null, null, null))
       return;
     }
-    const application = this.containerRequestList().find(containerRequest => containerRequest.loadContReqId === this.form.value?.applicationId);
-    const containerObList = body.containerList.split(",").map((containerNo: string) => `${containerNo}#${application?.loadContReqNo ?? ""}`).join(",");
-    const apiCalls = [
-      this.apiService.get(this.apiUrls.ENTRY_CHARGES, body),
-      this.apiService.get(this.apiUrls.HANDLING_CHARGES, {...body, ContainerOBLList: containerObList}),
-    ]
-    if(insuranceBody) {
-      apiCalls.push(
-        this.apiService.get(this.apiUrls.INSURANCE_CHARGE, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}),
-      )
-    }
-    forkJoin(apiCalls).subscribe({
-      next: (responses: any) => {
-        const entryCharges = responses[0];
-        const handlingCharges = responses[1];
-        const insuranceCharges = insuranceBody ? responses[2] : {data: [{}]};
-        this.chargeDetails.set(entryCharges.data[0])
-        this.handlingChargeDetails.set(handlingCharges.data)
-        this.insuranceChargeDetails.set(insuranceCharges.data[0])
-        this.totalCharges.set(this.getTotalCharges(entryCharges.data[0], handlingCharges.data, insuranceCharges.data[0]))
+    this.apiService.get(this.apiUrls.GATE_IN_DETAILS, {containerNo: this.selectedContainerList()[0].containerNo}).subscribe({
+      next: (response: any) => {
+        const details = response.data[0];
+        this.gateInDetails.set(details)
+
+
+        // const application = this.containerRequestList().find(containerRequest => containerRequest.loadContReqId === this.form.value?.applicationId);
+        // const containerObList = body.containerList.split(",").map((containerNo: string) => `${containerNo}#${application?.loadContReqNo ?? ""}`).join(",");
+        const apiCalls = [];
+
+        switch (this.gateInDetails().operationType) {
+          case this.operationTypes[1].value:
+          case this.operationTypes[0].value:
+            apiCalls.push(this.apiService.get(this.apiUrls.ENTRY_CHARGES, body))
+            break;
+          case this.operationTypes[2].value:
+            apiCalls.push(this.apiService.get(this.apiUrls.TRANSPORTATION_CHARGES, body))
+            break;
+          default:
+            break;
+        }
+        //   this.apiService.get(this.apiUrls.ENTRY_CHARGES, body)
+        //   this.apiService.get(this.apiUrls.HANDLING_CHARGES, {...body, ContainerOBLList: containerObList})
+        // if(insuranceBody) {
+        //   apiCalls.push(
+        //     this.apiService.get(this.apiUrls.INSURANCE_CHARGE, {...body, invoiceDate: this.utilService.getDateObject(invoiceDate)}),
+        //   )
+        // }
+        forkJoin(apiCalls).subscribe({
+          next: (responses: any) => {
+            switch (this.gateInDetails().operationType) {
+              case this.operationTypes[1].value:
+              case this.operationTypes[0].value:
+                this.chargeDetails.set(responses[0]?.data[0] ?? {})
+                break;
+              case this.operationTypes[2].value:
+                const transportCharge = responses[0];
+                this.transportChargeDetails.set(transportCharge)
+                break;
+              default:
+                break;
+            }
+            // const entryCharges = responses[0];
+            // const handlingCharges = responses[1];
+            // const insuranceCharges = insuranceBody ? responses[2] : {data: [{}]};
+            // this.chargeDetails.set(entryCharges.data[0])
+            // this.handlingChargeDetails.set(handlingCharges.data)
+            // this.insuranceChargeDetails.set(insuranceCharges.data[0])
+            this.totalCharges.set(this.getTotalCharges())
+          }
+        })
       }
     })
   }
@@ -145,7 +173,7 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this.isSaving.set(true);
-      const data = await this.makePayload(this.form.getRawValue(), this.chargeDetails(), this.handlingChargeDetails(), this.insuranceChargeDetails(), this.selectedContainerList(), this.partyList());
+      const data = await this.makePayload(this.form.getRawValue(), this.selectedContainerList(), this.partyList());
       this.apiService.post(this.apiUrls.SAVE, data).subscribe({
         next:() => {
           this.toasterService.showSuccess("Load container invoice saved successfully");

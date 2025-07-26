@@ -1,0 +1,134 @@
+<div class="card">
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Credit Note No:</label>
+          <input formControlName="creditNoteNo" placeholder="Enter Credit Note No" type="text">
+          <ng-container *ngIf="hasError('creditNoteNo')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <div class="form-group">
+          <label>Credit Note Date:</label>
+          <div class="position-relative">
+            <input formControlName="creditNoteDate" placeholder="dd-mm-yyyy" readonly name="dp" ngbDatepicker container="body"
+                   #creditNoteDatePicker="ngbDatepicker"
+                   (click)="creditNoteDatePicker.open()" (dateSelect)="creditNoteDatePicker.close()" />
+            <span (click)="creditNoteDatePicker.open()" class="input_icon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <ng-container *ngIf="hasError('creditNoteDate')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+        <app-auto-complete keyName="invoiceNo" keyValue="invoiceNo" label="Invoice No:" placeholder="Select Invoice No" title="List of Invoice No" formControlName="invoiceNo" [options]="invoiceList()" />
+      </div>
+
+      <div class="col-md-4 col-lg-3 col-sm-6">
+          <app-auto-complete keyName="partyName" keyValue="partyId" label="Party Name:" title="List of Party" placeholder="Select Party Name" formControlName="partyId" [options]="partyList()" />
+      </div>
+
+
+      <div class="col-md-12 table-container">
+        <table class="table table-bordered nowrap dataTable credit-note-table">
+          <thead class="border-transparent-bottom">
+            <tr>
+              <th rowspan="2" class="text-center" style="width:8%;">Sl No</th>
+              <th rowspan="2" class="text-center">Particulars</th>
+              <th rowspan="2" class="text-center">SAC</th>
+              <th rowspan="2" class="text-center">Value</th>
+              <th rowspan="2" class="text-center">Return Value</th>
+              <th colspan="2" class="text-center">CGST</th>
+              <th colspan="2" class="text-center">SGST</th>
+              <th colspan="2" class="text-center">IGST</th>
+              <th rowspan="2" class="text-center" style="width:15%;">Total</th>
+            </tr>
+            <tr class="border-transparent-top">
+              <th class="text-center">%</th>
+              <th class="text-center">Amount</th>
+              <th class="text-center">%</th>
+              <th class="text-center">Amount</th>
+              <th class="text-center">%</th>
+              <th class="text-center">Amount</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="creditNoteDetailList">
+            <ng-container *ngFor="let item of chargeDetails().containerCharges; let i = index">
+              <tr *ngFor="let charge of item.charges; let j = index" [formGroupName]="charge.slNo - 1">
+                <td class="text-center">{{charge.slNo}}</td>
+                <td class="text-center">
+                  <div class="form-group bottom-0">
+                    <input formControlName="particulars" placeholder="Enter Particulars" type="text">
+                    <ng-container *ngIf="hasError('particulars')">
+                      <span class="error">Required field</span>
+                    </ng-container>
+                  </div>
+                </td>
+                <td class="text-center">{{charge.sacCode}}</td>
+                <td class="text-center">{{charge.taxableAmt}}</td>
+                <td class="text-center">
+                  <div class="form-group bottom-0">
+                    <input formControlName="returnValue" placeholder="Enter Return value" type="number">
+                    <ng-container *ngIf="hasError('returnValue')">
+                      <span class="error">Required field</span>
+                    </ng-container>
+                  </div>
+                </td>
+                <td class="text-center">{{charge.cgstRate}}</td>
+                <td class="text-center">{{charge.cgstAmt}}</td>
+                <td class="text-center">{{charge.sgstRate}}</td>
+                <td class="text-center">{{charge.sgstAmt}}</td>
+                <td class="text-center">{{charge.igstRate}}</td>
+                <td class="text-center">{{charge.igstAmt}}</td>
+                <td class="text-center">{{charge.total}}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td colspan="11" class="text-right">Total</td>
+            <td class="text-right">
+              <input  readonly type="text" [value]="utilService.formatCurrency(total())">
+            </td>
+          </tr>
+          <tr>
+            <td colspan="11" class="text-right">Roundup</td>
+            <td class="text-right">
+              <input  readonly type="text" [value]="utilService.formatCurrency(roundOff())">
+            </td>
+          </tr>
+          <tr>
+            <td colspan="11" class="text-right">Grand Total</td>
+            <td class="text-right">
+              <input  readonly type="text" [value]="utilService.formatCurrency(roundedTotal())">
+            </td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+
+    <hr />
+    <div class="d-flex justify-content-left gap-2">
+      <ng-container *ngIf="isViewMode(); else formActionButton">
+<!--        <button type="button" class="btn btn-primary form-btn" (click)="setEditMode()">Edit</button>-->
+      </ng-container>
+      <ng-template #formActionButton>
+        <button [disabled]="isSaving()" type="button" class="btn btn-primary form-btn" (click)="submit()">Save</button>
+      </ng-template>
+      <button type="button" class="btn btn-outline-primary form-btn" (click)="reset()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mt-2 d-flex flex-column gap-2">
+    <app-data-table [headers]="headers" [url]="apiUrls.LIST"></app-data-table>
+  </div>
+</div>

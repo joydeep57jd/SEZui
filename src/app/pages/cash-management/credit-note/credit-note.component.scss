@@ -1,0 +1,22 @@
+.table-bordered>tfoot>tr>td {
+  border: 1px solid #ddd;
+}
+.credit-note-table {
+  margin-top: 10px;
+  thead{
+    tr.border-transparent-bottom {
+      th, td {
+        border-bottom: 1px solid transparent;
+      }
+    }
+    tr.border-transparent-top {
+      th, td {
+        border-top: 1px solid transparent;
+      }
+    }
+  }
+}
+.text-right{
+  text-align: right;
+}
+

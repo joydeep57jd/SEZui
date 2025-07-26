@@ -3,4 +3,5 @@ export const CASH_MANAGEMENT_PATHS = {
   CANCEL_INVOICE: "cancel-invoice",
   REGISTER_OF_OUTWARD_SUPPLY: "register-of-outward-supply",
   DAILY_CASH_BOOK: "daily-cash-book",
+  CREDIT_NOTE: "credit-note",
 };

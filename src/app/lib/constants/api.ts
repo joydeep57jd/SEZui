@@ -109,7 +109,8 @@ export const API = {
       CHARGE_TYPE: "Sez/GetAllChargesTypes",
       LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=false&isCancelled=false",
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
-      APPLICATION_LIST: "Sez/GetCustomAppraisementApplicationHeader"
+      APPLICATION_LIST: "Sez/GetCustomAppraisementApplicationHeader",
+      GATE_IN_DETAILS: "Sez/GetAllEntries",
     },
     GODOWN_INVOICE: {
       SAVE: "Sez/AddGodownInvoice",
@@ -164,6 +165,14 @@ export const API = {
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
       SAVE: "Sez/CancellInoive",
       LIST: "Sez/GetCancellInoive"
+    },
+    CREDIT_NOTE: {
+      LIST: "Sez/GetCreditNote",
+      SAVE: "Sez/AddCreditNote",
+      DETAILS: "Sez/GetCreditNoteDetail",
+      INVOICE_LIST: "Sez/GetInvoiceDetails?ForGatePass=true",
+      YARD_INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
+      GODOWN_INVOICE_DETAILS: "Sez/GetGodownChargesReport",
     }
   },
   EXPORT: {
@@ -194,6 +203,8 @@ export const API = {
       LIST: "Sez/GetYardInvoice?IsLoadContainerInvoice=true&isCancelled=false",
       INVOICE_DETAILS: "Sez/GetImportChargesInvoice",
       CONTAINER_LIST: "Sez/GetContainerlistForLoadedContainerInvoice",
+      GATE_IN_DETAILS: "Sez/GetAllEntries",
+      TRANSPORTATION_CHARGES: "Sez/GetExportTransportChargesCalc",
     },
     GODOWN_INVOICE: {
       SAVE: "Sez/AddGodownInvoice",

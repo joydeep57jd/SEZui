@@ -22,4 +22,10 @@ export const CASH_MANAGEMENT_ROUTES: Route[] = [
     loadComponent: () => import('../..').then((c) => c.DailyCashBookComponent),
     data: {title: "Daily Cash Book"}
   },
+  {
+    path: PATHS.CASH_MANAGEMENT.CREDIT_NOTE,
+    loadComponent: () => import('../..').then((c) => c.CreditNoteComponent),
+    data: {title: "Credit Note"}
+  },
 ];
+
