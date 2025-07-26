@@ -113,6 +113,16 @@
           </tfoot>
         </table>
       </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Remarks:</label>
+          <textarea formControlName="remarks" placeholder="Enter Remarks" rows="5"></textarea>
+          <ng-container *ngIf="hasError('remarks')">
+            <span class="error">Required field</span>
+          </ng-container>
+        </div>
+      </div>
     </div>
 
 

@@ -97,7 +97,7 @@ export class ExportGodownInvoiceHelper {
       }
       return acc;
     }, "")
-    return { containerList: containerOblList, partyId }
+    return { containerList: containerOblList, partyId, isLoadContainerInvoice: false, typeOfCharge: 2 }
   }
 
   getHandlingChargesPayload(partyId: number, selectedContainerList: any[]) {

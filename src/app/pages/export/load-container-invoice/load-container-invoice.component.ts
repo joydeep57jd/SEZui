@@ -193,6 +193,8 @@ export class LoadContainerInvoiceComponent extends LoadContainerInvoiceHelper im
     this.chargeDetails.set({})
     this.handlingChargeDetails.set({})
     this.insuranceChargeDetails.set({})
+    this.transportChargeDetails.set({})
+    this.gateInDetails.set({})
     this.selectedContainerSet().clear();
     this.insuredContainerSet().clear();
     this.selectedContainerList.set([]);

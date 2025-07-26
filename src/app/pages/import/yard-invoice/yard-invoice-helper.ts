@@ -100,8 +100,8 @@ export class YardInvoiceHelper {
 
         const baseParams = { containerOBLList: containerOblList.all, partyId }
         const params = {
-          entryParams: {...baseParams, typeOfCharge: CHARGE_TYPE.IMPORT},
-          transportParams:  {...baseParams}, // formValue.transportationChargeType &&
+          entryParams: {...baseParams, typeOfCharge: CHARGE_TYPE.IMPORT, isYardInvoice: true},
+          transportParams:  {...baseParams, isYardInvoice: true}, // formValue.transportationChargeType &&
           insuredParams: (containerOblList.insured && formValue.invoiceDate) && {containerOblList: containerOblList.insured, partyId, isYardInvoice: true, invoiceDate: this.utilService.getDateObject(formValue.invoiceDate)}
         }
         if(!params.transportParams) {
@@ -117,7 +117,7 @@ export class YardInvoiceHelper {
   }
 
   getTotalCharges() {
-    const total = (this.chargeDetails().totalEntryAmt ?? 0) + (this.chargeDetails().totalExamAmt ?? 0) + (this.transportChargeDetails().totalAmt ?? 0) + (this.insuranceChargeDetails().totalAmt ?? 0);
+    const total = (this.chargeDetails().totalExamAmt ?? 0) + (this.transportChargeDetails().totalAmt ?? 0) + (this.insuranceChargeDetails().totalAmt ?? 0);
     const totalInvoice = Math.ceil(total);
     const added = totalInvoice - total;
     return total ? { total, totalInvoice, added } : {}

@@ -8,7 +8,7 @@
       <tr>
         <th class="th-border"></th>
         <th class="th-border">Container CBT No</th>
-        <th class="th-border">OBL HBL No</th>
+        <th class="th-border">BOE No</th>
         <th class="th-border">Insured</th>
       </tr>
       <tr *ngFor="let record of records(); let index = index">
@@ -22,7 +22,7 @@
           </div>
         </td>
         <td class="td-border">{{ record.containerNo }}</td>
-        <td class="td-border">{{ record.obl }}</td>
+        <td class="td-border">{{ record.boE_NO }}</td>
         <td class="td-border checkbox">
           <div class="checkbox-container mt-0">
             <input  (change)="updateInsured.emit(record)" [checked]="insuredOblSet().has(getContainerOblNo(record))" [id]="'isInsured-'+index"  hidden type="checkbox">

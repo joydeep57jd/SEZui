@@ -15,7 +15,7 @@ export const IMPORT_ROUTES: Route[] = [
   {
     path: PATHS.IMPORT.OBL_ENTRY,
     loadComponent: () => import('../..').then((c) => c.OblEntryComponent),
-    data: { title: "OBL Entry" }
+    data: { title: "BOE Entry" }
   },
   {
     path: PATHS.IMPORT.DESTUFFING_ENTRY,

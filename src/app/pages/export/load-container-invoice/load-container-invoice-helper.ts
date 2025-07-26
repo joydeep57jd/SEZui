@@ -114,11 +114,13 @@ export class LoadContainerInvoiceHelper {
       }
       return acc;
     }, "")
-    return { containerList: containerList, partyId }
+    return { containerList: containerList, partyId, isLoadContainerInvoice: true, typeOfCharge: 2 }
   }
 
   getTotalCharges() {
-    const total = (this.chargeDetails().totalEntryAmt ?? 0) + (this.chargeDetails().totalExamAmt ?? 0) + (this.transportChargeDetails().totalAmt ?? 0);
+    const total = (this.gateInDetails().operationType === this.operationTypes[0].value ?(this.chargeDetails().totalEntryAmt ?? 0) : 0) +
+      (this.chargeDetails().totalExamAmt ?? 0) +
+      (this.transportChargeDetails().totalAmt ?? 0);
     const totalInvoice = Math.ceil(total);
     const added = totalInvoice - total;
     return total ? { total, totalInvoice, added } : {}

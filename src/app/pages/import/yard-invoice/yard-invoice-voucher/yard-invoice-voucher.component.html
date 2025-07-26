@@ -103,7 +103,7 @@
       </table>
     </div>
 
-    <div class="charges-section">
+    <div *ngIf="totalWithRoundOff" class="charges-section">
       <div style="font-weight: bold; margin-bottom: 10px;">Container / CBT Charges :</div>
       <table class="charges-table">
         <thead>
@@ -136,26 +136,29 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of data()?.charges ?? []; let index = index">
-            <td>{{ index + 1  }}</td>
-            <td>{{ item.chargeCode }}</td>
-            <td class="description">{{ item.descripton }}</td>
-            <td>{{ item.sacCode }}</td>
-            <td class="amount">{{ formatCurrency(item.rate) }}</td>
-            <td class="amount">{{ formatCurrency(item.taxableAmt) }}</td>
-            <td>{{ item.cgstRate }}</td>
-            <td class="amount">{{ formatCurrency(item.cgstAmt) }}</td>
-            <td>{{ item.sgstRate }}</td>
-            <td class="amount">{{ formatCurrency(item.sgstAmt) }}</td>
-            <td>{{ item.igstRate }}</td>
-            <td class="amount">{{ item.igstAmt }}</td>
-            <td class="amount">{{ formatCurrency(item.total) }}</td>
-          </tr>
+
+          <ng-container *ngFor="let item of data()?.charges ?? []; let index = index">
+            <tr *ngIf="item.total">
+              <td>{{ index + 1  }}</td>
+              <td>{{ item.chargeCode }}</td>
+              <td class="description">{{ item.descripton }}</td>
+              <td>{{ item.sacCode }}</td>
+              <td class="amount">{{ formatCurrency(item.rate) }}</td>
+              <td class="amount">{{ formatCurrency(item.taxableAmt) }}</td>
+              <td>{{ item.cgstRate }}</td>
+              <td class="amount">{{ formatCurrency(item.cgstAmt) }}</td>
+              <td>{{ item.sgstRate }}</td>
+              <td class="amount">{{ formatCurrency(item.sgstAmt) }}</td>
+              <td>{{ item.igstRate }}</td>
+              <td class="amount">{{ item.igstAmt }}</td>
+              <td class="amount">{{ formatCurrency(item.total) }}</td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>
   </div>
-  <div class="totals-section">
+  <div *ngIf="totalWithRoundOff" class="totals-section">
     <div class="total-row">
       <span>Total :</span>
       <span>{{ formatCurrency(total) }}</span>

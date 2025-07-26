@@ -35,7 +35,7 @@ export const MENU = [
   {
     label: 'Import',
     children: [
-      { label: 'OBL Entry', path: PATHS.IMPORT.OBL_ENTRY },
+      { label: 'BOE Entry', path: PATHS.IMPORT.OBL_ENTRY },
       { label: 'Custom Appraisement', path: PATHS.IMPORT.CUSTOM_APPRAISEMENT, },
       { label: 'Yard Invoice', path: PATHS.IMPORT.YARD_INVOICE },
       { label: 'Destuffing Entry', path: PATHS.IMPORT.DESTUFFING_ENTRY },

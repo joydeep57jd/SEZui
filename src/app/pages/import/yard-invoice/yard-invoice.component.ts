@@ -248,6 +248,7 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     this.selectedContainerList.set([]);
     this.containerList.set([])
     this.totalCharges.set({});
+    this.gateInDetails.set({})
   }
 
   hasError(formControlName: string) {
