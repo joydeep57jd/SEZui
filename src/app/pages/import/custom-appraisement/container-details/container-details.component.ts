@@ -72,7 +72,6 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
     this.apiService.get(this.apiUrls.OBL_LIST, {containerNo}).subscribe({
       next: (response: any) => {
         const oblId = this.form.get("oblNoId")?.value
-        console.log(response.data.some((x:any)=>x.id == oblId))
         if(!response.data.some((x:any)=>x.id == oblId)) {
           this.form.get("oblNoId")?.patchValue("")
         } else {
@@ -116,7 +115,6 @@ export class ContainerDetailsComponent implements OnChanges, OnDestroy {
         distinctUntilChanged()
       )
       .subscribe((value: string) => {
-        console.log(value)
         this.fetchContainerDetails()
         this.getOblList(value)
       })

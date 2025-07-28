@@ -129,7 +129,6 @@ export class YardInvoiceComponent extends YardInvoiceHelper implements OnDestroy
     this.chargeDetails.set({})
     this.insuranceChargeDetails.set({})
     this.transportChargeDetails.set({})
-    console.log(this.gateInDetails().operationType)
     switch (this.gateInDetails().operationType) {
       case this.operationTypes[1].value:
         observables.push(this.apiService.post(this.apiUrls.IMPORT_CHARGES, params.entryParams))
