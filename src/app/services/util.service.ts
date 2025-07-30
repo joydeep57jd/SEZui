@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {FormGroup} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -114,5 +115,17 @@ export class UtilService {
     }
 
     return words ? words + ' Only' : 'Zero Rupees Only';
+  }
+
+  scrollToError(form: FormGroup) {
+    for (let control in form.controls) {
+      if(form.get(control)?.errors) {
+        const element = document.querySelector(`[formcontrolname="${control}"]`);
+        if(element) {
+          element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
+          break
+        }
+      }
+    }
   }
 }

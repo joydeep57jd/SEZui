@@ -61,34 +61,37 @@
           </thead>
           <tbody formArrayName="creditNoteDetailList">
             <ng-container *ngFor="let item of chargeDetails().containerCharges; let i = index">
-              <tr *ngFor="let charge of item.charges; let j = index" [formGroupName]="charge.slNo - 1">
-                <td class="text-center">{{charge.slNo}}</td>
-                <td class="text-center">
-                  <div class="form-group bottom-0">
-                    <input formControlName="particulars" placeholder="Enter Particulars" type="text">
-                    <ng-container *ngIf="hasError('particulars')">
-                      <span class="error">Required field</span>
-                    </ng-container>
-                  </div>
-                </td>
-                <td class="text-center">{{charge.sacCode}}</td>
-                <td class="text-center">{{charge.taxableAmt}}</td>
-                <td class="text-center">
-                  <div class="form-group bottom-0">
-                    <input formControlName="returnValue" placeholder="Enter Return value" type="number">
-                    <ng-container *ngIf="hasError('returnValue')">
-                      <span class="error">Required field</span>
-                    </ng-container>
-                  </div>
-                </td>
-                <td class="text-center">{{charge.cgstRate}}</td>
-                <td class="text-center">{{charge.cgstAmt}}</td>
-                <td class="text-center">{{charge.sgstRate}}</td>
-                <td class="text-center">{{charge.sgstAmt}}</td>
-                <td class="text-center">{{charge.igstRate}}</td>
-                <td class="text-center">{{charge.igstAmt}}</td>
-                <td class="text-center">{{charge.total}}</td>
-              </tr>
+              <ng-container *ngFor="let charge of item.charges; let j = index">
+                <tr *ngIf="charge.taxableAmt"  [formGroupName]="charge.slNo - 1">
+                  <td class="text-center">{{charge.slNo}}</td>
+  <!--                <td class="text-center">-->
+  <!--                  <div class="form-group bottom-0">-->
+  <!--                    <input formControlName="particulars" placeholder="Enter Particulars" type="text">-->
+  <!--                    <ng-container *ngIf="hasError('particulars')">-->
+  <!--                      <span class="error">Required field</span>-->
+  <!--                    </ng-container>-->
+  <!--                  </div>-->
+  <!--                </td>-->
+                  <td class="text-center">{{charge.descripton}}</td>
+                  <td class="text-center">{{charge.sacCode}}</td>
+                  <td class="text-center">{{charge.taxableAmt}}</td>
+                  <td class="text-center">
+                    <div class="form-group bottom-0">
+                      <input (input)="updateCalculation(charge.slNo - 1)" formControlName="taxable" placeholder="Enter Return value" type="number">
+                      <ng-container *ngIf="hasError('taxable')">
+                        <span class="error">Required field</span>
+                      </ng-container>
+                    </div>
+                  </td>
+                  <td class="text-center">{{getFormValue("cgstPer", charge.slNo - 1)}}</td>
+                  <td class="text-center">{{getFormValue("cgstAmt", charge.slNo - 1)}}</td>
+                  <td class="text-center">{{getFormValue("sgstPer", charge.slNo - 1)}}</td>
+                  <td class="text-center">{{getFormValue("sgstAmt", charge.slNo - 1)}}</td>
+                  <td class="text-center">{{getFormValue("igstPer", charge.slNo - 1)}}</td>
+                  <td class="text-center">{{getFormValue("igstAmt", charge.slNo - 1)}}</td>
+                  <td class="text-center">{{getFormValue("total", charge.slNo - 1)}}</td>
+                </tr>
+              </ng-container>
             </ng-container>
           </tbody>
           <tfoot>

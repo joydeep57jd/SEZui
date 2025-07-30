@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {COMMODITY_DATA} from "../../master/commodity/commodity.data";
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DataTableComponent} from "../../../components";
 import {AutoCompleteComponent} from "../../../components/auto-complete/auto-complete.component";
 import {NgbInputDatepicker} from "@ng-bootstrap/ng-bootstrap";
@@ -53,13 +53,15 @@ export class CreditNoteComponent implements OnDestroy {
       next: (response: any) => {
         const charges: any[] = []
         let total = 0;
+        let slNo = 0;
         response.data.sort((a: any, b: any) => a.slNo - b.slNo).forEach((detail: any) => {
           this.createCreditNoteDetailGroup({}, detail)
           total += detail.totalAmount;
+          slNo += 1
           charges.push({
-            slNo: detail.slNo,
+            slNo: slNo,
             sacCode: detail.sac,
-            taxableAmt: detail.value,
+            taxableAmt: detail.inv_Amount,
             cgstRate: detail.cgstPercent,
             cgstAmt: detail.cgstAmount,
             sgstRate: detail.sgstPercent,
@@ -69,9 +71,9 @@ export class CreditNoteComponent implements OnDestroy {
             total: detail.totalAmount,
           })
         })
-        this.total.set(total)
-        this.roundedTotal.set(Math.ceil(total))
-        this.roundOff.set(Math.ceil(total) - total)
+        // this.total.set(total)
+        // this.roundedTotal.set(Math.ceil(total))
+        // this.roundOff.set(Math.ceil(total) - total)
         this.chargeDetails.set({containerCharges: [{charges}]});
         this.form.disable()
       }
@@ -111,20 +113,15 @@ export class CreditNoteComponent implements OnDestroy {
   }
 
   setInvoiceDetails(data: any) {
-    let total = 0;
     let slNo = 0;
     this.getCreditNoteDetailGroup().clear()
     data.containerCharges.forEach((container: any) => {
       container.charges.forEach((charge: any) => {
-        total += charge.total;
         slNo += 1;
         charge.slNo = slNo;
         this.createCreditNoteDetailGroup(charge)
       })
     })
-    this.total.set(total)
-    this.roundedTotal.set(Math.ceil(total))
-    this.roundOff.set(Math.ceil(total) - total)
     this.chargeDetails.set(data)
   }
 
@@ -134,24 +131,68 @@ export class CreditNoteComponent implements OnDestroy {
 
   createCreditNoteDetailGroup(charge?:any, detail?: any) {
     this.getCreditNoteDetailGroup().push(new FormGroup({
+      slNo: new FormControl(detail?.slNo ?? charge.slNo, []),
       creditNoteDetailId: new FormControl(detail?.id ?? 0, []),
       creditNoteId: new FormControl(detail?.addId ?? 0, []),
-      slNo: new FormControl(detail?.slNo ?? charge.slNo, []),
-      sac: new FormControl(detail?.sac ?? charge.sacCode, []),
-      value: new FormControl(detail?.value ?? charge.taxableAmt, []),
-      cgstPercent: new FormControl(detail?.cgstPercent ?? charge.cgstRate, []),
-      cgstAmount: new FormControl(detail?.cgstAmount ?? charge.cgstAmt, []),
-      sgstPercent: new FormControl(detail?.sgstPercent ?? charge.sgstRate, []),
-      sgstAmount: new FormControl(detail?.sgstAmount ?? charge.sgstAmt, []),
-      igstPercent: new FormControl(detail?.igstPercent ?? charge.igstRate, []),
-      igstAmount: new FormControl(detail?.igstAmount ?? charge.igstAmt, []),
-      totalAmount: new FormControl(detail?.totalAmount ?? charge.total, []),
-      roundOff: new FormControl(detail?.roundOff ?? +(Math.ceil(charge.total) - charge.total).toFixed(2), []),
-      grandTotal: new FormControl(detail?.grandTotal ?? Math.ceil(charge.total), []),
-      particulars: new FormControl(detail?.particulars ?? "", []),
-      returnValue: new FormControl(detail?.returnValue ?? null, []),
+      chargesTypeId: new FormControl(detail?.chargesTypeId ?? 0, []),
+      chargeType: new FormControl(detail?.chargeType ?? charge?.chargeCode ?? '', []),
+      chargeName: new FormControl(detail?.chargeName ?? charge?.descripton ?? '', []),
+      sacCode: new FormControl(detail?.sacCode ?? charge.sacCode, []),
+      quantity: new FormControl(detail?.quantity ?? charge.quantity ?? 0, []),
+      rate: new FormControl(detail?.rate ?? charge.rate, []),
+      inv_Amount: new FormControl(detail?.inv_Amount ?? charge.taxableAmt, []),
+      taxable: new FormControl(detail?.taxable ?? null, charge.taxableAmt ? [Validators.required] : []),
+      cgstPer: new FormControl(detail?.cgstPer ?? charge.cgstRate, []),
+      cgstAmt: new FormControl(detail?.cgstAmt ?? 0, []),
+      sgstPer: new FormControl(detail?.sgstPer ?? charge.sgstRate, []),
+      sgstAmt: new FormControl(detail?.sgstAmt ?? 0, []),
+      igstPer: new FormControl(detail?.igstPer ?? charge.igstRate, []),
+      igstAmt: new FormControl(detail?.igstAmt ?? 0, []),
+      total: new FormControl(detail?.total ?? 0, []),
+      particulars: new FormControl(detail?.particulars ?? charge.descripton, []),
       isActive: new FormControl(detail?.isActive ?? true, []),
     }))
+    this.updateCalculation(this.getCreditNoteDetailGroup().length - 1)
+  }
+
+  getFormValue(controlName: string, index: number) {
+    const form = this.getCreditNoteDetailGroup().at(index) as FormGroup;
+    return form.get(controlName)?.value || 0;
+  }
+
+  updateCalculation(index: number) {
+    const form = this.getCreditNoteDetailGroup().at(index) as FormGroup;
+    const value = form.get("taxable")?.value || 0;
+
+    const cgst = form.get("cgstPer")?.value
+    const sgst = form.get("sgstPer")?.value
+    const igst = form.get("igstPer")?.value
+
+    const cgstAmount = (value * cgst / 100)
+    const sgstAmount = (value * sgst / 100)
+    const igstAmount = (value * igst / 100)
+
+    const total = +(value + cgstAmount + sgstAmount + igstAmount).toFixed(2);
+
+    form.get("cgstAmt")?.setValue(cgstAmount);
+    form.get("sgstAmt")?.setValue(sgstAmount);
+    form.get("igstAmt")?.setValue(igstAmount);
+    form.get("total")?.setValue(total || null);
+
+    this.updateGrandTotal()
+  }
+
+  updateGrandTotal() {
+    let totalAmount = 0;
+    for(let i = 0; i < this.getCreditNoteDetailGroup().length - 1; i++) {
+      const form = this.getCreditNoteDetailGroup().at(i) as FormGroup;
+      totalAmount += form.get("total")?.value || 0;
+    }
+    const grandTotal = Math.ceil(totalAmount);
+    const roundOff = +(grandTotal - totalAmount).toFixed(2);
+    this.total.set(totalAmount)
+    this.roundedTotal.set(grandTotal)
+    this.roundOff.set(roundOff)
   }
 
   makeForm() {
@@ -252,14 +293,23 @@ export class CreditNoteComponent implements OnDestroy {
 
   makePayload() {
     const value = {...this.form.getRawValue()};
-    return {...value, creditNoteDate: this.utilService.getDateObject(value.creditNoteDate), creditNoteDetailList: this.getCreditNoteDetailGroup().getRawValue().map(
-        data => ({
-          ...data,
-          createdDate: this.utilService.getDateObject(this.utilService.getNgbDateObject(new Date())),
-          createdBy: "",
-          updatedDate: this.utilService.getDateObject(this.utilService.getNgbDateObject(new Date())),
-          updatedBy: "",
-        }))
+    return {
+      ...value,
+      taxInvoice: true,
+      billOfSupply: true,
+      payeeId: 0,
+      gstNo: this.chargeDetails()?.partyGST ?? '',
+      placeOfSupply: this.chargeDetails()?.placeOfSupply ?? '',
+      isYard: true,
+      isImport: true,
+      isSAP: 0,
+      saP_DOC_NUMBER: "",
+      createdBy: 0,
+      updatedBy: 0,
+      createdAt: this.utilService.getDateObject(this.utilService.getNgbDateObject(new Date())),
+      updatedAt: this.utilService.getDateObject(this.utilService.getNgbDateObject(new Date())),
+      creditNoteDate: this.utilService.getDateObject(value.creditNoteDate),
+      creditNoteDetailList: this.getCreditNoteDetailGroup().getRawValue().filter(x => x.inv_Amount)
     };
   }
 

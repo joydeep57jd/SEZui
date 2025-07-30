@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
@@ -120,7 +120,7 @@ export class PaymentReceiptComponent implements OnDestroy{
     this.form = new FormGroup({
       cashReceiptId: new FormControl(0, []),
       branchId: new FormControl(0, []),
-      receiptNo: new FormControl("", []),
+      receiptNo: new FormControl("", [Validators.required]),
       receiptDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       partyId: new FormControl(null, []),
       tdsAmount: new FormControl(null, []),
@@ -200,6 +200,8 @@ export class PaymentReceiptComponent implements OnDestroy{
           this.isSaving.set(false);
         }
       })
+    } else {
+      this.utilService.scrollToError(this.form);
     }
   }
 
@@ -293,7 +295,7 @@ export class PaymentReceiptComponent implements OnDestroy{
   updateTotalPayableAmount() {
     const tdsAmount = this.form.get("tdsAmount")?.value;
     const totalValue = this.form.get("invoiceValue")?.value;
-    const totalPayableAmount = +(totalValue + tdsAmount).toFixed(2);
+    const totalPayableAmount = +(totalValue - tdsAmount).toFixed(2);
     this.form.get("totalPaymentReceipt")?.setValue(totalPayableAmount)
   }
 
