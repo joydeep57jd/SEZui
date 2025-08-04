@@ -29,9 +29,9 @@ export class PrintService {
       printWindow.document.close();
       document.body.removeChild(container);
     printWindow.onload = () => {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close()
+        printWindow?.focus();
+        printWindow?.print();
+        printWindow?.close()
       };
     } else {
       document.body.removeChild(container);

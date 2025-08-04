@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
-import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormArray, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ApiService, ToastService, UtilService} from "../../../services";
 import {API, DATA_TABLE_HEADERS} from "../../../lib";
 import {debounceTime, distinctUntilChanged, Subject, takeUntil} from "rxjs";
@@ -120,7 +120,7 @@ export class PaymentReceiptComponent implements OnDestroy{
     this.form = new FormGroup({
       cashReceiptId: new FormControl(0, []),
       branchId: new FormControl(0, []),
-      receiptNo: new FormControl("", [Validators.required]),
+      receiptNo: new FormControl("", []),
       receiptDate: new FormControl(this.utilService.getNgbDateObject(new Date()), []),
       partyId: new FormControl(null, []),
       tdsAmount: new FormControl(null, []),
